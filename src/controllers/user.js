@@ -35,7 +35,7 @@ userRouter.post("/register", async (req, res) => {
             email,
             passwordHash,
         };
-
+        console.log(process.env.ACCESS_TOKEN_SECRET)
         const activation_token = createActivationToken(newUser);
 
         const url = `${CLIENT_URL}/user/activate/${activation_token}`;
@@ -133,7 +133,6 @@ userRouter.post("/login", async (req, res) => {
         }
 
         const refresh_token = createRefreshToken({ id: user._id });
-        console.log(refresh_token)
         // res.cookie('refreshtoken', refresh_token, {
         //     httpOnly: false,
         //     path: '/api/refresh_token',
