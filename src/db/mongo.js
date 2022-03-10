@@ -11,7 +11,7 @@ const mongoose = require('mongoose')
 // }
 
 // Conection a mongoDB
-mongoose.connect('mongodb+srv://jairo:123456789j@cluster0.arqde.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://jairo:Jairo.228@cluster0.ul8oe.mongodb.net/Programate?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })

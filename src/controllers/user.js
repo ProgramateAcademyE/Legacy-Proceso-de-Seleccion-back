@@ -52,9 +52,10 @@ userRouter.post("/register", async (req, res) => {
 userRouter.post("/register_admin", async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
-
+        console.log(req.body)
         if (!name || !email || !password || !role)
             return res.status(400).json({ msg: "Please fill in all fields." });
+            console.log(req.body)
 
         if (!validateEmail(email))
             return res.status(400).json({ msg: "Invalid emails." });
@@ -83,6 +84,7 @@ userRouter.post("/register_admin", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ msg: err.message });
     }
+    console.log('Registrado')
 });
 
 userRouter.post("/activation", async (req, res) => {
@@ -122,7 +124,8 @@ userRouter.post("/login", async (req, res) => {
         const isMatch =
             user === null
                 ? false
-                : await bcrypt.compare(password, user.passwordHash);
+                : await bcrypt.compare(password, user.passwordHash)
+
         if (!isMatch) {
             res.status(401).json({
                 error: "Invalid password or user",
@@ -130,6 +133,7 @@ userRouter.post("/login", async (req, res) => {
         }
 
         const refresh_token = createRefreshToken({ id: user._id });
+        console.log(refresh_token)
         // res.cookie('refreshtoken', refresh_token, {
         //     httpOnly: false,
         //     path: '/api/refresh_token',
@@ -145,6 +149,7 @@ userRouter.post("/login", async (req, res) => {
         return res.status(500).json({ msg: err.message });
     }
 });
+
 userRouter.post("/refresh_token", async (req, res) => {
     try {
         console.log(req.body.refreshtoken);
