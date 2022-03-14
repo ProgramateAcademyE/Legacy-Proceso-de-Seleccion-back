@@ -1,0 +1,47 @@
+POST http://localhost:3001/api/admin/admin
+Content-Type: application/json
+
+{
+    "firstName": "123",
+    "lastName": "456",
+    "rol": {
+        "interviewer": false,
+        "observer": true,
+        "monitor": false
+    },
+    "name": "name..",
+    "email": "email@gmail.com",
+    "available": true
+}
+
+###
+POST http://localhost:3001/api/user/register_admin
+Content-Type: application/json
+
+{
+    "name": "Prueba",
+    "email":"jairovsolarte17@gmail.com",
+    "password": "1234567",
+    "role": 1
+}
+### create candidate
+POST http://localhost:3001/api/user/register
+Content-Type: application/json
+
+{
+    "name": "Prueba",
+    "email":"pvprandom578@gmail.com",
+    "password": "1234567"
+}
+
+### login user
+POST http://localhost:3001/api/user/login
+Content-Type: application/json
+
+{
+    "email":"jairovsolarte17@gmail.com",
+    "password": "1234567"
+}
+
+### activate user
+GET http://localhost:3001/api/user/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUHJ1ZWJhIiwiZW1haWwiOiJwdnByYW5kb201NzhAZ21haWwuY29tIiwicGFzc3dvcmRIYXNoIjoiJDJiJDEyJHVQYTZzcmlsbVUwL05kSjZ2Mk1EUWVqTkk5dlZrSXZLSEYvT1dKYmU5VktaNS8zeGtzd2FHIiwiaWF0IjoxNjQ3MTQ1MTE0LCJleHAiOjE2NDcxNDU0MTR9.anIyt0fXlr2q-sBrAdVb6qrbwxlIKWOn-xYGcYbodCo

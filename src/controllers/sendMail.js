@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer')
 const {google} = require('googleapis')
 const {OAuth2} = google.auth;
 const OAUTH_PLAYGROUND = 'https://developers.google.com/oauthplayground'
+// const OAUTH_PLAYGROUND = 'https://developers.google.com/oauthplayground/#step3&url=https%3A%2F%2F&content_type=application%2Fjson&http_method=GET&useDefaultOauthCred=unchecked&oauthEndpointSelect=Google&oauthAuthEndpointValue=https%3A%2F%2Faccounts.google.com%2Fo%2Foauth2%2Fv2%2Fauth&oauthTokenEndpointValue=https%3A%2F%2Foauth2.googleapis.com%2Ftoken&includeCredentials=unchecked&accessTokenType=bearer&autoRefreshToken=checked&accessType=offline&prompt=consent&response_type=code&wrapLines=on'
 
 const {
     MAILING_SERVICE_CLIENT_ID,
@@ -58,7 +59,7 @@ const sendEmail = (to, url, txt) => {
 
     smtpTransport.sendMail(mailOptions, (err, infor) => {
         if(err) return err;
-        return infor
+        console.log("SEND MAIL ERROR!!!!!!", infor)
     })
 }
 

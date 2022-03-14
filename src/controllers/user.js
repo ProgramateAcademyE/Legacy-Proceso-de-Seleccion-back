@@ -1,302 +1,308 @@
-const User = require("../db/models/User");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const sendMail = require("./sendMail");
-const userRouter = require("express").Router();
-const auth = require("../middleware/auth");
+const User = require("../db/models/User")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+const sendMail = require("./sendMail")
+const userRouter = require("express").Router()
+const auth = require("../middleware/auth")
 // const authAdmin = require('../middleware/authAdmin')
-const authAdmin = require("../middleware/authAdmin");
-const { CLIENT_URL } = process.env;
+const authAdmin = require("../middleware/authAdmin")
+const { CLIENT_URL } = process.env
 
 userRouter.post("/register", async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body
 
-        if (!name || !email || !password)
-            return res.status(400).json({ msg: "Please fill in all fields." });
+    if (!name || !email || !password)
+      return res.status(400).json({ msg: "Please fill in all fields." })
 
-        if (!validateEmail(email))
-            return res.status(400).json({ msg: "Invalid emails." });
+    if (!validateEmail(email))
+      // Call the function validate email.
+      return res.status(400).json({ msg: "Invalid emails." })
 
-        const user = await User.findOne({ email });
+    const user = await User.findOne({ email }) // Check if the email exists
 
-        if (user)
-            return res.status(400).json({ msg: "This email already exists." });
+    if (user)
+      return res.status(400).json({ msg: "This email already exists." })
 
-        if (password.length < 6)
-            return res
-                .status(400)
-                .json({ msg: "Password must be at least 6 characters." });
+    if (password.length < 6)
+      return res
+        .status(400)
+        .json({ msg: "Password must be at least 6 characters." })
 
-        const passwordHash = await bcrypt.hash(password, 12);
+    const passwordHash = await bcrypt.hash(password, 12) // Encrypt password to save to DB
 
-        const newUser = {
-            name,
-            email,
-            passwordHash,
-        };
-
-        const activation_token = createActivationToken(newUser);
-
-        const url = `${CLIENT_URL}/user/activate/${activation_token}`;
-        sendMail(email, url, "Verify your email address");
-
-        res.json({
-            msg: "Register Success! Please activate your email to start.",
-        });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
+    const newUser = {
+      name,
+      email,
+      passwordHash,
     }
-});
+
+    const activation_token = createActivationToken(newUser) // Create user token to validate email
+
+    const url = `${CLIENT_URL}/user/activation/${activation_token}` // Generate url to send mail
+
+    console.log("URL ACTIVACION!!!!!!!!!!!!!", url)
+
+    sendMail(email, url, "Verify your email address")
+
+    res.json({
+      msg: "Register Success! Please activate your email to start.",
+    })
+
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+
+})
 
 userRouter.post("/register_admin", async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
-        console.log(req.body)
-        if (!name || !email || !password || !role)
-            return res.status(400).json({ msg: "Please fill in all fields." });
-            console.log(req.body)
+  try {
+    const { name, email, password, role } = req.body
+    console.log(req.body)
+    if (!name || !email || !password || !role)
+      return res.status(400).json({ msg: "Please fill in all fields." })
+    console.log(req.body)
 
-        if (!validateEmail(email))
-            return res.status(400).json({ msg: "Invalid emails." });
+    if (!validateEmail(email))
+      return res.status(400).json({ msg: "Invalid emails." })
 
-        const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
 
-        if (user)
-            return res.status(400).json({ msg: "This email already exists." });
+    if (user)
+      return res.status(400).json({ msg: "This email already exists." })
 
-        if (password.length < 6)
-            return res
-                .status(400)
-                .json({ msg: "Password must be at least 6 characters." });
+    if (password.length < 6)
+      return res
+        .status(400)
+        .json({ msg: "Password must be at least 6 characters." })
 
-        const passwordHash = await bcrypt.hash(password, 12);
+    const passwordHash = await bcrypt.hash(password, 12)
 
-        const newUser = new User({
-            name,
-            email,
-            passwordHash,
-            role,
-        });
+    const newUser = new User({
+      name,
+      email,
+      passwordHash,
+      role,
+    })
 
-        await newUser.save();
-        res.json({ msg: "User has been create!" });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-    console.log('Registrado')
-});
+    await newUser.save()
+    res.json({ msg: "User has been create!" })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+  console.log("Registrado")
+})
 
-userRouter.post("/activation", async (req, res) => {
-    try {
-        const { activation_token } = req.body;
-        const user = jwt.verify(
-            activation_token,
-            process.env.ACTIVATION_TOKEN_SECRET
-        );
+// Activation user
+userRouter.get("/activation/:activation_token", async (req, res) => {
+  try {
+    const { activation_token } = req.params
+    console.log(activation_token)
 
-        const { name, email, passwordHash } = user;
+    const user = jwt.verify(
+      activation_token,
+      process.env.ACTIVATION_TOKEN_SECRET
+    )
 
-        const check = await User.findOne({ email });
-        if (check)
-            return res.status(400).json({ msg: "This email already exists." });
+    const { name, email, passwordHash } = user
 
-        const newUser = new User({
-            name,
-            email,
-            passwordHash,
-        });
+    const check = await User.findOne({ email })
+    if (check)
+      return res.status(400).json({ msg: "This email already exists." })
 
-        await newUser.save();
+    const newUser = new User({
+      name,
+      email,
+      passwordHash,
+    })
 
-        res.json({ msg: "Account has been activated!" });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    await newUser.save()
+
+    res.json({ msg: "Account has been activated!" })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.post("/login", async (req, res) => {
-    try {
-        console.log(req.body, "ingresologin");
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+  try {
+    console.log(req.body, "ingresologin")
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
 
-        const isMatch =
-            user === null
-                ? false
-                : await bcrypt.compare(password, user.passwordHash)
+    const isMatch =
+      user === null ? false : await bcrypt.compare(password, user.passwordHash)
 
-        if (!isMatch) {
-            res.status(401).json({
-                error: "Invalid password or user",
-            });
-        }
-
-        const refresh_token = createRefreshToken({ id: user._id });
-        console.log(refresh_token)
-        // res.cookie('refreshtoken', refresh_token, {
-        //     httpOnly: false,
-        //     path: '/api/refresh_token',
-        //     maxAge: 7*24*60*60*1000 // 7 days
-        // })
-        res.send({
-            email: user.email,
-            refresh_token,
-            msg: "Login success!",
-        });
-        // res.json({msg: "Login success!"})
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
+    if (!isMatch) {
+      res.status(401).json({
+        error: "Invalid password or user",
+      })
     }
-});
+
+    const refresh_token = createRefreshToken({ id: user._id })
+    console.log(refresh_token)
+    // res.cookie('refreshtoken', refresh_token, {
+    //     httpOnly: false,
+    //     path: '/api/refresh_token',
+    //     maxAge: 7*24*60*60*1000 // 7 days
+    // })
+    res.send({
+      email: user.email,
+      refresh_token,
+      msg: "Login success!",
+    })
+    // res.json({msg: "Login success!"})
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.post("/refresh_token", async (req, res) => {
-    try {
-        console.log(req.body.refreshtoken);
-        const rf_token = req.body.refreshtoken;
-        if (!rf_token)
-            return res.status(400).json({ msg: "Please login now!" });
+  try {
+    console.log(req.body.refreshtoken)
+    const rf_token = req.body.refreshtoken
+    if (!rf_token) return res.status(400).json({ msg: "Please login now!" })
 
-        jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-            if (err) return res.status(400).json({ msg: "Please login now!" });
-            const access_token = createAccessToken({ id: user.id });
-            res.json({ access_token });
-        });
-        // res.json({msg: 'ok'})
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.status(400).json({ msg: "Please login now!" })
+      const access_token = createAccessToken({ id: user.id })
+      res.json({ access_token })
+    })
+    // res.json({msg: 'ok'})
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.post("/forgot", async (req, res) => {
-    try {
-        const { email } = req.body;
-        const user = await User.findOne({ email });
-        if (!user)
-            return res.status(400).json({ msg: "This email does not exist." });
+  try {
+    const { email } = req.body
+    const user = await User.findOne({ email })
+    if (!user)
+      return res.status(400).json({ msg: "This email does not exist." })
 
-        const access_token = createAccessToken({ id: user._id });
-        const url = `${CLIENT_URL}/user/reset/${access_token}`;
+    const access_token = createAccessToken({ id: user._id })
+    const url = `${CLIENT_URL}/user/reset/${access_token}`
 
-        sendMail(email, url, "Reset your password");
-        res.json({ msg: "Re-send the password, please check your email." });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    sendMail(email, url, "Reset your password")
+    res.json({ msg: "Re-send the password, please check your email." })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.post("/reset", auth, async (req, res) => {
-    try {
-        const { password } = req.body;
-        const passwordHash = await bcrypt.hash(password, 12);
+  try {
+    const { password } = req.body
+    const passwordHash = await bcrypt.hash(password, 12)
 
-        await User.findOneAndUpdate(
-            { _id: req.user.id },
-            {
-                passwordHash: passwordHash,
-            }
-        );
+    await User.findOneAndUpdate(
+      { _id: req.user.id },
+      {
+        passwordHash: passwordHash,
+      }
+    )
 
-        res.json({ msg: "Password successfully changed!" });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    res.json({ msg: "Password successfully changed!" })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.get("/info", auth, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select("-password");
+  try {
+    const user = await User.findById(req.user.id).select("-password")
 
-        res.json(user);
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    res.json(user)
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
-    try {
-        const users = await User.find().select("-password");
+  try {
+    const users = await User.find().select("-password")
 
-        res.json(users);
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    res.json(users)
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.get("/logout", async (req, res) => {
-    try {
-        res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
-        return res.json({ msg: "Logged out." });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+  try {
+    res.clearCookie("refreshtoken", { path: "/api/refresh_token" })
+    return res.json({ msg: "Logged out." })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 userRouter.patch("/update", auth, async (req, res) => {
-    try {
-        const { name, avatar } = req.body;
-        await User.findOneAndUpdate(
-            { _id: req.user.id },
-            {
-                name,
-                avatar,
-            }
-        );
+  try {
+    const { name, avatar } = req.body
+    await User.findOneAndUpdate(
+      { _id: req.user.id },
+      {
+        name,
+        avatar,
+      }
+    )
 
-        res.json({ msg: "Update Success!" });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    res.json({ msg: "Update Success!" })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
-    try {
-        const { role } = req.body;
+  try {
+    const { role } = req.body
 
-        await User.findOneAndUpdate(
-            { _id: req.params.id },
-            {
-                role,
-            }
-        );
+    await User.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        role,
+      }
+    )
 
-        res.json({ msg: "Update Success!" });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    res.json({ msg: "Update Success!" })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id);
+  try {
+    await User.findByIdAndDelete(req.params.id)
 
-        res.json({ msg: "Deleted Success!" });
-    } catch (err) {
-        return res.status(500).json({ msg: err.message });
-    }
-});
+    res.json({ msg: "Deleted Success!" })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+})
 
 const validateEmail = (email) => {
-    const re =
-        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-};
+  const re =
+    /^(([^<>()[\]\\.,:\s@\"]+(\.[^<>()[\]\\.,:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(email)
+}
 
 const createActivationToken = (payload) => {
-    return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
-        expiresIn: "5m",
-    });
-};
+  return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
+    expiresIn: "5m",
+  })
+}
 
 const createAccessToken = (payload) => {
-    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m",
-    });
-};
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "15m",
+  })
+}
 
 const createRefreshToken = (payload) => {
-    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-        expiresIn: "7d",
-    });
-};
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "7d",
+  })
+}
 
-module.exports = userRouter;
+module.exports = userRouter
