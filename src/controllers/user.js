@@ -5,8 +5,15 @@ const sendMail = require("./sendMail")
 const userRouter = require("express").Router()
 const auth = require("../middleware/auth")
 // const authAdmin = require('../middleware/authAdmin')
+<<<<<<< HEAD
 const authAdmin = require("../middleware/authAdmin")
 const { CLIENT_URL } = process.env
+=======
+const authAdmin = require("../middleware/authAdmin");
+const transporter = require('../utils/senMail')
+
+const { CLIENT_URL } = process.env;
+>>>>>>> main
 
 userRouter.post("/register", async (req, res) => {
   try {
@@ -31,10 +38,33 @@ userRouter.post("/register", async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 12) // Encrypt password to save to DB
 
-    const newUser = {
-      name,
-      email,
-      passwordHash,
+        const newUser = {
+            name,
+            email,
+            passwordHash,
+        };
+        console.log(process.env.ACCESS_TOKEN_SECRET)
+        const activation_token = createActivationToken(newUser);
+
+        const url = `${CLIENT_URL}/user/activate/${activation_token}`;
+        sendMail(email, url, "Verify your email address");
+
+        await transporter.sendMail({
+            from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
+            to: email,
+            subject: 'Validate your email',
+            html: `
+                <b>Please click on the following link, or paste this into your browser to complete the process: </b>
+                <a href='${url}'>${url}</a>
+            `
+        }) 
+
+
+        res.json({
+            msg: "Register Success! Please activate your email to start.",
+        });
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
     }
 
     const activation_token = createActivationToken(newUser) // Create user token to validate email
@@ -48,11 +78,6 @@ userRouter.post("/register", async (req, res) => {
     res.json({
       msg: "Register Success! Please activate your email to start.",
     })
-
-  } catch (err) {
-    return res.status(500).json({ msg: err.message })
-  }
-
 })
 
 userRouter.post("/register_admin", async (req, res) => {
@@ -133,28 +158,27 @@ userRouter.post("/login", async (req, res) => {
     const isMatch =
       user === null ? false : await bcrypt.compare(password, user.passwordHash)
 
-    if (!isMatch) {
-      res.status(401).json({
-        error: "Invalid password or user",
-      })
-    }
+        if (!isMatch) {
+            res.status(401).json({
+                error: "Invalid password or user",
+            });
+        }
 
-    const refresh_token = createRefreshToken({ id: user._id })
-    console.log(refresh_token)
-    // res.cookie('refreshtoken', refresh_token, {
-    //     httpOnly: false,
-    //     path: '/api/refresh_token',
-    //     maxAge: 7*24*60*60*1000 // 7 days
-    // })
-    res.send({
-      email: user.email,
-      refresh_token,
-      msg: "Login success!",
-    })
-    // res.json({msg: "Login success!"})
-  } catch (err) {
-    return res.status(500).json({ msg: err.message })
-  }
+        const refresh_token = createRefreshToken({ id: user._id });
+        // res.cookie('refreshtoken', refresh_token, {
+        //     httpOnly: false,
+        //     path: '/api/refresh_token',
+        //     maxAge: 7*24*60*60*1000 // 7 days
+        // })
+        res.send({
+            email: user.email,
+            refresh_token,
+            msg: "Login success!",
+        });
+        // res.json({msg: "Login success!"})
+    } catch (err) {
+        return res.status(500).json({ msg: err.message });
+    }
 })
 
 userRouter.post("/refresh_token", async (req, res) => {
