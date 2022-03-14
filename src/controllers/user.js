@@ -8,7 +8,7 @@ const auth = require("../middleware/auth")
 const authAdmin = require('../middleware/authAdmin')
 const transporter = require('../utils/senMail')
 
-const { CLIENT_URL } = process.env;
+const { CLIENT_URL, EMAIL } = process.env;
 
 userRouter.post("/register", async (req, res) => {
   try {
@@ -44,7 +44,7 @@ userRouter.post("/register", async (req, res) => {
         const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
 
         await transporter.sendMail({
-            from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
+            from: `"Validate your email" <${EMAIL}> `,
             to: email,
             subject: 'Validate your email',
             html: `
