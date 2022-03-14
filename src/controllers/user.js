@@ -6,6 +6,8 @@ const userRouter = require("express").Router();
 const auth = require("../middleware/auth");
 // const authAdmin = require('../middleware/authAdmin')
 const authAdmin = require("../middleware/authAdmin");
+const transporter = require('../utils/senMail')
+
 const { CLIENT_URL } = process.env;
 
 userRouter.post("/register", async (req, res) => {
@@ -40,6 +42,17 @@ userRouter.post("/register", async (req, res) => {
 
         const url = `${CLIENT_URL}/user/activate/${activation_token}`;
         sendMail(email, url, "Verify your email address");
+
+        await transporter.sendMail({
+            from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
+            to: email,
+            subject: 'Validate your email',
+            html: `
+                <b>Please click on the following link, or paste this into your browser to complete the process: </b>
+                <a href='${url}'>${url}</a>
+            `
+        }) 
+
 
         res.json({
             msg: "Register Success! Please activate your email to start.",
