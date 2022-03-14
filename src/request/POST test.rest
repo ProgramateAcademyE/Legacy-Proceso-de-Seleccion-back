@@ -29,7 +29,7 @@ POST http://localhost:3001/api/user/register
 Content-Type: application/json
 
 {
-    "name": "Prueba",
+    "name": "Jairo Valentin",
     "email":"pvprandom578@gmail.com",
     "password": "1234567"
 }

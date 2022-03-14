@@ -4,16 +4,11 @@ const jwt = require("jsonwebtoken")
 const sendMail = require("./sendMail")
 const userRouter = require("express").Router()
 const auth = require("../middleware/auth")
-// const authAdmin = require('../middleware/authAdmin')
-<<<<<<< HEAD
-const authAdmin = require("../middleware/authAdmin")
-const { CLIENT_URL } = process.env
-=======
-const authAdmin = require("../middleware/authAdmin");
+
+const authAdmin = require('../middleware/authAdmin')
 const transporter = require('../utils/senMail')
 
 const { CLIENT_URL } = process.env;
->>>>>>> main
 
 userRouter.post("/register", async (req, res) => {
   try {
@@ -46,8 +41,7 @@ userRouter.post("/register", async (req, res) => {
         console.log(process.env.ACCESS_TOKEN_SECRET)
         const activation_token = createActivationToken(newUser);
 
-        const url = `${CLIENT_URL}/user/activate/${activation_token}`;
-        sendMail(email, url, "Verify your email address");
+        const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
 
         await transporter.sendMail({
             from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
@@ -59,21 +53,12 @@ userRouter.post("/register", async (req, res) => {
             `
         }) 
 
-
         res.json({
             msg: "Register Success! Please activate your email to start.",
         });
     } catch (err) {
         return res.status(500).json({ msg: err.message });
     }
-
-    const activation_token = createActivationToken(newUser) // Create user token to validate email
-
-    const url = `${CLIENT_URL}/user/activation/${activation_token}` // Generate url to send mail
-
-    console.log("URL ACTIVACION!!!!!!!!!!!!!", url)
-
-    sendMail(email, url, "Verify your email address")
 
     res.json({
       msg: "Register Success! Please activate your email to start.",
