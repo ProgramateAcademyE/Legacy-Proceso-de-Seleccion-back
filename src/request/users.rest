@@ -1,0 +1,12 @@
+### create user profile
+
+POST http://localhost:3001/api/user/register
+Content-Type: application/json
+
+{
+  "names": "user_names",
+  "surname": "user_surname"
+  "email":"user_email", //must be a real email 
+  "password": "user_password" //must be a larger than six characters password
+}
+
