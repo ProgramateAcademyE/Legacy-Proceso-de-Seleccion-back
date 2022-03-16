@@ -15,21 +15,21 @@ userRouter.post("/register", async (req, res) => {
 		const { names, surname, email, password } = req.body;
 
 		if (!names || !surname || !email || !password)
-			return res.status(400).json({ msg: "Por favor llene todos los campos." });
+			return res.status(400).json({ msg: "Por favor llene todos los campos. " });
 
 		if (!validateEmail(email))
 			// Call the function validate email.
-			return res.status(400).json({ msg: "Correo electónico inválido." });
+			return res.status(400).json({ msg: "Correo electrónico inválido. " });
 
 		const user = await User.findOne({ email }); // Check if the email exists
 
 		if (user)
-			return res.status(400).json({ msg: "This email already exists." });
+			return res.status(400).json({ msg: "Este correo electrónico ya existe. " });
 
 		if (password.length < 6)
 			return res
 				.status(400)
-				.json({ msg: "Password must be at least 6 characters." });
+				.json({ msg: "La contraseña debe contar con mínimo 6 carácteres " });
 
 		const passwordHash = await bcrypt.hash(password, 12); // Encrypt password to save to DB
 
@@ -56,6 +56,7 @@ userRouter.post("/register", async (req, res) => {
 
 		res.json({
 			msg: "Register Success! Please activate your email to start.",
+			token: activation_token,
 		});
 	} catch (err) {
 		return res.status(500).json({ msg: err.message });
@@ -110,14 +111,15 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 			process.env.ACTIVATION_TOKEN_SECRET,
 		);
 
-		const { name, email, passwordHash } = user;
+		const { names, surname, email, passwordHash } = user;
 
 		const check = await User.findOne({ email });
 		if (check)
 			return res.status(400).json({ msg: "This email already exists." });
 
 		const newUser = new User({
-			name,
+			names,
+			surname,
 			email,
 			passwordHash,
 		});
