@@ -42,7 +42,7 @@ userRouter.post("/register", async (req, res) => {
 
 		const activation_token = createActivationToken(newUser);
 
-		const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
+		const url = `${CLIENT_URL}api/user/activation/${activation_token}`;
 
 		await transporter.sendMail({
 			from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
