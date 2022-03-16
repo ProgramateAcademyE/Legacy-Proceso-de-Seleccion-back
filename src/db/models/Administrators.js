@@ -16,3 +16,4 @@ const AdministratorSchema = new Schema(
 
 const Administrator = model('interviewer', AdministratorSchema);
 module.exports = Administrator;
+  

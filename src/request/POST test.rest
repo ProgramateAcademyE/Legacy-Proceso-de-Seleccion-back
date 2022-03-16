@@ -49,7 +49,8 @@ POST http://localhost:3001/api/user/register
 Content-Type: application/json
 
 {
-    "name": "Jairo Valentin",
+    "names": "Jairo Valentin",
+    "surname": "Solarte Rodriguez",
     "email":"pandor1207@gmail.com",
     "password": "1234567"
 }
