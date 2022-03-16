@@ -1,20 +1,40 @@
+GET http://localhost:3001/api/admin/admin
+
+###
 POST http://localhost:3001/api/admin/admin
 Content-Type: application/json
 
 {
-    "firstName": "123",
-    "lastName": "456",
+    "firstName": "Jairo ",
+    "lastName": "Solarte",
     "rol": {
-        "interviewer": false,
+        "interviewer": true,
         "observer": true,
-        "monitor": false
+        "monitor": true
     },
-    "name": "name..",
+    "name": "Jairo Valentin solarte",
     "email": "email@gmail.com",
     "available": true
 }
 
-###
+### New Convocatory
+POST http://localhost:3001/api/admin/new-conv
+Content-Type: application/json
+
+{
+    "name": "allValues.nameConvocatory",
+    "maxQuotas": 10,
+    "initialDate": "allValues.startDate",
+    "finalDate": "allValues.endDate",
+    "initialBootcampDate": "allValues.startDateBootcamp",
+    "finalBootcampDate": "allValues.endDateBootcamp",
+    "residenceCountry": "allValues.residenceCountry",
+    "residencyDepartment": "allValues.residenceDepartment",
+    "maxAge": "21",
+    "maxSocioeconomicStratus": 2
+}
+
+### Register one admin
 POST http://localhost:3001/api/user/register_admin
 Content-Type: application/json
 
@@ -45,3 +65,6 @@ Content-Type: application/json
 
 ### activate user
 GET http://localhost:3001/api/user/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUHJ1ZWJhIiwiZW1haWwiOiJwdnByYW5kb201NzhAZ21haWwuY29tIiwicGFzc3dvcmRIYXNoIjoiJDJiJDEyJHVQYTZzcmlsbVUwL05kSjZ2Mk1EUWVqTkk5dlZrSXZLSEYvT1dKYmU5VktaNS8zeGtzd2FHIiwiaWF0IjoxNjQ3MTQ1MTE0LCJleHAiOjE2NDcxNDU0MTR9.anIyt0fXlr2q-sBrAdVb6qrbwxlIKWOn-xYGcYbodCo
+
+### get user
+GET http://localhost:3001/api/user/all_info

@@ -147,31 +147,43 @@ adminRouter.get("/statistics", async (req, res) => {
 
 // CREATES NEW CONVOCATORY
 adminRouter.post("/new-conv", async (req, res, next) => {
-    // DATA REQUIRED FROM REQUEST
-    const {
-        name,
-        initialDate,
-        finallDate,
-        program,
-        maxQuotas,
-        initialBootcampDate,
-        finalBootcampDate,
-        usersRegisted,
-    } = req.body;
-    // New Convocatory document
-    const convocatory = new Convocatory({
-        // _id,
-        name,
-        initialDate,
-        finallDate,
-        program,
-        maxQuotas,
-        initialBootcampDate,
-        finalBootcampDate,
-        usersRegisted,
-    });
-    await newConvocatory.save();
-    res.send({ data: newConvocatory });
+    try {
+        // DATA REQUIRED FROM REQUEST
+        const {
+            name,
+            initialDate,
+            finalDate,
+            maxQuotas,
+            initialBootcampDate,
+            finalBootcampDate,
+            parameterization,
+            residenceCountry,
+            residencyDepartment,
+            maxAge,
+            maxSocioeconomicStratus
+        } = req.body;
+    
+        // New Convocatory document
+        const newConvocatory = new Convocatory({
+            name,
+            initialDate,
+            finalDate,
+            maxQuotas,
+            initialBootcampDate,
+            finalBootcampDate,
+            parameterization,
+            residenceCountry,
+            residencyDepartment,
+            maxAge,
+            maxSocioeconomicStratus
+        });
+        
+        await newConvocatory.save();
+        res.json({ msg: 'Convocatoria creada con exito' });
+        
+    } catch (error) {
+        res.json({msg: `Algo fallo ${error}`})
+    }
 });
 
 // UPDATE CONVOCATORY
