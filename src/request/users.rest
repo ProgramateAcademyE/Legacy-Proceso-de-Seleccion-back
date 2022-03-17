@@ -5,8 +5,8 @@ Content-Type: application/json
 {
   "names": "user_names",
   "surname": "user_surname",
-  "email": "user_email", //must be a real email 
-  "password": "user_password" //must be a larger than six characters password
+  "email": "hola@hola.com",
+  "password": "12345678"
 }
 
 
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### activate user
-GET http://localhost:3001/api/user/activation/:[addToken]
+GET http://localhost:3001/api/user/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lcyI6InVzZXJfbmFtZXMiLCJzdXJuYW1lIjoidXNlcl9zdXJuYW1lIiwiZW1haWwiOiJob2xhQGhvbGEuY29tIiwicGFzc3dvcmRIYXNoIjoiJDJiJDEyJEJydHpTMUQxVmd4OGgwb0ZjanYuUU9qLmZpOXUva2sxODdjOTVjdVRtakRyeGNBcklUNUZLIiwiaWF0IjoxNjQ3NTQ2NTYyLCJleHAiOjE2NDc1NDY4NjJ9.feIRVvVrtbxCPbyuCN03ZGXSwAIAVoJQO4u73Xv0OXo
 
 ### get all user
 GET http://localhost:3001/api/user/all_info

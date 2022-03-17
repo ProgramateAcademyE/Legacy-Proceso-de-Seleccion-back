@@ -355,7 +355,6 @@ adminRouter.put("/parameterization/:_id", async (req, res) => {
 // ============================ HIRMOMI DANI =========================
 
 //GET ALL CANDIDATES
-
 adminRouter.get("/candidatefull", async (req, res) => {
     const candidates = await Profile.find({}).populate("user_id");
     res.send(candidates);

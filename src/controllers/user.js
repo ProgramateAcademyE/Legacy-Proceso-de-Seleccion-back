@@ -45,7 +45,7 @@ userRouter.post("/register", async (req, res) => {
 		const url = `${CLIENT_URL}api/user/activation/${activation_token}`;
 
 		await transporter.sendMail({
-			from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
+			from: ' "Validate your email" <jairovsolarte17@gmail.com>',
 			to: email,
 			subject: "Validate your email",
 			html: `
@@ -238,6 +238,7 @@ userRouter.get("/logout", async (req, res) => {
 		return res.status(500).json({ msg: err.message });
 	}
 });
+
 userRouter.patch("/update", auth, async (req, res) => {
 	try {
 		const { names, surname, avatar } = req.body;
