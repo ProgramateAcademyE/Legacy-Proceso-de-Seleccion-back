@@ -1,12 +1,26 @@
 ### create user profile
-
 POST http://localhost:3001/api/user/register
 Content-Type: application/json
 
 {
   "names": "user_names",
-  "surname": "user_surname"
-  "email":"user_email", //must be a real email 
+  "surname": "user_surname",
+  "email": "user_email", //must be a real email 
   "password": "user_password" //must be a larger than six characters password
 }
 
+
+### login user
+POST http://localhost:3001/api/user/login
+Content-Type: application/json
+
+{
+    "email":"user_email",
+    "password": "user_password"
+}
+
+### activate user
+GET http://localhost:3001/api/user/activation/:[addToken]
+
+### get all user
+GET http://localhost:3001/api/user/all_info

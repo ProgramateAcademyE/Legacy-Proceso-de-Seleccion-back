@@ -160,7 +160,9 @@ adminRouter.post("/new-conv", async (req, res, next) => {
             residenceCountry,
             residencyDepartment,
             maxAge,
-            maxSocioeconomicStratus
+            maxSocioeconomicStratus,
+            gender,
+            typePopulation
         } = req.body;
     
         // New Convocatory document
@@ -175,7 +177,9 @@ adminRouter.post("/new-conv", async (req, res, next) => {
             residenceCountry,
             residencyDepartment,
             maxAge,
-            maxSocioeconomicStratus
+            maxSocioeconomicStratus,
+            gender,
+            typePopulation
         });
         
         await newConvocatory.save();
@@ -392,13 +396,12 @@ adminRouter.get("/citation", async (req, res) => {
     res.send(data);
 });
 
-// ============================ HIRMOMI DANI =========================
-
-// ============================ Yeferson =========================
+// Get All convocatories
 adminRouter.get("/convocatories", async (req, res) => {
     const results = await Convocatory.find();
     res.send(results);
 });
+
 adminRouter.get("/convocatory/:id", async (req, res) => {
     const results = await Convocatory.find({ _id: req.params.id });
     res.send(results);
@@ -408,8 +411,6 @@ adminRouter.get("/acept", async (req, res) => {
     const user = await User.find();
     res.send(user);
 });
-
-// ============================ Yeferson =========================
 
 // Creates new citations
 adminRouter.post("/citation", async (req, res) => {
