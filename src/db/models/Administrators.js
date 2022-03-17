@@ -3,9 +3,9 @@ const { Schema, model } = mongoose;
 
 const AdministratorSchema = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
-    rol: {
+    names: { type: String, required: true },
+    surname: { type: String, required: true },
+    role: {
       interviewer: Boolean,
       observer: Boolean,
       monitor: Boolean

@@ -4,23 +4,23 @@ const userSchema = new mongoose.Schema(
 	{
 		names: {
 			type: String,
-			required: [true, "Please enter your names!"],
+			required: [true, "Por favor ingresa tus nombres"],
 			trim: true,
 		},
 		surname: {
 			type: String,
-			required: [true, "Please enter your surname!"],
+			required: [true, "Por favor ingresa tus apellidos"],
 			trim: true,
 		},
 		email: {
 			type: String,
-			required: [true, "Please enter your email!"],
+			required: [true, "Por favor ingresa un correo electrónico"],
 			trim: true,
 			unique: true,
 		},
 		passwordHash: {
 			type: String,
-			required: [true, "Please enter your password!"],
+			required: [true, "Por favor ingresa una contraseña, esta debe tener mínimo 6 caracteres"],
 		},
 		role: {
 			type: Number,

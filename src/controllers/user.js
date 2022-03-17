@@ -9,27 +9,33 @@ const transporter = require("../utils/senMail");
 
 const { CLIENT_URL, EMAIL } = process.env;
 
+//error messages
+const errorFields = "Por favor llene todos los campos. "
+const errorInvalidEmail = "Correo electrónico inválido. "
+const errorExistEmail = "Este correo electrónico ya existe. "
+const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres. "
+
 //create a new user
 userRouter.post("/register", async (req, res) => {
 	try {
 		const { names, surname, email, password } = req.body;
 
 		if (!names || !surname || !email || !password)
-			return res.status(400).json({ msg: "Por favor llene todos los campos. " });
+			return res.status(400).json({ msg: errorFields});
 
 		if (!validateEmail(email))
 			// Call the function validate email.
-			return res.status(400).json({ msg: "Correo electrónico inválido. " });
+			return res.status(400).json({ msg: errorInvalidEmail});
 
 		const user = await User.findOne({ email }); // Check if the email exists
 
 		if (user)
-			return res.status(400).json({ msg: "Este correo electrónico ya existe. " });
+			return res.status(400).json({ msg: errorExistEmail});
 
 		if (password.length < 6)
 			return res
 				.status(400)
-				.json({ msg: "La contraseña debe contar con mínimo 6 carácteres " });
+				.json({ msg: errorCharactersPassword});
 
 		const passwordHash = await bcrypt.hash(password, 12); // Encrypt password to save to DB
 
@@ -55,7 +61,7 @@ userRouter.post("/register", async (req, res) => {
 		});
 
 		res.json({
-			msg: "Register Success! Please activate your email to start.",
+			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para avtivar la cuenta. ",
 			token: activation_token,
 		});
 	} catch (err) {
@@ -63,26 +69,26 @@ userRouter.post("/register", async (req, res) => {
 	}
 });
 
-//create a profile different to user
+//create a profile different to a user
 userRouter.post("/register_admin", async (req, res) => {
 	try {
 		const { names, surname, email, password, role } = req.body;
 
 		if (!names || !surname || !email || !password || !role)
-			return res.status(400).json({ msg: "Please fill in all fields." });
+			return res.status(400).json({ msg: errorFields});
 
 		if (!validateEmail(email))
-			return res.status(400).json({ msg: "Invalid email." });
+			return res.status(400).json({ msg: errorInvalidEmail});
 
 		const user = await User.findOne({ email });
 
 		if (user)
-			return res.status(400).json({ msg: "This email already exists." });
+			return res.status(400).json({ msg: errorExistEmail});
 
 		if (password.length < 6)
 			return res
 				.status(400)
-				.json({ msg: "Password must be at least 6 characters." });
+				.json({ msg: errorCharactersPassword});
 
 		const passwordHash = await bcrypt.hash(password, 12);
 
@@ -95,7 +101,7 @@ userRouter.post("/register_admin", async (req, res) => {
 		});
 
 		await newUser.save();
-		res.json({ msg: "User has been create!" });
+		res.json({ msg: "Perfil creado exitosamente. " });
 	} catch (err) {
 		return res.status(500).json({ msg: err.message });
 	}
@@ -115,7 +121,7 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 
 		const check = await User.findOne({ email });
 		if (check)
-			return res.status(400).json({ msg: "This email already exists." });
+			return res.status(400).json({ msg: errorExistEmail});
 
 		const newUser = new User({
 			names,
@@ -126,7 +132,7 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 
 		await newUser.save();
 
-		res.json({ msg: "Account has been activated!" });
+		res.json({ msg: "La cuenta fue activada exitosamente. " });
 	} catch (err) {
 		return res.status(500).json({ msg: err.message });
 	}
@@ -142,7 +148,7 @@ userRouter.post("/login", async (req, res) => {
 
 		if (!isMatch) {
 			res.status(401).json({
-				error: "Invalid password or user",
+				error: "Usuario o contraseña incorrectos",
 			});
 		}
 
@@ -151,7 +157,7 @@ userRouter.post("/login", async (req, res) => {
 		res.send({
 			email: user.email,
 			refresh_token,
-			msg: "Login success!",
+			msg: "Login exitoso!",
 		});
 
 	} catch (err) {
@@ -180,13 +186,13 @@ userRouter.post("/forgot", async (req, res) => {
 		const { email } = req.body;
 		const user = await User.findOne({ email });
 		if (!user)
-			return res.status(400).json({ msg: "This email does not exist." });
+			return res.status(400).json({ msg: "Este correo electrónico no existe. " });
 
 		const access_token = createAccessToken({ id: user._id });
 		const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
-		sendMail(email, url, "Reset your password");
-		res.json({ msg: "Re-send the password, please check your email." });
+		sendMail(email, url, "Reestablese tu contraseña. ");
+		res.json({ msg: "Contraseña reenviada, verifica tu correo electrónico. " });
 	} catch (err) {
 		return res.status(500).json({ msg: err.message });
 	}
@@ -275,7 +281,12 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 
 userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
 	try {
-		await User.findByIdAndDelete(req.params.id);
+		await User.findOneAndUpdate(
+			{ _id: req.params.id },
+			{
+				deleted,
+			},
+		);
 
 		res.json({ msg: "Deleted Success!" });
 	} catch (err) {

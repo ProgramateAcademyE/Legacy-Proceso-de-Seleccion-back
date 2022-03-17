@@ -44,6 +44,7 @@ Content-Type: application/json
     "password": "1234567",
     "role": 1
 }
+
 ### create candidate
 POST http://localhost:3001/api/user/register
 Content-Type: application/json
