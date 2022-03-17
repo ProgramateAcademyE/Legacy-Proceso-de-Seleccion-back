@@ -9,20 +9,7 @@ Content-Type: application/json
   "password": "12345678"
 }
 
-### Register an admin profile from profiles control panel 
-POST http://localhost:3001/api/user/register_admin
-Content-Type: application/json
-
-{
-    "names": "user_names",
-    "surname": "user_surname",
-    "email": "user_email",
-    "password": "user_password",
-    "role": 1
-}
-
 ### Login user
-
 POST http://localhost:3001/api/user/login
 Content-Type: application/json
 
@@ -33,7 +20,8 @@ Content-Type: application/json
 
 ### Token activation when a user create an acount and activate it fron the email registered 
 GET http://localhost:3001/api/user/activation/:activation_token
-// activation_token is a token gerenated when a user profile create a count.  
+### activation_token is a token gerenated when a user profile create a count.  
+
 
 ### Reset password when a user press the forgot my password button
 POST http://localhost:3001/api/user/forgot
