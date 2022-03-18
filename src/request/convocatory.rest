@@ -1,12 +1,37 @@
 ### Get all Convocatories
 GET http://localhost:3001/api/admin/convocatories
 
+### Get one Convocatory
+GET http://localhost:3001/api/admin/convocatory/:id
+
+### Delete one convocatory
+DELETE http://localhost:3001/api/admin/convocatory/:id
+
 ### New Convocatory
 POST http://localhost:3001/api/admin/new-conv
 Content-Type: application/json
 
 {
     "name": "allValues.nameConvocatory",
+    "maxQuotas": 10,
+    "initialDate": "allValues.startDate",
+    "finalDate": "allValues.endDate",
+    "initialBootcampDate": "allValues.startDateBootcamp",
+    "finalBootcampDate": "allValues.endDateBootcamp",
+    "residenceCountry": ["Array"],
+    "residencyDepartment": ["Array"],
+    "maxAge": "21",
+    "maxSocioeconomicStratus": 2,
+    "gender":["Array"],
+    "typePopulation":["Array"]
+}
+
+### Update Convocatory
+PUT http://localhost:3001/api/admin/update-conv/6231dd4ff8bb6b79f57c259d
+Content-Type: application/json
+
+{
+    "name": "Conv Update from backend",
     "maxQuotas": 10,
     "initialDate": "allValues.startDate",
     "finalDate": "allValues.endDate",

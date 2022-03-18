@@ -9,6 +9,86 @@ const Administrator = require("../db/models/Administrators");
 const Citation = require("../db/models/Citation");
 const ObjectId = require("mongodb").ObjectID;
 
+// ===================== Convocatories Endpoints =======================
+
+// CREATES NEW CONVOCATORY
+adminRouter.post("/new-conv", async (req, res, next) => {
+    try {
+        // DATA REQUIRED FROM REQUEST
+        const {
+            name,
+            initialDate,
+            finalDate,
+            maxQuotas,
+            initialBootcampDate,
+            finalBootcampDate,
+            parameterization,
+            residenceCountry,
+            residencyDepartment,
+            maxAge,
+            maxSocioeconomicStratus,
+            gender,
+            typePopulation
+        } = req.body;
+    
+        // New Convocatory document
+        const newConvocatory = new Convocatory({
+            name,
+            initialDate,
+            finalDate,
+            maxQuotas,
+            initialBootcampDate,
+            finalBootcampDate,
+            parameterization,
+            residenceCountry,
+            residencyDepartment,
+            maxAge,
+            maxSocioeconomicStratus,
+            gender,
+            typePopulation
+        });
+        
+        await newConvocatory.save();
+        res.json({ msg: 'Convocatoria creada con exito' });
+        
+    } catch (error) {
+        res.json({msg: `Algo fallo ${error}`})
+    }
+});
+
+// UPDATE CONVOCATORY
+adminRouter.put("/update-conv/:id", async (req, res) => {
+	try {
+		const convocatory = await Convocatory.findById(req.params.id);
+		Object.assign(convocatory, req.body);
+		convocatory.save();
+		res.send({ data: convocatory });
+	} catch {
+		res.status(404).send({ error: "Convocatory not found" });
+	}
+});
+
+// Get All convocatories
+adminRouter.get("/convocatories", async (req, res) => {
+	const results = await Convocatory.find();
+	res.send(results);
+});
+
+//  Get One Convocatory
+adminRouter.get("/convocatory/:id", async (req, res) => {
+	const results = await Convocatory.find({ _id: req.params.id });
+	res.send(results);
+});
+
+adminRouter.delete("/convocatory/:id", async (req, res)=> {
+    await Convocatory.findByIdAndDelete({ _id: req.params.id })
+
+    res.send({msg: "Eliminado con exito"})
+})
+
+// ======================================================================
+
+
 // GET STATISTICS
 adminRouter.get("/statistics", async (req, res) => {
 	// Busca la convocatoria que se encuentra activa
@@ -141,63 +221,6 @@ adminRouter.get("/statistics", async (req, res) => {
 	res.json({
 		data: totalUsers,
 	});
-});
-
-// CREATES NEW CONVOCATORY
-adminRouter.post("/new-conv", async (req, res, next) => {
-    try {
-        // DATA REQUIRED FROM REQUEST
-        const {
-            name,
-            initialDate,
-            finalDate,
-            maxQuotas,
-            initialBootcampDate,
-            finalBootcampDate,
-            parameterization,
-            residenceCountry,
-            residencyDepartment,
-            maxAge,
-            maxSocioeconomicStratus,
-            gender,
-            typePopulation
-        } = req.body;
-    
-        // New Convocatory document
-        const newConvocatory = new Convocatory({
-            name,
-            initialDate,
-            finalDate,
-            maxQuotas,
-            initialBootcampDate,
-            finalBootcampDate,
-            parameterization,
-            residenceCountry,
-            residencyDepartment,
-            maxAge,
-            maxSocioeconomicStratus,
-            gender,
-            typePopulation
-        });
-        
-        await newConvocatory.save();
-        res.json({ msg: 'Convocatoria creada con exito' });
-        
-    } catch (error) {
-        res.json({msg: `Algo fallo ${error}`})
-    }
-});
-
-// UPDATE CONVOCATORY
-adminRouter.put("/update-conv/:id", async (req, res) => {
-	try {
-		const convocatory = await Convocatory.findById(req.params.id);
-		Object.assign(convocatory, req.body);
-		convocatory.save();
-		res.send({ data: convocatory });
-	} catch {
-		res.status(404).send({ error: "Convocatory not found" });
-	}
 });
 
 // GET THE RESULTS OF CANDIDATE
@@ -389,16 +412,6 @@ adminRouter.get("/citation", async (req, res) => {
 	res.send(data);
 });
 
-// Get All convocatories
-adminRouter.get("/convocatories", async (req, res) => {
-	const results = await Convocatory.find();
-	res.send(results);
-});
-
-adminRouter.get("/convocatory/:id", async (req, res) => {
-	const results = await Convocatory.find({ _id: req.params.id });
-	res.send(results);
-});
 
 adminRouter.get("/acept", async (req, res) => {
 	const user = await User.find();

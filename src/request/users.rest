@@ -22,7 +22,6 @@ Content-Type: application/json
 GET http://localhost:3001/api/user/activation/:activation_token
 ### activation_token is a token gerenated when a user profile create a count.  
 
-
 ### Reset password when a user press the forgot my password button
 POST http://localhost:3001/api/user/forgot
 Content-Type: application/json
