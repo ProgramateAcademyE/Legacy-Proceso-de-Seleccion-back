@@ -80,6 +80,7 @@ adminRouter.get("/convocatory/:id", async (req, res) => {
 	res.send(results);
 });
 
+// delete convocatory
 adminRouter.delete("/convocatory/:id", async (req, res)=> {
     await Convocatory.findByIdAndDelete({ _id: req.params.id })
 
