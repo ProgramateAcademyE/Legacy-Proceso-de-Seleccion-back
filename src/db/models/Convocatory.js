@@ -26,7 +26,6 @@ const ConvocatorySchema = new Schema(
     
     test: Object,
     usersRegisted: Array,
-    test: Object,
     status: Boolean
   }
 );

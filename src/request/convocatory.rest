@@ -21,7 +21,7 @@ Content-Type: application/json
     "residenceCountry": ["Array"],
     "residencyDepartment": ["Array"],
     "maxAge": "21",
-    "maxSocioeconomicStratus": 2,
+    "maxSocioeconomicStratus": [2],
     "gender":["Array"],
     "typePopulation":["Array"]
 }
