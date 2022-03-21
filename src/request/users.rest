@@ -22,6 +22,22 @@ Content-Type: application/json
 GET http://localhost:3001/api/user/activation/:activation_token
 ### activation_token is a token gerenated when a user profile create a count.  
 
+### Get all users info with admin auth
+### An unexpired authentication token is needed here set token in header 
+GET http://localhost:3001/api/user/all_info
+Content-Type: application/json
+
+
+### 
+GET http://localhost:3001/api/user/info
+Content-Type: application/json
+
+{
+  "user": {
+    "id": "6237c2f0377003c146ab9df3"
+  }
+}
+
 ### Reset password when a user press the forgot my password button
 POST http://localhost:3001/api/user/forgot
 Content-Type: application/json

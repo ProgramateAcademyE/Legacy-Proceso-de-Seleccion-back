@@ -13,7 +13,7 @@ const { CLIENT_URL, EMAIL } = process.env;
 const errorFields = "Por favor llene todos los campos. "
 const errorInvalidEmail = "Correo electrónico inválido. "
 const errorExistEmail = "Este correo electrónico ya existe. "
-const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres. "
+const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres."
 
 //create a new user
 userRouter.post("/register", async (req, res) => {
@@ -219,7 +219,7 @@ userRouter.post("/reset", auth, async (req, res) => {
 
 userRouter.get("/info", auth, async (req, res) => {
 	try {
-		const user = await User.findById(req.user.id).select("-password");
+		const user = await User.findById(req.body.user.id).select("-password");
 
 		res.json(user);
 	} catch (err) {
@@ -229,7 +229,7 @@ userRouter.get("/info", auth, async (req, res) => {
 
 userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
 	try {
-		const users = await User.find().select("-password");
+		const users = await User.find().select("-password").select("-passwordHash");
 
 		res.json(users);
 	} catch (err) {
@@ -265,6 +265,7 @@ userRouter.patch("/update", auth, async (req, res) => {
 });
 
 userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
+	console.log(req)
 	try {
 		const { role } = req.body;
 
