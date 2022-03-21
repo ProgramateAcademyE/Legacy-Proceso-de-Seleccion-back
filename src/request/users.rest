@@ -43,5 +43,14 @@ POST http://localhost:3001/api/user/forgot
 Content-Type: application/json
 
 {
-    "email":"user_email",
+  "email":"user_email",
+}
+
+### Update users role
+### An unexpired authentication token is needed here set token in header 
+PATCH http://localhost:3001/api/user/update_role/6237c2f0377003c146ab9df3
+Content-Type: application/json
+
+{
+  "role": 1
 }

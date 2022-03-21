@@ -139,6 +139,7 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 	}
 });
 
+// Login user
 userRouter.post("/login", async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -166,6 +167,7 @@ userRouter.post("/login", async (req, res) => {
 	}
 });
 
+// Renew token if token is expired
 userRouter.post("/refresh_token", async (req, res) => {
 	try {
 		const rf_token = req.body.refreshtoken;
@@ -181,6 +183,7 @@ userRouter.post("/refresh_token", async (req, res) => {
 		return res.status(500).json({ msg: err.message });
 	}
 });
+
 
 userRouter.post("/forgot", async (req, res) => {
 	try {
@@ -198,6 +201,7 @@ userRouter.post("/forgot", async (req, res) => {
 		return res.status(500).json({ msg: err.message });
 	}
 });
+
 
 userRouter.post("/reset", auth, async (req, res) => {
 	try {
@@ -217,6 +221,7 @@ userRouter.post("/reset", auth, async (req, res) => {
 	}
 });
 
+// Get one user info (need to auth)
 userRouter.get("/info", auth, async (req, res) => {
 	try {
 		const user = await User.findById(req.body.user.id).select("-password");
@@ -227,6 +232,7 @@ userRouter.get("/info", auth, async (req, res) => {
 	}
 });
 
+// get all info (need to auth and be admin)
 userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
 	try {
 		const users = await User.find().select("-password").select("-passwordHash");
@@ -237,6 +243,7 @@ userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
 	}
 });
 
+// Logout
 userRouter.get("/logout", async (req, res) => {
 	try {
 		res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
@@ -245,6 +252,7 @@ userRouter.get("/logout", async (req, res) => {
 		return res.status(500).json({ msg: err.message });
 	}
 });
+
 
 userRouter.patch("/update", auth, async (req, res) => {
 	try {
@@ -264,16 +272,14 @@ userRouter.patch("/update", auth, async (req, res) => {
 	}
 });
 
+// Update role (need to auth and be admin)
 userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
-	console.log(req)
 	try {
 		const { role } = req.body;
 
 		await User.findOneAndUpdate(
 			{ _id: req.params.id },
-			{
-				role,
-			},
+			{ role },
 		);
 
 		res.json({ msg: "Update Success!" });
@@ -281,6 +287,7 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 		return res.status(500).json({ msg: err.message });
 	}
 });
+
 
 userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
 	try {
