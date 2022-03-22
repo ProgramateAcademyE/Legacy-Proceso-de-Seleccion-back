@@ -44,3 +44,11 @@ Content-Type: application/json
     "gender":["Array"],
     "typePopulation":["Array"]
 }
+
+### Register candidate
+PATCH http://localhost:3001/api/admin/update-candidate/:idConvocatoria
+Content-Type: application/json
+
+{
+    "usersRegistered" : ["idUsuario", "idOtroUsuario"]
+}

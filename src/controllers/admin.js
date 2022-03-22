@@ -9,6 +9,7 @@ const Administrator = require("../db/models/Administrators");
 const Citation = require("../db/models/Citation");
 const ObjectId = require("mongodb").ObjectID;
 const Test = require('../db/models/TechTest');
+const auth = require("../middleware/auth");
 
 
 // ===================== Tech Test Endpoints =======================
@@ -59,7 +60,6 @@ adminRouter.post('/new-test', async (req, res) => {
 adminRouter.put("/test/:id", async (req, res) => {
 	try {
 		const test = await Test.findById(req.params.id);
-		console.log(req.body)
 		Object.assign(test, req.body);
 		test.save();
 		res.status(200).send({ msg: 'Prueba actualizada exitosamente' });
@@ -129,6 +129,23 @@ adminRouter.put("/update-conv/:id", async (req, res) => {
 	}
 });
 
+// Add candidate to convocatory
+adminRouter.patch("/update-candidate/:id", auth, async (req, res) => {
+	try {
+		const { usersRegistered } = req.body;
+
+		await Convocatory.findOneAndUpdate(
+			{ _id: req.params.id },
+			{
+				usersRegistered,
+			},
+		);
+		res.send({ msg: "Te has registrado con exito" });
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
 // Get All convocatories
 adminRouter.get("/convocatories", async (req, res) => {
 	const results = await Convocatory.find();
@@ -188,7 +205,6 @@ adminRouter.get("/statistics", async (req, res) => {
 		const candidate = await Profile.find({ user_id: candidateId });
 		// Total genero: 0-Mujer, 1-Hombre, 2-Otro
 		// Busca si la propiedad existe y aumenta 1, sino lo agrega con el valor 1
-		//console.log(candidate[0].gender)
 		if (candidate[0].gender === 0) {
 			if (totalUsers.women) {
 				totalUsers.women += 1;
@@ -261,7 +277,6 @@ adminRouter.get("/statistics", async (req, res) => {
 			}
 		}
 		if (candidate[0].heardFromUs) {
-			//console.log(candidate[0].heardFromUs)
 			for (const [key, value] of Object.entries(candidate[0].heardFromUs)) {
 				if (value) {
 					if (totalUsers.heardFromUs[key]) {
@@ -351,7 +366,6 @@ adminRouter.get("/waiting-list", async (req, res, next) => {
 					  }
 					: null,
 			);
-			console.log(candidateData);
 			const candidateObj = {
 				ID: candidate.user_id,
 				Nombre: `${candidateName[0].firstName} ${candidateName[0].lastName}`,
@@ -470,7 +484,6 @@ adminRouter.get("/citation", async (req, res) => {
 		data.map(async (obj) => getUserData(obj.users)),
 	);
 	data.users = data.map((user, idx) => (user.users = infoUsers[idx]));
-	console.log(data);
 	res.send(data);
 });
 
@@ -538,7 +551,6 @@ adminRouter.post("/create-room", async (req, res) => {
 		);
 		let observersFinals = observersList[observersRandom]._id.toString();
 		room = [[candidate, interviewersFinals, observersFinals], ...room];
-		console.log(room);
 	}
 
 	const rooms = new Rooms({
