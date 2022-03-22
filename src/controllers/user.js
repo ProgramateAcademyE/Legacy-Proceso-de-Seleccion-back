@@ -133,7 +133,6 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 });
 
 userRouter.post("/login", async (req, res) => {
-  console.log(req.body);
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -142,7 +141,6 @@ userRouter.post("/login", async (req, res) => {
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
     if (!isMatch) {
-      console.log("INCORRECT CREDENTIALS");
       res.status(401).send("Something broke!");
       return;
     } else {
