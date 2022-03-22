@@ -27,5 +27,5 @@ POST http://localhost:3001/api/user/forgot
 Content-Type: application/json
 
 {
-    "email":"user_email",
+    "email":"jairovsolarte17@gmail.com"
 }

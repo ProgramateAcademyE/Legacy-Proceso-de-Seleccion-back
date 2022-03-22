@@ -1,7 +1,7 @@
 ### Get all admins
 GET http://localhost:3001/api/admin/admin
 
-###
+### Register monitor, intervewer or observer
 POST http://localhost:3001/api/admin/admin
 Content-Type: application/json
 
@@ -18,7 +18,7 @@ Content-Type: application/json
     "available": true
 }
 
-### Register one admin
+### Register one admin 1 / admin 0 / user
 POST http://localhost:3001/api/user/register_admin
 Content-Type: application/json
 

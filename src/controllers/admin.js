@@ -62,7 +62,7 @@ adminRouter.put("/update-conv/:id", async (req, res) => {
 		const convocatory = await Convocatory.findById(req.params.id);
 		Object.assign(convocatory, req.body);
 		convocatory.save();
-		res.send({ data: convocatory });
+		res.json({ msg: 'Convocatoria actualizada con exito' });
 	} catch {
 		res.status(404).send({ error: "Convocatory not found" });
 	}
