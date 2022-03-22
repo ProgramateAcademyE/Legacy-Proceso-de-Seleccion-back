@@ -8,6 +8,67 @@ const request = require("request");
 const Administrator = require("../db/models/Administrators");
 const Citation = require("../db/models/Citation");
 const ObjectId = require("mongodb").ObjectID;
+const Test = require('../db/models/TechTest');
+
+
+// ===================== Tech Test Endpoints =======================
+// Get all tech test
+adminRouter.get("/test", async (req, res) => {
+	const results = await Test.find();
+	res.send(results);
+});
+
+// Get one tech test
+adminRouter.get("/test/:id", async (req, res) => {
+	const results = await Test.find({ _id: req.params.id });
+	res.send(results);
+});
+
+// Delete one tech test
+adminRouter.delete("/test/:id", async (req, res)=> {
+	await Test.findByIdAndDelete({ _id: req.params.id })
+	res.send({msg: "Eliminado con exito"})
+})
+
+// Create new tech test
+adminRouter.post('/new-test', async (req, res) => {
+	try {
+		const {
+			title,
+			url,
+			pdf,
+			convocatories
+		} = req.body;
+		
+		const newTest = new Test({
+			title,
+			url,
+			pdf,
+			convocatories
+		});
+
+		await newTest.save();
+		res.status(200).json({ msg: 'Convocatoria creada con exito' });
+
+	} catch (error) {
+		res.status(400).json({ msg: `No se pudo crear la convocatoria ${error}` })
+	}
+});
+
+//Update tech test
+adminRouter.put("/test/:id", async (req, res) => {
+	try {
+		const test = await Test.findById(req.params.id);
+		console.log(req.body)
+		Object.assign(test, req.body);
+		test.save();
+		res.status(200).send({ msg: 'Prueba actualizada exitosamente' });
+	} catch(error) {
+		res.status(404).send({ error: `Error ${error}` });
+	}
+});
+
+// =====================================================================
 
 // ===================== Convocatories Endpoints =======================
 

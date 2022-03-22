@@ -26,8 +26,7 @@ const ConvocatorySchema = new Schema(
     
     test: Object,
     usersRegisted: Array,
-    test: Object,
-    status: { type: Boolean, default:true } // true: active false:inactive
+    status: Boolean
   }
 );
 
