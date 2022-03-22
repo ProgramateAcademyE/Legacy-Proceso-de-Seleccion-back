@@ -1,4 +1,4 @@
-require("dotenv").config({path: "./.env"});
+require("dotenv").config({ path: "./.env" });
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -23,11 +23,11 @@ app.set("port", port);
 
 // Init Server
 app.listen(app.get("port"), (error) => {
-    if (error) {
-        console.error("Error connecting the server");
-    } else {
-        console.log(`Server running on port: ${port}`);
-    }
+  if (error) {
+    console.error("Error connecting the server");
+  } else {
+    console.log(`Server running on port: ${port}`);
+  }
 });
 
 module.exports = app;
