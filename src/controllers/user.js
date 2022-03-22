@@ -21,16 +21,16 @@ userRouter.post("/register", async (req, res) => {
 		const { names, surname, email, password } = req.body;
 
 		if (!names || !surname || !email || !password)
-			return res.status(400).json({ msg: errorFields});
+			return res.status(400).send({ msg: errorFields});
 
 		if (!validateEmail(email))
 			// Call the function validate email.
-			return res.status(400).json({ msg: errorInvalidEmail});
+			return res.status(400).send({ msg: errorInvalidEmail});
 
 		const user = await User.findOne({ email }); // Check if the email exists
 
 		if (user)
-			return res.status(400).json({ msg: errorExistEmail});
+			return res.status(400).send({ msg: errorExistEmail});
 
 		if (password.length < 6)
 			return res
@@ -60,12 +60,12 @@ userRouter.post("/register", async (req, res) => {
 						`,
 		});
 
-		res.json({
-			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para avtivar la cuenta. ",
+		res.send({
+			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para activar la cuenta. ",
 			token: activation_token,
 		});
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -75,20 +75,20 @@ userRouter.post("/register_admin", async (req, res) => {
 		const { names, surname, email, password, role } = req.body;
 
 		if (!names || !surname || !email || !password || !role)
-			return res.status(400).json({ msg: errorFields});
+			return res.status(400).send({ msg: errorFields});
 
 		if (!validateEmail(email))
-			return res.status(400).json({ msg: errorInvalidEmail});
+			return res.status(400).send({ msg: errorInvalidEmail});
 
 		const user = await User.findOne({ email });
 
 		if (user)
-			return res.status(400).json({ msg: errorExistEmail});
+			return res.status(400).send({ msg: errorExistEmail});
 
 		if (password.length < 6)
 			return res
 				.status(400)
-				.json({ msg: errorCharactersPassword});
+				.send({ msg: errorCharactersPassword});
 
 		const passwordHash = await bcrypt.hash(password, 12);
 
@@ -101,9 +101,9 @@ userRouter.post("/register_admin", async (req, res) => {
 		});
 
 		await newUser.save();
-		res.json({ msg: "Perfil creado exitosamente. " });
+		res.send({ msg: "Perfil creado exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -121,7 +121,7 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 
 		const check = await User.findOne({ email });
 		if (check)
-			return res.status(400).json({ msg: errorExistEmail});
+			return res.status(400).send({ msg: errorExistEmail});
 
 		const newUser = new User({
 			names,
@@ -132,9 +132,9 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 
 		await newUser.save();
 
-		res.json({ msg: "La cuenta fue activada exitosamente. " });
+		res.send({ msg: "La cuenta fue activada exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -147,7 +147,7 @@ userRouter.post("/login", async (req, res) => {
 			user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
 		if (!isMatch) {
-			res.status(401).json({
+			res.status(401).send({
 				error: "Usuario o contraseña incorrectos",
 			});
 		}
@@ -161,23 +161,23 @@ userRouter.post("/login", async (req, res) => {
 		});
 
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
 userRouter.post("/refresh_token", async (req, res) => {
 	try {
 		const rf_token = req.body.refreshtoken;
-		if (!rf_token) return res.status(400).json({ msg: "Please login now!" });
+		if (!rf_token) return res.status(400).send({ msg: "Por favor ingresa ahora. " });
 
 		jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-			if (err) return res.status(400).json({ msg: "Please login now!" });
+			if (err) return res.status(400).send({ msg: "Por favor ingresa ahora. " });
 			const access_token = createAccessToken({ id: user.id });
 			res.json({ access_token });
 		});
 		// res.json({msg: 'ok'})
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -186,15 +186,15 @@ userRouter.post("/forgot", async (req, res) => {
 		const { email } = req.body;
 		const user = await User.findOne({ email });
 		if (!user)
-			return res.status(400).json({ msg: "Este correo electrónico no existe. " });
+			return res.status(400).send({ msg: "Este correo electrónico no existe. " });
 
 		const access_token = createAccessToken({ id: user._id });
 		const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
 		sendMail(email, url, "Reestablese tu contraseña. ");
-		res.json({ msg: "Contraseña reenviada, verifica tu correo electrónico. " });
+		res.send({ msg: "Verifica tu correo electrónico para restablecer la contraseña.  " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -210,9 +210,9 @@ userRouter.post("/reset", auth, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Password successfully changed!" });
+		res.send({ msg: "Nueva contraseña asignada exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -220,9 +220,9 @@ userRouter.get("/info", auth, async (req, res) => {
 	try {
 		const user = await User.findById(req.user.id).select("-password");
 
-		res.json(user);
+		res.send.json(user);
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -230,18 +230,18 @@ userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
 	try {
 		const users = await User.find().select("-password");
 
-		res.json(users);
+		res.send.json(users);
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
 userRouter.get("/logout", async (req, res) => {
 	try {
 		res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
-		return res.json({ msg: "Logged out." });
+		return res.send({ msg: "Sesión cerrada exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 userRouter.patch("/update", auth, async (req, res) => {
@@ -256,9 +256,9 @@ userRouter.patch("/update", auth, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Update Success!" });
+		res.send({ msg: "Información actualizada exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -273,9 +273,9 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Update Success!" });
+		res.send({ msg: "Rol actualizado exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -288,9 +288,9 @@ userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Deleted Success!" });
+		res.send({ msg: "Usuario eliminado exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
