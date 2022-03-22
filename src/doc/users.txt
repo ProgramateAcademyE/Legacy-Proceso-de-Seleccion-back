@@ -44,5 +44,45 @@ POST http://localhost:3001/api/user/forgot
 Content-Type: application/json
 
 {
-    "email":"user_email",
+    "email":"user_email"
 }
+
+### Modify profile role
+
+PATCH http://localhost:3001/api/user/update_role/:id
+// id is asigned by MongoDB to each document and it is unique 
+// to modify this information, must be authorized and authenticated as admin
+Content-Type: application/json
+
+{
+    "role": 0 or 1, // 0 to users, 1 to admins
+}
+
+### Modify user information
+
+PATCH http://localhost:3001/api/user/update
+// to modify this information, must be authorized as user
+Content-Type: application/json
+
+{
+    "names":"new_user_names",
+    "surname":"new_user_surname",
+    "avatar";"new_url_image_avatar"
+}
+
+### Enable and disable profiles
+
+PATCH http://localhost:3001/api/user/active/:id
+// id is asigned by MongoDB to each document and it is unique 
+// to modify this information, must be authorized and authenticated as admin
+Content-Type: application/json
+
+{
+    "active": true or false, // true to enable, false to disable
+}
+
+### Delete profiles of the database
+
+DELETE http://localhost:3001/api/user/delete/:id
+// id is asigned by MongoDB to each document and it is unique 
+// to modify this information, must be authorized and authenticated as admin

@@ -22,9 +22,8 @@ userRouter.post("/register", async (req, res) => {
 
 		if (!names || !surname || !email || !password)
 			return res.status(400).send({ msg: errorFields});
-
+		// Call the function validate email.
 		if (!validateEmail(email))
-			// Call the function validate email.
 			return res.status(400).send({ msg: errorInvalidEmail});
 
 		const user = await User.findOne({ email }); // Check if the email exists
@@ -45,7 +44,7 @@ userRouter.post("/register", async (req, res) => {
 			email,
 			passwordHash,
 		};
-
+		//Call the function to create a token to a new user
 		const activation_token = createActivationToken(newUser);
 
 		const url = `${CLIENT_URL}api/user/activation/${activation_token}`;
@@ -62,7 +61,6 @@ userRouter.post("/register", async (req, res) => {
 
 		res.send({
 			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para activar la cuenta. ",
-			token: activation_token,
 		});
 	} catch (err) {
 		return res.status(500).send({ msg: err.message });
@@ -151,7 +149,7 @@ userRouter.post("/login", async (req, res) => {
 				error: "Usuario o contraseña incorrectos",
 			});
 		}
-
+		//
 		const refresh_token = createRefreshToken({ id: user._id });
 
 		res.send({
@@ -175,7 +173,6 @@ userRouter.post("/refresh_token", async (req, res) => {
 			const access_token = createAccessToken({ id: user.id });
 			res.json({ access_token });
 		});
-		// res.json({msg: 'ok'})
 	} catch (err) {
 		return res.status(500).send({ msg: err.message });
 	}
@@ -187,7 +184,7 @@ userRouter.post("/forgot", async (req, res) => {
 		const user = await User.findOne({ email });
 		if (!user)
 			return res.status(400).send({ msg: "Este correo electrónico no existe. " });
-
+		//Call the function to create a new token to an existent user
 		const access_token = createAccessToken({ id: user._id });
 		const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
@@ -244,9 +241,11 @@ userRouter.get("/logout", async (req, res) => {
 		return res.status(500).send({ msg: err.message });
 	}
 });
+
 userRouter.patch("/update", auth, async (req, res) => {
 	try {
 		const { names, surname, avatar } = req.body;
+
 		await User.findOneAndUpdate(
 			{ _id: req.user.id },
 			{
@@ -279,16 +278,30 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 	}
 });
 
-userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
+userRouter.patch("/active/:id", auth, authAdmin, async (req, res) => {
 	try {
+		const { active } = req.body;
+
 		await User.findOneAndUpdate(
 			{ _id: req.params.id },
 			{
-				deleted,
+				active,
 			},
 		);
 
 		res.send({ msg: "Usuario eliminado exitosamente. " });
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
+	try {
+		await User.findOneAndRemove(
+			{ _id: req.params.id },
+		);
+
+		res.send({ msg: "Perfil eliminado de la base de datos exitosamente. " });
 	} catch (err) {
 		return res.status(500).send({ msg: err.message });
 	}
