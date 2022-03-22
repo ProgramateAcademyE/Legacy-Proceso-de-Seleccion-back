@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "names": "user_names",
-  "surname": "user_surname",
+  "surname": "user_surname@asdads.com",
   "email": "hola@hola.com",
   "password": "12345678"
 }
@@ -14,12 +14,12 @@ POST http://localhost:3001/api/user/login
 Content-Type: application/json
 
 {
-    "email":"user_email",
-    "password": "password"
+    "email":"lizette.sevillano.c@gmail.com",
+    "password": "1234567"
 }
 
 ### Token activation when a user create an acount and activate it fron the email registered 
-GET http://localhost:3001/api/user/activation/:activation_token
+GET http://localhost:3001/api/user/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lcyI6InVzZXJfbmFtZXMiLCJzdXJuYW1lIjoidXNlcl9zdXJuYW1lQGFzZGFkcy5jb20iLCJlbWFpbCI6ImhvbGFAaG9sYS5jb20iLCJwYXNzd29yZEhhc2giOiIkMmIkMTIkYi91MzE0S3YyQy5iQ2pRN1NVS2JuLnB1RE82YmRrSWZhUWhTTC9kcDJOeUVkTDROOEllaHEiLCJpYXQiOjE2NDc4ODY4NTUsImV4cCI6MTY0Nzg4NzE1NX0.OMT66aC0JmqtheGM7JRurhj0YyHSi2LyO5rnfQnDy54
 ### activation_token is a token gerenated when a user profile create a count.  
 
 ### Get all users info with admin auth
