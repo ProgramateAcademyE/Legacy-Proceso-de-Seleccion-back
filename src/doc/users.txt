@@ -1,30 +1,15 @@
 ### Create user profile when a user press the create acount button
-
 POST http://localhost:3001/api/user/register
 Content-Type: application/json
 
 {
   "names": "user_names",
-  "surname": "user_surname"
-  "email": "user_email", //must be a real email 
-  "password": "user_password" //must be a larger than six characters password
-}
-
-### Register an admin profile from profiles control panel 
-
-POST http://localhost:3001/api/user/register_admin
-Content-Type: application/json
-
-{
-    "names": "user_names",
-    "surname": "user_surname",
-    "email": "user_email", //must be a real email 
-    "password": "user_password", //must be a larger than six characters password
-    "role": 1
+  "surname": "user_surname",
+  "email": "hola@hola.com",
+  "password": "12345678"
 }
 
 ### Login user
-
 POST http://localhost:3001/api/user/login
 Content-Type: application/json
 
@@ -34,16 +19,30 @@ Content-Type: application/json
 }
 
 ### Token activation when a user create an acount and activate it fron the email registered 
-
 GET http://localhost:3001/api/user/activation/:activation_token
-// activation_token is a token gerenated when a user profile create a count.  
+### activation_token is a token gerenated when a user profile create a count.  
 
-### Reset password when a user press the forgot my password button
+### Get all users info with admin auth
+### An unexpired authentication token is needed here set token in header 
+GET http://localhost:3001/api/user/all_info
+Content-Type: application/json
 
-POST http://localhost:3001/api/user/forgot
+
+### 
+GET http://localhost:3001/api/user/info
 Content-Type: application/json
 
 {
+  "user": {
+    "id": "6237c2f0377003c146ab9df3"
+  }
+}
+
+### Reset password when a user press the forgot my password button
+POST http://localhost:3001/api/user/forgot
+Content-Type: application/json
+
+}
     "email":"user_email"
 }
 

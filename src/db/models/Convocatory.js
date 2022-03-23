@@ -21,10 +21,11 @@ const ConvocatorySchema = new Schema(
     residencyDepartment: Array,
     maxAge: Array,
     maxSocioeconomicStratus: Array,
+    gender: Array,
+    typePopulation: Array,
     
     test: Object,
-    usersRegisted: Array,
-    test: Object,
+    usersRegistered: Array,
     status: Boolean
   }
 );

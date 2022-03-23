@@ -1,0 +1,31 @@
+### Get all tech test
+GET http://localhost:3001/api/admin/test
+
+### Get one tech test
+GET http://localhost:3001/api/admin/test/:id
+
+### Delete one tech test
+DELETE  http://localhost:3001/api/admin/test/:id
+
+### Create new tech test
+POST http://localhost:3001/api/admin/new-test
+Content-Type: application/json
+
+{
+  "title": "Title test",
+  "url": "url",
+  "pdf": "pdf",
+  "convocatories": ["id1", "id2"]
+}
+
+### update tech test
+PUT http://localhost:3001/api/admin/test/:id
+Content-Type: application/json
+
+{
+  "title": "Test Update",
+  "url": "url",
+  "pdf": "pdf",
+  "convocatories": ["id1", "id2"]
+}
+
