@@ -2,7 +2,6 @@ const { EMAIL } = process.env;
 const transporter = require('../utils/senMail')
 // send email
 const sendMail = async (to, url, subject) => {
-
     await transporter.sendMail({
         from: `${subject} <${EMAIL}>`,
 		to: to,
