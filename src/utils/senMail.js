@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer')
 const { SECRET_PASSWORD, EMAIL } = process.env;
 
-
 const trasporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,

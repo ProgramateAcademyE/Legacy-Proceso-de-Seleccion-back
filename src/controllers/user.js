@@ -5,7 +5,7 @@ const sendMail = require("./sendMail");
 const userRouter = require("express").Router();
 const auth = require("../middleware/auth");
 const authAdmin = require("../middleware/authAdmin");
-const transporter = require("../utils/senMail");
+// const transporter = require("../utils/senMail");
 
 const { CLIENT_URL, EMAIL } = process.env;
 
@@ -45,26 +45,9 @@ userRouter.post("/register", async (req, res) => {
     };
 		//Call the function to create a token to a new user
     const activation_token = createActivationToken(newUser);
-		const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
+		const url = `${CLIENT_URL}verify?token=${activation_token}`;
 
-		// await transporter.sendMail({
-		// 	from: EMAIL,
-		// 	to: email,
-		// 	subject: "Validate your email",
-		// 	html: `
-		// 					<b>Please click on the following link, or paste this into your browser to complete the process: </b>
-		// 					<a href='${url}'>${url}</a>
-		// 				`,
-		// });
-		await transporter.sendMail(sendMail(email, url, "Activa tu cuenta"), (err, info) => {
-			if (err) {
-				return res.status(500).send({ msg: err.message })
-			}
-			else {
-				console.log(email, url)
-				return res.status(200).send({ msg: "Email enviado satisfactoriamente. " })
-			}
-		});
+    sendMail(email, url, 'Activa tu cuenta');
 
     res.status(200).send({
       msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para avtivar la cuenta. ",
@@ -198,7 +181,8 @@ userRouter.post("/forgot", async (req, res) => {
     const access_token = createAccessToken({ id: user._id });
     const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
-    sendMail(email, url, "Reestablese tu contraseña. ");
+    sendMail(email, url, 'Reestablece tu contraseña.');
+
     res.send({ msg: "Verifica tu correo electrónico para restablecer tu contraseña. " });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
