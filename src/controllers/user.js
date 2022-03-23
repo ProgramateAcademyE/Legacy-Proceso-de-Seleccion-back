@@ -13,8 +13,9 @@ const { CLIENT_URL, EMAIL } = process.env;
 const errorFields = "Por favor llene todos los campos. ";
 const errorInvalidEmail = "Correo electrónico inválido. ";
 const errorExistEmail = "Este correo electrónico ya existe. ";
-const errorCharactersPassword =
-  "La contraseña debe contar con mínimo 6 caracteres. ";
+const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres. ";
+const msgLogNow = "Por favor inicia sesión ahora. ";
+const updateSuccess = "Información actualizada exitosamente";
 
 //create a new user
 userRouter.post("/register", async (req, res) => {
@@ -23,9 +24,8 @@ userRouter.post("/register", async (req, res) => {
     console.log(req.body);
     if (!names || !surname || !email || !password)
       return res.status(400).send({ msg: errorFields });
-
+		// Call the function validate email.
     if (!validateEmail(email))
-      // Call the function validate email.
       return res.status(400).send({ msg: errorInvalidEmail });
 
     const user = await User.findOne({ email }); // Check if the email exists
@@ -43,20 +43,28 @@ userRouter.post("/register", async (req, res) => {
       email,
       passwordHash,
     };
-
+		//Call the function to create a token to a new user
     const activation_token = createActivationToken(newUser);
+		const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
 
-    const url = `${CLIENT_URL}api/user/activation/${activation_token}`;
-
-    await transporter.sendMail({
-      from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
-      to: email,
-      subject: "Validate your email",
-      html: `
-							<b>Please click on the following link, or paste this into your browser to complete the process: </b>
-							<a href='${url}'>${url}</a>
-						`,
-    });
+		// await transporter.sendMail({
+		// 	from: EMAIL,
+		// 	to: email,
+		// 	subject: "Validate your email",
+		// 	html: `
+		// 					<b>Please click on the following link, or paste this into your browser to complete the process: </b>
+		// 					<a href='${url}'>${url}</a>
+		// 				`,
+		// });
+		await transporter.sendMail(sendMail(email, url, "Activa tu cuenta"), (err, info) => {
+			if (err) {
+				return res.status(500).send({ msg: err.message })
+			}
+			else {
+				console.log(email, url)
+				return res.status(200).send({ msg: "Email enviado satisfactoriamente. " })
+			}
+		});
 
     res.status(200).send({
       msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para avtivar la cuenta. ",
@@ -142,15 +150,16 @@ userRouter.post("/login", async (req, res) => {
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
     if (!isMatch) {
-      res.status(401).send("Something broke!");
+      res.status(401).send("Ocurrió un error. ");
       return;
     } else {
+			//Call the function to create a token to login
       const refresh_token = createRefreshToken({ id: user._id });
 
       res.status(200).send({
         email: user.email,
         refresh_token,
-        msg: "Login exitoso!",
+        msg: "Inicio de sesión exitoso. ",
       });
       return;
     }
@@ -163,14 +172,14 @@ userRouter.post("/login", async (req, res) => {
 userRouter.post("/refresh_token", async (req, res) => {
   try {
     const rf_token = req.body.refreshtoken;
-    if (!rf_token) return res.status(400).send({ msg: "Please login now!" });
+    if (!rf_token) return res.status(400).send({ msg: msgLogNow });
 
     jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-      if (err) return res.status(400).send({ msg: "Please login now!" });
+      if (err) return res.status(400).send({ msg: msgLogNow });
+			//Call the function to create a new token to access to the count 
       const access_token = createAccessToken({ id: user.id });
       res.send({ access_token });
     });
-    // res.json({msg: 'ok'})
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
@@ -185,12 +194,12 @@ userRouter.post("/forgot", async (req, res) => {
       return res
         .status(400)
         .send({ msg: "Este correo electrónico no existe. " });
-
+		//Call the function to create a new token to access to the count 
     const access_token = createAccessToken({ id: user._id });
     const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
     sendMail(email, url, "Reestablese tu contraseña. ");
-    res.send({ msg: "Contraseña reenviada, verifica tu correo electrónico. " });
+    res.send({ msg: "Verifica tu correo electrónico para restablecer tu contraseña. " });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
@@ -209,7 +218,7 @@ userRouter.post("/reset", auth, async (req, res) => {
       }
     );
 
-    res.send({ msg: "Password successfully changed!" });
+    res.send({ msg: "Nueva contraseña asignada exitosamente. " });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
@@ -241,7 +250,7 @@ userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
 userRouter.get("/logout", async (req, res) => {
   try {
     res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
-    return res.send({ msg: "Logged out." });
+    return res.send({ msg: "Cerrado de sesión exitoso. " });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
@@ -260,7 +269,7 @@ userRouter.patch("/update", auth, async (req, res) => {
       }
     );
 
-    res.send({ msg: "Update Success!" });
+    res.send({ msg: updateSuccess });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
@@ -276,7 +285,22 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 			{ role },
 		);
 
-    res.send({ msg: "Update Success!" });
+    res.send({ msg: updateSuccess });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
+});
+
+userRouter.patch("/active/:id", auth, authAdmin, async (req, res) => {
+  try {
+    await User.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        active,
+      }
+    );
+
+    res.send({ msg: updateSuccess });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
@@ -285,14 +309,11 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 
 userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
   try {
-    await User.findOneAndUpdate(
+    await User.findOneAndRemove(
       { _id: req.params.id },
-      {
-        deleted,
-      }
     );
 
-    res.send({ msg: "Deleted Success!" });
+    res.send({ msg: "Perfil eliminado de la base de datos. " });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
