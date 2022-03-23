@@ -49,15 +49,16 @@ userRouter.post("/register", async (req, res) => {
 
 		const url = `${CLIENT_URL}api/user/activation/${activation_token}`;
 
-		await transporter.sendMail({
-			from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
-			to: email,
-			subject: "Validate your email",
-			html: `
-							<b>Please click on the following link, or paste this into your browser to complete the process: </b>
-							<a href='${url}'>${url}</a>
-						`,
-		});
+		// await transporter.sendMail({
+		// 	from: EMAIL,
+		// 	to: email,
+		// 	subject: "Validate your email",
+		// 	html: `
+		// 					<b>Please click on the following link, or paste this into your browser to complete the process: </b>
+		// 					<a href='${url}'>${url}</a>
+		// 				`,
+		// });
+		await transporter.sendMail(sendMail(email, url, "Activa tu cuenta"));
 
 		res.send({
 			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para activar la cuenta. ",
@@ -149,7 +150,7 @@ userRouter.post("/login", async (req, res) => {
 				error: "Usuario o contraseña incorrectos",
 			});
 		}
-		//
+		
 		const refresh_token = createRefreshToken({ id: user._id });
 
 		res.send({
@@ -294,8 +295,8 @@ userRouter.patch("/active/:id", auth, authAdmin, async (req, res) => {
 		return res.status(500).send({ msg: err.message });
 	}
 });
-
-userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
+//auth, authAdmin,
+userRouter.delete("/delete/:id",  async (req, res) => {
 	try {
 		await User.findOneAndRemove(
 			{ _id: req.params.id },
