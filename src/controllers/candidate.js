@@ -53,20 +53,20 @@ candidateRouter.get("/result/:id", async (req, res) => {
 candidateRouter.post("/new", async (req, res, next) => {
 	const {
 		firstName,
-		middleName,
-		lastName,
+		secondName,
+		firstSurname,
 		secondSurname,
 		email,
-		contactNumber,
+		phone1,
 		rol,
 	} = req.body;
 	const newUser = new User({
 		firstName,
-		middleName,
-		lastName,
+		secondName,
+		firstSurname,
 		secondSurname,
 		email,
-		contactNumber,
+		phone1,
 		rol,
 	});
 	await newUser.save();
@@ -87,29 +87,42 @@ candidateRouter.post(
 			documentType,
 			documentNumber,
 			documentPdf,
-			secondContactNumber,
+			phone1,
+			phone2,
 			nacionality,
 			residencyDepartment,
 			municipalityOfResidency,
 			locationInBogota,
-			socioeconomicStratus,
-			migrant,
-			livesInColombia,
+			Stratum,
+			email,
+			sex,
+			age,
 			address,
 			dateOfBirth,
-			birthdayOnFormation,
+			currentCountry,
+			areaType,
+			billPdf,
+			disability,
+			familyIncome,
+			householdMembers,
+			numberOfChildren,
+			internetCompany,
+			mbCount,
+			internetAccess,
 			maritalStatus,
+			vulnerablePopulation,
 			academicLevel,
+			studiesPdf,
+			cvPdf,
 			degreeTitle,
 			currentOccupation,
-			unemployedTime,
-			formaltOccupation,
-			victimArmedConflict,
+			unemployementTime,
+			contractWorker,
+			householder,
+			firstLanguage,
+			secondLanguage,
+			languageLevel,
 			pcAccess,
-			programataPrevoiousTimes,
-			motivation,
-			dreams,
-			sex,
 			soloLearnProfile,
 			// heardFromUs: {
 			//     web,
@@ -124,7 +137,7 @@ candidateRouter.post(
 			//     PNUD,
 			//     other
 			// },
-			status,
+			
 		} = req.body;
 		console.log(req.body);
 		const newProfile = new Profile({
@@ -136,29 +149,42 @@ candidateRouter.post(
 			documentType,
 			documentNumber,
 			documentPdf,
-			secondContactNumber,
+			phone1,
+			phone2,
 			nacionality,
 			residencyDepartment,
 			municipalityOfResidency,
 			locationInBogota,
-			socioeconomicStratus,
-			migrant,
-			livesInColombia,
+			Stratum,
+			email,
+			sex,
+			age,
 			address,
 			dateOfBirth,
-			birthdayOnFormation,
+			currentCountry,
+			areaType,
+			billPdf,
+			disability,
+			familyIncome,
+			householdMembers,
+			numberOfChildren,
+			internetCompany,
+			mbCount,
+			internetAccess,
 			maritalStatus,
+			vulnerablePopulation,
 			academicLevel,
+			studiesPdf,
+			cvPdf,
 			degreeTitle,
 			currentOccupation,
-			unemployedTime,
-			formaltOccupation,
-			victimArmedConflict,
+			unemployementTime,
+			contractWorker,
+			householder,
+			firstLanguage,
+			secondLanguage,
+			languageLevel,
 			pcAccess,
-			sex,
-			programataPrevoiousTimes,
-			motivation,
-			dreams,
 			soloLearnProfile,
 			// heardFromUs: {
 			//     web,
@@ -173,7 +199,7 @@ candidateRouter.post(
 			//     PNUD,
 			//     other
 			// },
-			status,
+			// status,
 		});
 		await newProfile.save();
 		res.send(`${newProfile.user_id} profile saved`);
@@ -198,36 +224,60 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 	//res.send(candidate[0].name);
 
 	const candidateProfileData = {
-		name: candidate[0].name,
+		firstName: candidate[0].firstName,
+		secondName: candidate[0].secondName,
+		firstSurname: candidate[0].firstSurname,
+		secondSurname: candidate[0].secondSurname,
+
 		email: candidate[0].email,
-		contactNumber: candidate[0].contactNumber,
+		phone1: candidate[0].phone1,
+		phone2: candidate[0].phone2,
+
 		documentType: candidateProfile[0].documentType,
 		documentNumber: candidateProfile[0].documentNumber,
+		documentNumber: candidateProfile[0].documentPdf,
 
 		nacionality: candidateProfile[0].nacionality,
-		residenceCountry: candidateProfile[0].residenceCountry,
+		locationInBogota: candidateProfile[0].locationInBogota,
 		residencyDepartment: candidateProfile[0].residencyDepartment,
 		municipalityOfResidency: candidate[0].municipalityOfResidency,
-		socioeconomicStratus: candidateProfile[0].socioeconomicStratus,
-		actualAge: candidateProfile[0].actualAge,
-		gender: candidateProfile[0].gender,
-		status: "true",
-		secondContactNumber: candidateProfile[0].secondContactNumber,
-		locationInBogota: candidateProfile[0].locationInBogota,
-		migrant: candidateProfile[0].migrant,
-		livesInColombia: candidateProfile[0].livesInColombia,
+		Stratum: candidateProfile[0].Stratum,
+		age: candidateProfile[0].age,
+		sex: candidateProfile[0].sex,
+		
+		billPdf: candidateProfile[0].billPdf,
+		dateOfBirth: candidateProfile[0].dateOfBirth,
+		currentCountry: candidateProfile[0].currentCountry,
+		areaType: candidateProfile[0].areaType,
 		address: candidateProfile[0].address,
+		disability: candidateProfile[0].disability,
+		familyIncome: candidateProfile[0].familyIncome,
+		householdMembers: candidateProfile[0].householdMembers,
+		numberOfChildren: candidateProfile[0].numberOfChildren,
+		internetCompany: candidateProfile[0].internetCompany,
+		mbCount: candidateProfile[0].mbCount,
+		internetAccess: candidateProfile[0].internetAccess,
+
+
 		maritalStatus: candidateProfile[0].maritalStatus,
 		academicLevel: candidateProfile[0].academicLevel,
+		vulnerablePopulation: candidateProfile[0].vulnerablePopulation,
+
+		studiesPdf: candidateProfile[0].studiesPdf,
+		cvPdf: candidateProfile[0].cvPdf,
+		
+
+
+
 		degreeTitle: candidateProfile[0].degreeTitle,
 		currentOccupation: candidateProfile[0].currentOccupation,
-		unemployedTime: candidateProfile[0].unemployedTime,
-		formaltOccupation: candidateProfile[0].formalOccupation,
-		victimArmedConflict: candidateProfile[0].victimArmedConflict,
+		unemployementTime: candidateProfile[0].unemployementTime,
+		contractWorker: candidateProfile[0].contractWorker,
+		householder: candidateProfile[0].householder,
 		pcAccess: candidateProfile[0].pcAccess,
-		programataPrevoiousTimes: candidateProfile[0].programataPrevoiousTimes,
-		motivation: candidateProfile[0].motivation,
-		dreams: candidateProfile[0].dreams,
+		secondLanguage: candidateProfile[0].secondLanguage,
+		languageLevel: candidateProfile[0].languageLevel,
+		firstLanguage: candidateProfile[0].firstLanguage,
 		soloLearnProfile: candidateProfile[0].soloLearnProfile,
 	};
 	res.send({
@@ -256,9 +306,9 @@ candidateRouter.post("/new-result", async (req, res) => {
 		// Viariables destructuring from user names
 
 		const candidate = await User.findById(user_id);
-		const { firstName, middleName, lastName, secondSurname } = candidate;
+		const { firstName, secondName, firstSurname, secondSurname } = candidate;
 		// Creating full name
-		const fullName = `${firstName} ${middleName} ${lastName} ${secondSurname}`;
+		const fullName = `${firstName} ${secondName} ${firstSurname} ${secondSurname}`;
 
 		// Creating new Result document
 		const newResult = new Result({

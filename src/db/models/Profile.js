@@ -190,101 +190,161 @@ const profileSchema = new Schema({
 	secondSurname: {
 		type: String,
 	},
-
 	documentType: {
 		type: String,
 	},
 	documentNumber: {
 		type: Number,
 
-		minlength: 6,
 	},
 	documentPdf: {
 		type: String,
 	},
-	secondContactNumber: {
+	age: {
 		type: Number,
 	},
+	sex: {
+		type: String,
+    },
 	nacionality: {
 		type: String,
 	},
-	residencyDepartment: String,
-	municipalityOfResidency: String,
-	locationInBogota: String,
-	socioeconomicStratus: {
+	residencyDepartment: {
+		type: String,
+	},
+	municipalityOfResidency: {
+		type: String,
+	},
+	locationInBogota:{
+		type: String,
+	},
+	Stratum: {
 		type: Number,
 	},
-	migrant: {
-		type: String,
+	phone1: {
+		type: Number,
 	},
-	livesInColombia: {
-		type: String,
+	phone2: {
+		type: Number,
 	},
-	address: {
+	email: {
 		type: String,
+		unique: true,
 
-		maxlength: 45,
 	},
 	dateOfBirth: {
 		type: Date,
 	},
-	birthdayOnFormation: Date,
 
 	maritalStatus: {
 		type: String,
 	},
-	academicLevel: {
+	currentCountry: {
 		type: String,
+	},
+	address: {
+		type: String,
+		
+	},
+	areaType: {
+		type: String,
+	},
+	
+	billPdf: {
+		type: String,
+
+	},
+	disability: {
+		type: [], //array
+	},
+	pcAccess: {
+		type: Boolean,
+	},
+	familyIncome: {
+		type: Number,
+	},
+	householdMembers: { 
+		type: String,
+
+	},
+	numberOfChildren: {
+		type: String,
+
+	},
+	internetCompany: {
+		type: String,
+
+	},
+	mbCount: {
+		type: Number,
+
+	},
+	internetAccess: {
+		type: Boolean,
+	},
+	vulnerablePopulation: { // array
+		type: [],
+
 	},
 	degreeTitle: {
 		type: String,
-		maxlength: 45,
+
+	},
+	academicLevel: {
+		type: String,
+
+	},
+	studiesPdf: {
+		type: String,
+
+	},
+	cvPdf: {
+		type: String,
+
+	},
+	unemployementTime: {
+		type: String,
+
 	},
 	currentOccupation: {
-		type: Number,
+		type: String,
+
 	},
-	unemployedTime: String,
-	formalOccupation: {
+	contractWorker: {
 		type: Boolean,
 
-		maxlength: 45,
 	},
-	victimArmedConflict: {
-		type: String,
+	householder: {
+		type: Boolean,
+
 	},
-	pcAccess: {
-		type: String,
-	},
-	programataPrevoiousTimes: {
-		type: String,
-	},
-	motivation: {
+	firstLanguage: {
 		type: String,
 
-		maxlength: 300,
 	},
-	linktest: {
-		type: String,
-	},
-	dreams: {
+	secondLanguage: {
 		type: String,
 
-		maxlength: 300,
+	},
+	languageLevel: {
+		type: String,
+
 	},
 	soloLearnProfile: {
 		type: Number,
 		minlength: 6,
 	},
-	sex: String,
-	status: {
-		registered: { type: Boolean },
-		waitList: { type: Boolean },
-		withCitation: { type: Boolean },
-		booked: { type: Boolean },
-		interviewed: { type: Boolean },
-		pass: { type: Boolean },
-		noPass: { type: Boolean },
-	},
+	
+
+	// status: 
+	//	registered: type: Boolean ,
+	//	waitList:  type: Boolean ,
+	//	withCitation:  type: Boolean ,
+	//	booked:  type: Boolean ,
+	//	interviewed:  type: Boolean ,
+	//	pass:  type: Boolean ,
+	//	noPass: type: Boolean , 
+	//},
 	// heardFromUs: {
 	//     web: Boolean,
 	//     recommendation: Boolean,

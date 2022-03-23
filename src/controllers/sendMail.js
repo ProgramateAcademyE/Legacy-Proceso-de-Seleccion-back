@@ -36,12 +36,14 @@ const sendEmail = (to, url, txt) => {
 			accessToken,
 		},
 	});
-
+// JSON de datos que se debe crear para establecer la comunicación con el servidor de correos,
+// en donde se incluyen los datos de los destinatarios, asunto, mensaje, etc
 	const mailOptions = {
-		from: SENDER_EMAIL_ADDRESS,
-		to: to,
-		subject: "Welcome App",
-		html: `
+		from: SENDER_EMAIL_ADDRESS, //  es el correo origen o el correo que esta enviando el email
+		to: to, // el destinatario quien debe recibir el correo
+		subject: "Welcome App", // asunto del correo
+		//  Nodemailer nos permite enviar un mensaje codificado en lenguaje HTML
+		html: ` 
             <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
             <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to the DevAT channel.</h2>
             <p>Congratulations! You're almost set to start using DEVAT✮SHOP.
@@ -56,7 +58,7 @@ const sendEmail = (to, url, txt) => {
             </div>
         `,
 	};
-
+// el objeto smtpTransport cuenta con un método de nombre sendMail el cual recibe como parámetros los datos del correo que se quiere enviar y regresa un callback
 	smtpTransport.sendMail(mailOptions, (err, infor) => {
 		if (err) return err;
 		console.log("SEND MAIL ERROR!!!!!!", infor);
