@@ -2,7 +2,7 @@
 GET http://localhost:3001/api/admin/convocatories
 
 ### Get one Convocatory
-GET http://localhost:3001/api/admin/convocatory/:id
+GET http://localhost:3001/api/admin/convocatory/6231dea2f8bb6b79f57c25e8
 
 ### Delete one convocatory
 DELETE http://localhost:3001/api/admin/convocatory/:id
@@ -43,4 +43,12 @@ Content-Type: application/json
     "maxSocioeconomicStratus": 2,
     "gender":["Array"],
     "typePopulation":["Array"]
+}
+
+### Register candidate
+PATCH http://localhost:3001/api/admin/update-candidate/:idConvocatoria
+Content-Type: application/json
+
+{
+    "usersRegistered" : ["idUsuario", "Otrousuario"]
 }

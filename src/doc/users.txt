@@ -1,0 +1,87 @@
+### Create user profile when a user press the create acount button
+POST http://localhost:3001/api/user/register
+Content-Type: application/json
+
+{
+  "names": "user_names",
+  "surname": "user_surname",
+  "email": "hola@hola.com",
+  "password": "12345678"
+}
+
+### Login user
+POST http://localhost:3001/api/user/login
+Content-Type: application/json
+
+{
+    "email":"user_email",
+    "password": "password"
+}
+
+### Token activation when a user create an acount and activate it fron the email registered 
+GET http://localhost:3001/api/user/activation/:activation_token
+### activation_token is a token gerenated when a user profile create a count.  
+
+### Get all users info with admin auth
+### An unexpired authentication token is needed here set token in header 
+GET http://localhost:3001/api/user/all_info
+Content-Type: application/json
+
+
+### 
+GET http://localhost:3001/api/user/info
+Content-Type: application/json
+
+{
+  "user": {
+    "id": "6237c2f0377003c146ab9df3"
+  }
+}
+
+### Reset password when a user press the forgot my password button
+POST http://localhost:3001/api/user/forgot
+Content-Type: application/json
+
+}
+    "email":"user_email"
+}
+
+### Modify profile role
+
+PATCH http://localhost:3001/api/user/update_role/:id
+// id is asigned by MongoDB to each document and it is unique 
+// to modify this information, must be authorized and authenticated as admin
+Content-Type: application/json
+
+{
+    "role": 0 or 1, // 0 to users, 1 to admins
+}
+
+### Modify user information
+
+PATCH http://localhost:3001/api/user/update
+// to modify this information, must be authorized as user
+Content-Type: application/json
+
+{
+    "names":"new_user_names",
+    "surname":"new_user_surname",
+    "avatar";"new_url_image_avatar"
+}
+
+### Enable and disable profiles
+
+PATCH http://localhost:3001/api/user/active/:id
+// id is asigned by MongoDB to each document and it is unique 
+// to modify this information, must be authorized and authenticated as admin
+Content-Type: application/json
+
+{
+    "active": true or false, // true to enable, false to disable
+}
+
+### Delete profiles of the database
+
+DELETE http://localhost:3001/api/user/delete/:id
+// id is asigned by MongoDB to each document and it is unique 
+// to modify this information, must be authorized and authenticated as admin
