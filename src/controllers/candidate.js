@@ -37,6 +37,9 @@ const upload = multer({
 	storage: storage,
 });
 
+
+
+
 // GET CALIFACATION
 candidateRouter.get("/calification", async (req, res) => {
 	const calification = await Result.find();
