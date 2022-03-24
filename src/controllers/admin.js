@@ -496,16 +496,63 @@ adminRouter.get("/acept", async (req, res) => {
 
 // Creates new citations
 adminRouter.post("/citation", async (req, res) => {
-  const { users, date, journey, quotasCompleted, maxQuotas } = req.body;
-  const citation = new Citation({
-    users,
-    date,
-    journey,
-    quotasCompleted,
-    maxQuotas,
-  });
-  await citation.save();
-  res.send("citation saved");
+	const { id, appointmentDate, shift, applicantQuota, enrolledNumber, titleConvocatory, shiftStart, shiftEnd, notes } = req.body;
+	const citation = new Citation({
+		id,
+		appointmentDate,
+		shift,
+		applicantQuota,
+		enrolledNumber,
+		titleConvocatory,
+		shiftStart,
+		shiftEnd,
+		notes
+	});
+	await citation.save();
+	res.send("citation saved");
+});
+// list all citation data
+adminRouter.get("/citation-all", async (req, res) => {
+    try {
+    const data = await Citation.find({})
+    res.send({data});
+} catch (e) {
+    res.status(404).send({ res, error: "ERROR" })
+	}
+});
+// update a record by id
+adminRouter.put("/citation/:id", async (req, res) => {
+    try {
+        const {id, ...body} = req.body;
+        const data = await Citation.findByIdAndUpdate(
+            id, body
+        );
+        res.send({data})
+  } catch (e) {
+    res.status(404).send({ res, error: "ERROR" })
+	}
+});
+// get a single record by id
+adminRouter.get("/citation/:id", async (req, res) => {
+    try {
+        
+        const {id} = req.body;
+        const data = await Citation.findById({id})
+        res.send({data});
+} catch (e) {
+    res.status(404).send({ res, error: "ERROR" })
+	}
+});
+// delete a record by id
+adminRouter.delete("/citation/:id", async (req, res) => {
+    try {
+        
+        const {id} = req.body;
+        const data = await Citation.deleteOne({id})
+        res.send({data});
+} catch (e) {
+    res.status(404).send({ res, error: "ERROR" })
+	}
 });
 
 // To upload the thecnical test for candidates

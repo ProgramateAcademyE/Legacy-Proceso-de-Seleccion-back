@@ -54,3 +54,16 @@ Content-Type: application/json
 {
   "role": 1
 }
+
+###
+POST http://localhost:3001/api/candidate/profile
+Content-Type: application/json
+
+{
+  "firstName": "ja",
+  "secondName": "iro",
+  "firstSurname": "Sol",
+  "secondSurname": "arte",
+  "documentType": "CC",
+  "documentNumber": 123411234
+}
