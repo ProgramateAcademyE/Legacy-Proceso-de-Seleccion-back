@@ -10,6 +10,8 @@ const { google } = require("googleapis");
 const Citation = require("../db/models/Citation");
 const { OAuth2 } = google.auth;
 
+// const app = express();
+
 const candidateRouter = require("express").Router();
 
 // create reusable transporter object using the default SMTP transport
@@ -24,18 +26,27 @@ const transporter = nodemailer.createTransport({
 });
 
 // UPLOAD FILE PDF
-const storage = multer.diskStorage({
-	destination: "uploads/",
-	filename: function (req, file, cb) {
+const storage = multer.diskStorage({ //diskStorage is to saved in the computer
+	destination: "uploads/", //Place where the files are saved
+	filename: function (req, file, cb) { //req is the request's information, file is the file which is uploading and cd is a callback that is called when the function end
 		cb(
 			"",
 			Date.now() + file.originalname + "." + mimeTypes.extension(file.mimetype),
-		);
+		);	
 	},
 });
 const upload = multer({
 	storage: storage,
 });
+
+// candidateRouter.get("/",(req,res)=>{
+// 	console.log(__dirname)
+// 	res.sendFile(__dirname + "/views/index");
+// })
+
+// candidateRouter.post("/files",upload.single("avatar"),(req,res)=>{
+// 	res.send('Todo bien');
+// })
 
 // GET CALIFACATION
 candidateRouter.get("/calification", async (req, res) => {
