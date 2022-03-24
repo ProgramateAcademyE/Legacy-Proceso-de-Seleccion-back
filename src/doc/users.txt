@@ -20,23 +20,12 @@ Content-Type: application/json
 
 ### Token activation when a user create an acount and activate it fron the email registered 
 GET http://localhost:3001/api/user/activation/:activation_token
-### activation_token is a token gerenated when a user profile create a count.  
+// activation_token is a token gerenated when a user profile create a count.  
 
 ### Get all users info with admin auth
-### An unexpired authentication token is needed here set token in header 
-GET http://localhost:3001/api/user/all_info
-Content-Type: application/json
-
-
-### 
-GET http://localhost:3001/api/user/info
-Content-Type: application/json
-
-{
-  "user": {
-    "id": "6237c2f0377003c146ab9df3"
-  }
-}
+GET http://localhost:3001/api/user/all_info/:page
+// page is a number tu paginate the information
+// to check this information, must be authorized and authenticated as admin
 
 ### Reset password when a user press the forgot my password button
 POST http://localhost:3001/api/user/forgot
@@ -85,3 +74,4 @@ Content-Type: application/json
 DELETE http://localhost:3001/api/user/delete/:id
 // id is asigned by MongoDB to each document and it is unique 
 // to modify this information, must be authorized and authenticated as admin
+
