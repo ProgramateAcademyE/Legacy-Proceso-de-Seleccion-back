@@ -331,6 +331,9 @@ const profileSchema = new Schema({
 		type: Number,
 		minlength: 6,
 	},
+	motivationLetter : {
+		type: String,
+	},
 	
 
 	// status: 
