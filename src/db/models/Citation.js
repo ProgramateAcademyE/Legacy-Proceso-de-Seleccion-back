@@ -16,32 +16,32 @@ const CitationSchema = new Schema({
 	id: {
 		type: Number,
 	},
-	appointmentDate: { // fecha de entrevista
+	appointmentDate: { 
 		type: Date,
 	},
-	shift: { // jornada
+	shift: { 
 		type: ["mañana", "tarde"],
 		default: "mañana"
 	},
-	applicantQuota: {  // cantidad de aspirantes
+	applicantQuota: {  
 		type:Number,
 	},
-	enrolledNumber: { // cantidad de inscritos
+	enrolledNumber: { 
 		type: Number,
 		count: 0
 	},
-	titleConvocatory: { // titulo de la convocatoria
+	titleConvocatory: { 
 		type: String,
 	},
-	shiftStart: { // hora de inicio
-		type: Number,
+	shiftStart: { 
+		type: String,
 		required: true 
 	},
-	shiftEnd: { // hora de finalizacion
-		type: Number,
+	shiftEnd: { 
+		type: String,
 		required: true
 	},
-	notes: { // informacion adicional
+	notes: { 
 		type: String,
 		 required: true
 	},
