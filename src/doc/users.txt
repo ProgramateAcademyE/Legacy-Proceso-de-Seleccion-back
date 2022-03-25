@@ -22,9 +22,17 @@ Content-Type: application/json
 GET http://localhost:3001/api/user/activation/:activation_token
 // activation_token is a token gerenated when a user profile create a count.  
 
-### Get all users info with admin auth
+### Get all profiles info
 GET http://localhost:3001/api/user/all_info/:page
 // page is a number tu paginate the information
+// to check this information, must be authorized and authenticated as admin
+
+### Get users info
+GET http://localhost:3001/api/user/users_info
+// to check this information, must be authorized
+
+### Get admins info
+GET http://localhost:3001/api/user/admins_info
 // to check this information, must be authorized and authenticated as admin
 
 ### Reset password when a user press the forgot my password button

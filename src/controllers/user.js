@@ -6,6 +6,7 @@ const userRouter = require("express").Router();
 const auth = require("../middleware/auth");
 const authAdmin = require("../middleware/authAdmin");
 const transporter = require("../utils/senMail");
+const pagination = require("./pagination");
 
 const { CLIENT_URL, EMAIL } = process.env;
 
@@ -13,8 +14,7 @@ const { CLIENT_URL, EMAIL } = process.env;
 const errorFields = "Por favor llene todos los campos. ";
 const errorInvalidEmail = "Correo electrónico inválido. ";
 const errorExistEmail = "Este correo electrónico ya existe. ";
-const errorCharactersPassword =
-	"La contraseña debe contar con mínimo 6 caracteres. ";
+const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres. ";
 const msgLogNow = "Por favor inicia sesión ahora. ";
 const updateSuccess = "Información actualizada exitosamente";
 
@@ -77,7 +77,7 @@ userRouter.post("/register", async (req, res) => {
 });
 
 //create a profile different to a user
-userRouter.post("/register_admin", async (req, res) => {
+userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
 	try {
 		const { names, surname, email, password, role } = req.body;
 
@@ -237,7 +237,7 @@ userRouter.get("/all_info/:page", auth, authAdmin, async (req, res) => {
 	try {
 		const perPage = 20;
 		const page = req.params.page || 1;
-		const [ users, total ] = await Promise.all([
+		const [ profiles, total ] = await Promise.all([
 			User.find()
 			.select("-password")
 			.select("-passwordHash")
@@ -247,13 +247,37 @@ userRouter.get("/all_info/:page", auth, authAdmin, async (req, res) => {
 		]);
 
 		res.json({
-			users,
+			profiles,
 			page: {
 				page,
 				perPage,
 				total
 			}
 		});
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/users_info", auth, async (req, res) => {
+	try {
+		const users = await User.find({"role": {$eq: 0}})
+			.select("-password")
+			.select("-passwordHash");
+
+		res.send(users);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/admins_info", auth, authAdmin, async (req, res) => {
+	try {
+		const admins = await User.find({"role": {$eq: 1}})
+			.select("-password")
+			.select("-passwordHash");
+
+		res.send(admins);
 	} catch (err) {
 		return res.status(500).send({ msg: err.message });
 	}
