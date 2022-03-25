@@ -304,6 +304,23 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 	});
 });
 
+// update a motivation letter by id
+candidateRouter.put("/motivation-letter-update/:id", async (req, res) => {
+    try {
+        
+		const user_id = req.params.id;
+		const { motivationLetter}  = req.body;
+		console.log(req.body)
+       	await Profile.findOneAndUpdate( {user_id:user_id}, {motivationLetter} );
+		
+		
+		
+        res.json({ msg: 'Carta de motivacion actualizada con exito' });
+	} catch (e) {
+		res.status(404).send({ error: e })
+	}
+});
+
 
 
 // CREATE RESULTS
