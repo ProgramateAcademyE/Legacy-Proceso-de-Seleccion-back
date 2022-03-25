@@ -218,6 +218,15 @@ candidateRouter.get("/candidate", async (req, res) => {
 	const candidates = await User.find();
 	res.send(candidates);
 });
+// GET ALL PROFILES 
+candidateRouter.get("/candidate-profile", async (req, res) => {
+	try {
+	const candidateProfile = await Profile.find();
+	res.send(candidateProfile);
+	} catch {
+		res.status(404).send({error: "ERROR" })
+	}
+});
 
 // GET PROFILE OF CANDIDATES
 candidateRouter.get("/candidate-profile/:id", async (req, res) => {

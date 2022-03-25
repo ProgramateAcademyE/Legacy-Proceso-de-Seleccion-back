@@ -8,7 +8,7 @@ const profileSchema = new Schema({
 
 	/* Agora */
 
-	outcome: {
+/**	outcome: {
 		outcome1: {
 			generalcomment: {
 				type: String,
@@ -120,7 +120,7 @@ const profileSchema = new Schema({
 
 	/* mentoria */
 
-	gender: {
+/** 	gender: {
 		type: Number,
 	},
 
@@ -142,13 +142,13 @@ const profileSchema = new Schema({
 	interest: {
 		type: Array,
 		require: true,
-	},
+	}, */
 
 	/* fin mentoria */
 
 	/* Social Programate */
 
-	experience: {
+/**		experience: {
 		type: "string",
 		trim: true,
 		lowercase: true,
@@ -172,7 +172,7 @@ const profileSchema = new Schema({
 		type: "string",
 		trim: true,
 		lowercase: true,
-	},
+	}, */
 
 	/* fin social programate */
 
