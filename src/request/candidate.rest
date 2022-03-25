@@ -1,0 +1,4 @@
+GET http://localhost:3001/api/candidate/candidate
+
+###
+GET http://localhost:3001/api/candidate/profile 
