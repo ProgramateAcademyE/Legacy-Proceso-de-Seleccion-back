@@ -402,21 +402,92 @@ adminRouter.get("/acept", async (req, res) => {
 	res.send(user);
 });
 
-// ============================ Yeferson =========================
+// ============================ Endpoints citation =========================
 
 // Creates new citations
 adminRouter.post("/citation", async (req, res) => {
-	const { users, date, journey, quotasCompleted, maxQuotas } = req.body;
+	const { id, appointmentDate, shift, applicantQuota, enrolledNumber, titleConvocatory, shiftStart, shiftEnd, notes } = req.body;
 	const citation = new Citation({
-		users,
-		date,
-		journey,
-		quotasCompleted,
-		maxQuotas,
+		id,
+		appointmentDate,
+		shift,
+		applicantQuota,
+		enrolledNumber,
+		titleConvocatory,
+		shiftStart,
+		shiftEnd,
+		notes
 	});
 	await citation.save();
-	res.send("citation saved");
+	res.send("citacion guardada");
+	res.status(404).send({error: "ERROR" });
 });
+// list all citation data
+adminRouter.get("/citation-all", async (req, res) => {
+    try {
+    const data = await Citation.find({})
+    res.send({data});
+} catch (e) {
+    res.status(404).send({error: "ERROR" })
+	}
+});
+// update a record by id
+adminRouter.put("/citation-update/:id", async (req, res) => {
+    try {
+        
+		const id = req.params.id;
+		const { appointmentDate,
+			shift,
+			applicantQuota,
+			enrolledNumber,
+			titleConvocatory,
+			shiftStart,
+			shiftEnd,
+			notes } = req.body;
+       	await Citation.findOneAndUpdate({id:id},{ appointmentDate,
+			shift,
+			applicantQuota,
+			enrolledNumber,
+			titleConvocatory,
+			shiftStart,
+			shiftEnd,
+			notes });
+		
+		
+		
+        res.json({ msg: 'Registro actualizado con exito' });
+	} catch (e) {
+		res.status(404).send({ error: "ERROR" })
+	}
+});
+
+
+// get a single record by id
+adminRouter.get("/citation-id/:id", async (req, res) => {
+    try {
+        
+        const id = req.params.id;
+        const data = await Citation.find({id:id})
+        res.send({data})
+	} catch (e) {
+		res.status(404).send({ error: "ERROR" })
+	}
+});
+// delete a record by id
+adminRouter.delete("/citation-delete/:id", async (req, res) => {
+    try {
+        
+        const id = req.params.id;
+        const data = await Citation.deleteOne({id})
+        res.send("Registro eliminado con exito");
+} catch (e) {
+    res.status(404).send({ res, error: "ERROR" })
+	}
+});
+
+
+// ==============================================================
+
 
 // To upload the thecnical test for candidates
 adminRouter.put("/upload-test", async (req, res) => {

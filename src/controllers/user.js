@@ -191,7 +191,7 @@ userRouter.post("/forgot", async (req, res) => {
 		const access_token = createAccessToken({ id: user._id });
 		const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
-		sendMail(email, url, "Reestablese tu contraseña. ");
+		sendMail(email, url, "Reestablece tu contraseña. ");
 		res.json({ msg: "Contraseña reenviada, verifica tu correo electrónico. " });
 	} catch (err) {
 		return res.status(500).json({ msg: err.message });

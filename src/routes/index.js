@@ -8,7 +8,7 @@ const userRouter = require("../controllers/user");
 const router = Router();
 
 router.use("/api/candidate", candidateRouter);
-router.use("/candidate/index", candidateRouter)
+router.use("/candidate/index", candidateRouter);
 router.use("/api/admin", adminRouter);
 router.use("/api/staff", staffRouter);
 router.use("/api/user", userRouter);
