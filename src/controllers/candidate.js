@@ -76,6 +76,8 @@ candidateRouter.post("/new", async (req, res, next) => {
 	res.send(`${newUser.firstName} saved`);
 });
 
+
+
 // CREATE THE PROFILE OF A USER
 candidateRouter.post("/profile", async (req, res) => {
     const {
@@ -236,6 +238,8 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 		},
 	});
 });
+
+
 
 // CREATE RESULTS
 candidateRouter.post("/new-result", async (req, res) => {
