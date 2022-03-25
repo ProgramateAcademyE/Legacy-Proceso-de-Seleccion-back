@@ -221,8 +221,8 @@ candidateRouter.get("/candidate", async (req, res) => {
 // GET ALL PROFILES 
 candidateRouter.get("/candidate-profile", async (req, res) => {
 	try {
-	const candidateProfile = await Profile.find();
-	res.send(candidateProfile);
+    const candidateProfile = await Profile.find();
+    res.send(candidateProfile);
 	} catch {
 		res.status(404).send({error: "ERROR" })
 	}
