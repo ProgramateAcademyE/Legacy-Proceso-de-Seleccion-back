@@ -261,7 +261,7 @@ const profileSchema = new Schema({
 		type: String,
 	},
 	familyIncome: {
-		type: Number,
+		type: String,
 	},
 	householdMembers: { 
 		type: String,
