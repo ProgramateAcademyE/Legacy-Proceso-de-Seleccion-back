@@ -1,4 +1,4 @@
-GET http://localhost:3001/api/candidate/candidate
+GET http://localhost:3001/api/candidate/candidate-profile
 
 ###
 GET http://localhost:3001/api/candidate/sololearm/17451336
