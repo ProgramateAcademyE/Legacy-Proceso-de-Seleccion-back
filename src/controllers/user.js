@@ -7,6 +7,7 @@ const auth = require("../middleware/auth");
 const authAdmin = require("../middleware/authAdmin");
 const transporter = require("../utils/senMail");
 const pagination = require("./pagination");
+// const transporter = require("../utils/senMail");
 
 const { CLIENT_URL, EMAIL } = process.env;
 
@@ -45,27 +46,10 @@ userRouter.post("/register", async (req, res) => {
 			passwordHash,
 		};
 		//Call the function to create a token to a new user
-		const activation_token = createActivationToken(newUser);
-		const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
+    const activation_token = createActivationToken(newUser);
+		const url = `${CLIENT_URL}verify?token=${activation_token}`;
 
-		await transporter.sendMail({
-			from: EMAIL,
-			to: email,
-			subject: "Validate your email",
-			html: `
-							<b>Please click on the following link, or paste this into your browser to complete the process: </b>
-							<a href='${url}'>${url}</a>
-						`,
-		});
-		// await transporter.sendMail(sendMail(email, url, "Activa tu cuenta"), (err) => {
-		// 	if (err) {
-		// 		return res.status(500).send({ msg: err.message })
-		// 	}
-		// 	else {
-		// 		console.log(email, url)
-		// 		return res.status(200).send({ msg: "Email enviado satisfactoriamente. " })
-		// 	}
-		// });
+    sendMail(email, url, 'Activa tu cuenta');
 
 		res.status(200).send({
 			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para avtivar la cuenta. ",
@@ -141,6 +125,7 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 	}
 });
 
+// Login user
 userRouter.post("/login", async (req, res) => {
 	try {
 		const { email, password } = req.body;
@@ -168,6 +153,7 @@ userRouter.post("/login", async (req, res) => {
 	}
 });
 
+// Renew token if token is expired
 userRouter.post("/refresh_token", async (req, res) => {
 	try {
 		const rf_token = req.body.refreshtoken;
@@ -184,6 +170,7 @@ userRouter.post("/refresh_token", async (req, res) => {
 	}
 });
 
+
 userRouter.post("/forgot", async (req, res) => {
 	try {
 		const { email } = req.body;
@@ -196,14 +183,14 @@ userRouter.post("/forgot", async (req, res) => {
 		const access_token = createAccessToken({ id: user._id });
 		const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
-		sendMail(email, url, "Reestablese tu contraseña. ");
-		res.send({
-			msg: "Verifica tu correo electrónico para restablecer tu contraseña. ",
-		});
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
+    sendMail(email, url, 'Reestablece tu contraseña.');
+
+    res.send({ msg: "Verifica tu correo electrónico para restablecer tu contraseña. " });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
 });
+
 
 userRouter.post("/reset", auth, async (req, res) => {
 	try {
@@ -223,6 +210,7 @@ userRouter.post("/reset", auth, async (req, res) => {
 	}
 });
 
+// Get one user info (need to auth)
 userRouter.get("/info", auth, async (req, res) => {
 	try {
 		const user = await User.findById(req.body.user.id).select("-password");
@@ -233,7 +221,8 @@ userRouter.get("/info", auth, async (req, res) => {
 	}
 });
 
-userRouter.get("/all_info/:page", auth, authAdmin, async (req, res) => {
+// get all info (need to auth and be admin)
+userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
 	try {
 		const perPage = 20;
 		const page = req.params.page || 1;
@@ -283,6 +272,7 @@ userRouter.get("/admins_info", auth, authAdmin, async (req, res) => {
 	}
 });
 
+// Logout
 userRouter.get("/logout", async (req, res) => {
 	try {
 		res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
@@ -291,6 +281,7 @@ userRouter.get("/logout", async (req, res) => {
 		return res.status(500).send({ msg: err.message });
 	}
 });
+
 
 userRouter.patch("/update", auth, async (req, res) => {
 	try {
@@ -310,15 +301,14 @@ userRouter.patch("/update", auth, async (req, res) => {
 	}
 });
 
+// Update role (need to auth and be admin)
 userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 	try {
 		const { role } = req.body;
 
 		await User.findOneAndUpdate(
 			{ _id: req.params.id },
-			{
-				role,
-			},
+			{ role },
 		);
 
 		res.send({ msg: updateSuccess });
@@ -341,6 +331,7 @@ userRouter.patch("/active/:id", auth, authAdmin, async (req, res) => {
 		return res.status(500).send({ msg: err.message });
 	}
 });
+
 
 userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
 	try {
