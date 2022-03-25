@@ -128,6 +128,7 @@ candidateRouter.post(
 			secondLanguage,
 			languageLevel,
 			pcAccess,
+			motivationLetter,
 			soloLearnProfile,
 			// heardFromUs: {
 			//     web,
@@ -190,6 +191,7 @@ candidateRouter.post(
 			secondLanguage,
 			languageLevel,
 			pcAccess,
+			motivationLetter,
 			soloLearnProfile,
 			// heardFromUs: {
 			//     web,
@@ -283,6 +285,7 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 		secondLanguage: candidateProfile[0].secondLanguage,
 		languageLevel: candidateProfile[0].languageLevel,
 		firstLanguage: candidateProfile[0].firstLanguage,
+		motivationLetter: candidateProfile[0].motivationLetter,
 		soloLearnProfile: candidateProfile[0].soloLearnProfile,
 	};
 	res.send({
