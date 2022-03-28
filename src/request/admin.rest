@@ -29,3 +29,5 @@ Content-Type: application/json
     "role": 1
 }
 
+###
+GET http://localhost:3001/api/admin/waiting-list

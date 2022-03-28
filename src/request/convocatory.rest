@@ -50,5 +50,5 @@ PATCH http://localhost:3001/api/admin/update-candidate/:idConvocatoria
 Content-Type: application/json
 
 {
-    "usersRegistered" : ["idUsuario", "idOtroUsuario"]
+    "usersRegistered" : ["idUsuario", "Otrousuario"]
 }

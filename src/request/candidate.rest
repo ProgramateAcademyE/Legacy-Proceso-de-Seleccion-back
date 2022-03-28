@@ -1,0 +1,7 @@
+GET http://localhost:3001/api/candidate/candidate-profile
+
+###
+GET http://localhost:3001/api/candidate/sololearm/17451336
+
+###
+GET http://localhost:3001/api/candidate/result/623b5dd353834ea2bba50a7a

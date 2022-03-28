@@ -2,179 +2,180 @@ const { Schema, model } = require("mongoose");
 
 const profileSchema = new Schema({
 	user_id: {
-		type: Schema.Types.ObjectId,
-		ref: "User",
+		// type: Schema.Types.ObjectId,
+		// ref: "User",
+		type: String
 	},
 
-	/* Agora */
+	// /* Agora */
 
-/**	outcome: {
-		outcome1: {
-			generalcomment: {
-				type: String,
-			},
-			techcomment: {
-				type: String,
-			},
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		outcome2: {
-			generalcomment: {
-				type: String,
-			},
-			techcomment: {
-				type: String,
-			},
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		outcome3: {
-			generalcomment: {
-				type: String,
-			},
-			techcomment: {
-				type: String,
-			},
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		outcome4: {
-			generalcomment: {
-				type: String,
-			},
-			techcomment: {
-				type: String,
-			},
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		outcome5: {
-			generalcomment: {
-				type: String,
-			},
-			techcomment: {
-				type: String,
-			},
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		outcome6: {
-			generalcomment: {
-				type: String,
-			},
-			techcomment: {
-				type: String,
-			},
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-	},
+	// outcome: {
+	// 	outcome1: {
+	// 		generalcomment: {
+	// 			type: String,
+	// 		},
+	// 		techcomment: {
+	// 			type: String,
+	// 		},
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	outcome2: {
+	// 		generalcomment: {
+	// 			type: String,
+	// 		},
+	// 		techcomment: {
+	// 			type: String,
+	// 		},
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	outcome3: {
+	// 		generalcomment: {
+	// 			type: String,
+	// 		},
+	// 		techcomment: {
+	// 			type: String,
+	// 		},
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	outcome4: {
+	// 		generalcomment: {
+	// 			type: String,
+	// 		},
+	// 		techcomment: {
+	// 			type: String,
+	// 		},
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	outcome5: {
+	// 		generalcomment: {
+	// 			type: String,
+	// 		},
+	// 		techcomment: {
+	// 			type: String,
+	// 		},
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	outcome6: {
+	// 		generalcomment: {
+	// 			type: String,
+	// 		},
+	// 		techcomment: {
+	// 			type: String,
+	// 		},
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// },
 
-	badges: {
-		badges1: {
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		badges2: {
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		badges3: {
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		badges4: {
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-		badges5: {
-			aprove: {
-				type: Boolean,
-				default: true,
-			},
-		},
-	},
+	// badges: {
+	// 	badges1: {
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	badges2: {
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	badges3: {
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	badges4: {
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// 	badges5: {
+	// 		aprove: {
+	// 			type: Boolean,
+	// 			default: true,
+	// 		},
+	// 	},
+	// },
 
-	/* fin Agora */
+	// /* fin Agora */
 
-	/* mentoria */
+	// /* mentoria */
 
-/** 	gender: {
-		type: Number,
-	},
+	// gender: {
+	// 	type: Number,
+	// },
 
-	mentorAssigment: {
-		type: String,
-	},
+	// mentorAssigment: {
+	// 	type: String,
+	// },
 
-	prev_studes: {
-		type: String,
-	},
+	// prev_studes: {
+	// 	type: String,
+	// },
 
-	actualAge: {
-		type: Number,
-	},
-	sesiones: {
-		type: Number,
-	},
+	// actualAge: {
+	// 	type: Number,
+	// },
+	// sesiones: {
+	// 	type: Number,
+	// },
 
-	interest: {
-		type: Array,
-		require: true,
-	}, */
+	// interest: {
+	// 	type: Array,
+	// 	require: true,
+	// },
 
-	/* fin mentoria */
+	// /* fin mentoria */
 
-	/* Social Programate */
+	// /* Social Programate */
 
-/**		experience: {
-		type: "string",
-		trim: true,
-		lowercase: true,
-	},
-	description: {
-		type: "string",
-		trim: true,
-		lowercase: true,
-	},
-	github: {
-		type: "string",
-		trim: true,
-		lowercase: true,
-	},
-	softSkills: {
-		type: "string",
-		trim: true,
-		lowercase: true,
-	},
-	technicalSkills: {
-		type: "string",
-		trim: true,
-		lowercase: true,
-	}, */
+	// experience: {
+	// 	type: "string",
+	// 	trim: true,
+	// 	lowercase: true,
+	// },
+	// description: {
+	// 	type: "string",
+	// 	trim: true,
+	// 	lowercase: true,
+	// },
+	// github: {
+	// 	type: "string",
+	// 	trim: true,
+	// 	lowercase: true,
+	// },
+	// softSkills: {
+	// 	type: "string",
+	// 	trim: true,
+	// 	lowercase: true,
+	// },
+	// technicalSkills: {
+	// 	type: "string",
+	// 	trim: true,
+	// 	lowercase: true,
+	// },
 
-	/* fin social programate */
+	// /* fin social programate */
 
 	/* Proceso de seleccion */
 
@@ -230,7 +231,6 @@ const profileSchema = new Schema({
 	email: {
 		type: String,
 		unique: true,
-
 	},
 	dateOfBirth: {
 		type: Date,
@@ -258,10 +258,10 @@ const profileSchema = new Schema({
 		type: [], //array
 	},
 	pcAccess: {
-		type: Boolean,
+		type: String,
 	},
 	familyIncome: {
-		type: Number,
+		type: String,
 	},
 	householdMembers: { 
 		type: String,
@@ -280,7 +280,7 @@ const profileSchema = new Schema({
 
 	},
 	internetAccess: {
-		type: Boolean,
+		type: String,
 	},
 	vulnerablePopulation: { // array
 		type: [],
@@ -296,26 +296,23 @@ const profileSchema = new Schema({
 	},
 	studiesPdf: {
 		type: String,
-
 	},
 	cvPdf: {
 		type: String,
-
 	},
 	unemployementTime: {
 		type: String,
-
 	},
 	currentOccupation: {
 		type: String,
 
 	},
 	contractWorker: {
-		type: Boolean,
+		type: String,
 
 	},
 	householder: {
-		type: Boolean,
+		type: String,
 
 	},
 	firstLanguage: {
@@ -361,11 +358,11 @@ const profileSchema = new Schema({
 	//     PNUD: Boolean,
 	//     other: Boolean,
 	// },
-	convocatoria: String,
-	resultados: Number,
-	fechaEntrevista: Date,
-	urlPrueba: String,
-	promedioEntrevista: Number,
+	// // convocatoria: String,
+	// // resultados: Number,
+	// // fechaEntrevista: Date,
+	// // urlPrueba: String,
+	// // promedioEntrevista: Number,
 	/* fin proceso seleccion  */
 });
 
