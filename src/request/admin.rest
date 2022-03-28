@@ -1,0 +1,31 @@
+### Get all admins
+GET http://localhost:3001/api/admin/admin
+
+### Register monitor, intervewer or observer
+POST http://localhost:3001/api/admin/admin
+Content-Type: application/json
+
+{
+    "firstName": "Jairo ",
+    "lastName": "Solarte",
+    "rol": {
+        "interviewer": true,
+        "observer": true,
+        "monitor": true
+    },
+    "name": "Jairo Valentin solarte",
+    "email": "email@gmail.com",
+    "available": true
+}
+
+### Register one admin 1 / admin 0 / user
+POST http://localhost:3001/api/user/register_admin
+Content-Type: application/json
+
+{
+    "name": "Prueba",
+    "email":"jairovsolarte17@gmail.com",
+    "password": "1234567",
+    "role": 1
+}
+

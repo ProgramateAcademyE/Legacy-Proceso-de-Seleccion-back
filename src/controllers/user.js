@@ -6,36 +6,35 @@ const userRouter = require("express").Router();
 const auth = require("../middleware/auth");
 const authAdmin = require("../middleware/authAdmin");
 const transporter = require("../utils/senMail");
+const pagination = require("./pagination");
 
 const { CLIENT_URL, EMAIL } = process.env;
 
 //error messages
-const errorFields = "Por favor llene todos los campos. "
-const errorInvalidEmail = "Correo electrónico inválido. "
-const errorExistEmail = "Este correo electrónico ya existe. "
-const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres. "
+const errorFields = "Por favor llene todos los campos. ";
+const errorInvalidEmail = "Correo electrónico inválido. ";
+const errorExistEmail = "Este correo electrónico ya existe. ";
+const errorCharactersPassword = "La contraseña debe contar con mínimo 6 caracteres. ";
+const msgLogNow = "Por favor inicia sesión ahora. ";
+const updateSuccess = "Información actualizada exitosamente";
 
 //create a new user
 userRouter.post("/register", async (req, res) => {
 	try {
 		const { names, surname, email, password } = req.body;
-
+		console.log(req.body);
 		if (!names || !surname || !email || !password)
-			return res.status(400).json({ msg: errorFields});
-
+			return res.status(400).send({ msg: errorFields });
+		// Call the function validate email.
 		if (!validateEmail(email))
-			// Call the function validate email.
-			return res.status(400).json({ msg: errorInvalidEmail});
+			return res.status(400).send({ msg: errorInvalidEmail });
 
 		const user = await User.findOne({ email }); // Check if the email exists
 
-		if (user)
-			return res.status(400).json({ msg: errorExistEmail});
+		if (user) return res.status(400).send({ msg: errorExistEmail });
 
 		if (password.length < 6)
-			return res
-				.status(400)
-				.json({ msg: errorCharactersPassword});
+			return res.status(400).send({ msg: errorCharactersPassword });
 
 		const passwordHash = await bcrypt.hash(password, 12); // Encrypt password to save to DB
 
@@ -45,13 +44,12 @@ userRouter.post("/register", async (req, res) => {
 			email,
 			passwordHash,
 		};
-
+		//Call the function to create a token to a new user
 		const activation_token = createActivationToken(newUser);
-
-		const url = `${CLIENT_URL}api/user/activation/${activation_token}`;
+		const url = `${CLIENT_URL}/api/user/activation/${activation_token}`;
 
 		await transporter.sendMail({
-			from: ' "Validate your email" <jairovsolarte17@gmail.com> ',
+			from: EMAIL,
 			to: email,
 			subject: "Validate your email",
 			html: `
@@ -59,36 +57,42 @@ userRouter.post("/register", async (req, res) => {
 							<a href='${url}'>${url}</a>
 						`,
 		});
+		// await transporter.sendMail(sendMail(email, url, "Activa tu cuenta"), (err) => {
+		// 	if (err) {
+		// 		return res.status(500).send({ msg: err.message })
+		// 	}
+		// 	else {
+		// 		console.log(email, url)
+		// 		return res.status(200).send({ msg: "Email enviado satisfactoriamente. " })
+		// 	}
+		// });
 
-		res.json({
+		res.status(200).send({
 			msg: "Registro exitoso. Verifica tu bandeja de correos electrónicos para avtivar la cuenta. ",
 			token: activation_token,
 		});
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
 //create a profile different to a user
-userRouter.post("/register_admin", async (req, res) => {
+userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
 	try {
 		const { names, surname, email, password, role } = req.body;
 
 		if (!names || !surname || !email || !password || !role)
-			return res.status(400).json({ msg: errorFields});
+			return res.status(400).send({ msg: errorFields });
 
 		if (!validateEmail(email))
-			return res.status(400).json({ msg: errorInvalidEmail});
+			return res.status(400).send({ msg: errorInvalidEmail });
 
 		const user = await User.findOne({ email });
 
-		if (user)
-			return res.status(400).json({ msg: errorExistEmail});
+		if (user) return res.status(400).send({ msg: errorExistEmail });
 
 		if (password.length < 6)
-			return res
-				.status(400)
-				.json({ msg: errorCharactersPassword});
+			return res.status(400).send({ msg: errorCharactersPassword });
 
 		const passwordHash = await bcrypt.hash(password, 12);
 
@@ -101,9 +105,9 @@ userRouter.post("/register_admin", async (req, res) => {
 		});
 
 		await newUser.save();
-		res.json({ msg: "Perfil creado exitosamente. " });
+		res.send({ msg: "Perfil creado exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -120,8 +124,7 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 		const { names, surname, email, passwordHash } = user;
 
 		const check = await User.findOne({ email });
-		if (check)
-			return res.status(400).json({ msg: errorExistEmail});
+		if (check) return res.status(400).send({ msg: errorExistEmail });
 
 		const newUser = new User({
 			names,
@@ -132,9 +135,9 @@ userRouter.get("/activation/:activation_token", async (req, res) => {
 
 		await newUser.save();
 
-		res.json({ msg: "La cuenta fue activada exitosamente. " });
+		res.send({ msg: "La cuenta fue activada exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -147,37 +150,37 @@ userRouter.post("/login", async (req, res) => {
 			user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
 		if (!isMatch) {
-			res.status(401).json({
-				error: "Usuario o contraseña incorrectos",
+			res.status(401).send("Ocurrió un error. ");
+			return;
+		} else {
+			//Call the function to create a token to login
+			const refresh_token = createRefreshToken({ id: user._id });
+
+			res.status(200).send({
+				email: user.email,
+				refresh_token,
+				msg: "Inicio de sesión exitoso. ",
 			});
+			return;
 		}
-
-		const refresh_token = createRefreshToken({ id: user._id });
-
-		res.send({
-			email: user.email,
-			refresh_token,
-			msg: "Login exitoso!",
-		});
-
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.send({ msg: err.message });
 	}
 });
 
 userRouter.post("/refresh_token", async (req, res) => {
 	try {
 		const rf_token = req.body.refreshtoken;
-		if (!rf_token) return res.status(400).json({ msg: "Please login now!" });
+		if (!rf_token) return res.status(400).send({ msg: msgLogNow });
 
 		jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-			if (err) return res.status(400).json({ msg: "Please login now!" });
+			if (err) return res.status(400).send({ msg: msgLogNow });
+			//Call the function to create a new token to access to the count
 			const access_token = createAccessToken({ id: user.id });
-			res.json({ access_token });
+			res.send({ access_token });
 		});
-		// res.json({msg: 'ok'})
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -186,15 +189,19 @@ userRouter.post("/forgot", async (req, res) => {
 		const { email } = req.body;
 		const user = await User.findOne({ email });
 		if (!user)
-			return res.status(400).json({ msg: "Este correo electrónico no existe. " });
-
+			return res
+				.status(400)
+				.send({ msg: "Este correo electrónico no existe. " });
+		//Call the function to create a new token to access to the count
 		const access_token = createAccessToken({ id: user._id });
 		const url = `${CLIENT_URL}/user/reset/${access_token}`;
 
-		sendMail(email, url, "Reestablece tu contraseña. ");
-		res.json({ msg: "Contraseña reenviada, verifica tu correo electrónico. " });
+		sendMail(email, url, "Reestablese tu contraseña. ");
+		res.send({
+			msg: "Verifica tu correo electrónico para restablecer tu contraseña. ",
+		});
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -210,40 +217,81 @@ userRouter.post("/reset", auth, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Password successfully changed!" });
+		res.send({ msg: "Nueva contraseña asignada exitosamente. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
 userRouter.get("/info", auth, async (req, res) => {
 	try {
-		const user = await User.findById(req.user.id).select("-password");
+		const user = await User.findById(req.body.user.id).select("-password");
 
-		res.json(user);
+		res.send(user);
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
-userRouter.get("/all_info", auth, authAdmin, async (req, res) => {
+userRouter.get("/all_info/:page", auth, authAdmin, async (req, res) => {
 	try {
-		const users = await User.find().select("-password");
+		const perPage = 20;
+		const page = req.params.page || 1;
+		const [ profiles, total ] = await Promise.all([
+			User.find()
+			.select("-password")
+			.select("-passwordHash")
+			.skip((perPage * page) - perPage)
+			.limit(perPage),
+			User.countDocuments()
+		]);
 
-		res.json(users);
+		res.json({
+			profiles,
+			page: {
+				page,
+				perPage,
+				total
+			}
+		});
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/users_info", auth, async (req, res) => {
+	try {
+		const users = await User.find({"role": {$eq: 0}})
+			.select("-password")
+			.select("-passwordHash");
+
+		res.send(users);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/admins_info", auth, authAdmin, async (req, res) => {
+	try {
+		const admins = await User.find({"role": {$eq: 1}})
+			.select("-password")
+			.select("-passwordHash");
+
+		res.send(admins);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
 userRouter.get("/logout", async (req, res) => {
 	try {
 		res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
-		return res.json({ msg: "Logged out." });
+		return res.send({ msg: "Cerrado de sesión exitoso. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
+
 userRouter.patch("/update", auth, async (req, res) => {
 	try {
 		const { names, surname, avatar } = req.body;
@@ -256,9 +304,9 @@ userRouter.patch("/update", auth, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Update Success!" });
+		res.send({ msg: updateSuccess });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
@@ -273,24 +321,34 @@ userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
 			},
 		);
 
-		res.json({ msg: "Update Success!" });
+		res.send({ msg: updateSuccess });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.patch("/active/:id", auth, authAdmin, async (req, res) => {
+	try {
+		await User.findOneAndUpdate(
+			{ _id: req.params.id },
+			{
+				active,
+			},
+		);
+
+		res.send({ msg: updateSuccess });
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
 userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
 	try {
-		await User.findOneAndUpdate(
-			{ _id: req.params.id },
-			{
-				deleted,
-			},
-		);
+		await User.findOneAndRemove({ _id: req.params.id });
 
-		res.json({ msg: "Deleted Success!" });
+		res.send({ msg: "Perfil eliminado de la base de datos. " });
 	} catch (err) {
-		return res.status(500).json({ msg: err.message });
+		return res.status(500).send({ msg: err.message });
 	}
 });
 
