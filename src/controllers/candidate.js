@@ -53,29 +53,28 @@ candidateRouter.get("/result/:id", async (req, res) => {
 });
 
 // CREATES A NEW USER
-candidateRouter.post("/new", async (req, res, next) => {
-	const {
-		firstName,
-		secondName,
-		firstSurname,
-		secondSurname,
-		email,
-		phone1,
-		rol,
-	} = req.body;
-	const newUser = new User({
-		firstName,
-		secondName,
-		firstSurname,
-		secondSurname,
-		email,
-		phone1,
-		rol,
-	});
-	await newUser.save();
-	res.send(`${newUser.firstName} saved`);
-});
-
+// candidateRouter.post("/new", async (req, res, next) => {
+// 	const {
+// 		firstName,
+// 		secondName,
+// 		firstSurname,
+// 		secondSurname,
+// 		email,
+// 		phone1,
+// 		rol,
+// 	} = req.body;
+// 	const newUser = new User({
+// 		firstName,
+// 		secondName,
+// 		firstSurname,
+// 		secondSurname,
+// 		email,
+// 		phone1,
+// 		rol,
+// 	});
+// 	await newUser.save();
+// 	res.send(`${User.firstName} saved`);
+// });
 
 
 // CREATE THE PROFILE OF A USER
@@ -209,7 +208,7 @@ candidateRouter.post(
 			// status,
 		});
 		await newProfile.save();
-		res.send(`${newProfile.user_id} profile saved`);
+		res.send(`${Profile.user_id} profile saved`);
 	},
 );
 
@@ -341,15 +340,15 @@ candidateRouter.post("/new-result", async (req, res) => {
     } = req.body;
     // Viariables destructuring from user names
 
-		const candidate = await User.findById(user_id);
+		const candidate = await Profile.findById(user_id);
 		const { firstName, secondName, firstSurname, secondSurname } = candidate;
 		// Creating full name
-		const fullName = `${firstName} ${secondName} ${firstSurname} ${secondSurname}`;
+		const userFullName = `${firstName} ${secondName} ${firstSurname} ${secondSurname}`;
 
     // Creating new Result document
     const newResult = new Result({
       user_id,
-      fullName,
+      userFullName,
       htmlScore,
       cssScore,
       javascriptScore,
@@ -412,11 +411,16 @@ oAuth2Client.setCredentials({
 candidateRouter.get("/sololearm/:id", async (req, res) => {
   var id = req.params.id;
   const perfiles = await Profile.find({ user_id: id });
+  console.log("uno", perfiles);
   const params = JSON.stringify(perfiles);
   const json = JSON.parse(params);
+  console.log("dos", json);
   for (x of json) {
     var usersololearm = x.soloLearnProfile;
+    console.log("tres", x);
+    console.log(usersololearm);
   }
+  console.log("hola", usersololearm);
   if (usersololearm === undefined) {
     console.log("This user does not have a sololearn profile");
   } else {
@@ -426,6 +430,7 @@ candidateRouter.get("/sololearm/:id", async (req, res) => {
     for (y of json2) {
       var users_id = y.user_id.toString();
     }
+    console.log("mm", users_id);
     request(
       `https://api.sololearn.repl.co/profile/${usersololearm}`,
       async (err, response, body) => {
@@ -437,15 +442,16 @@ candidateRouter.get("/sololearm/:id", async (req, res) => {
           var javascript = 0;
           var python = 0;
           for (let i = 0; i < user.coursesProgress.length; i++) {
-            if (user.coursesProgress[i].courseId === 1014) {
+            if (user.coursesProgress[i].courseId === 1023) {
+              css = user.coursesProgress[i].progress;
+            } else if (user.coursesProgress[i].courseId === 1172) {
+              python = user.coursesProgress[i].progress;
+            } else if (user.coursesProgress[i].courseId === 1014) {
               html = user.coursesProgress[i].progress;
             } else if (user.coursesProgress[i].courseId === 1024) {
               javascript = user.coursesProgress[i].progress;
-            } else if (user.coursesProgress[i].courseId === 1023) {
-              css = user.coursesProgress[i].progress;
-            } else if (user.coursesProgress[i].courseId === 1073) {
-              python = user.coursesProgress[i].progress;
             }
+            console.log(user.coursesProgress[i].courseName + " " + user.coursesProgress[i].progress);
           }
           var p = (html + css + javascript + python) / 4;
           const {
