@@ -236,11 +236,10 @@ userRouter.get("/users_info", auth, async (req, res) => {
 
 //auth, authAdmin,
 // get all info (need to auth and be admin)
-userRouter.get("/all_info/:page?",  async (req, res) => {
+userRouter.get("/all_info/:page",  async (req, res) => {
 	try {
 		const perPage = 3;
-		const { page = 1 } = req.params;
-		console.log(page)
+		const page = req.params.page || 1;
 		const [ profiles, total ] = await Promise.all([
 			User.find()
 			.select("-password")
