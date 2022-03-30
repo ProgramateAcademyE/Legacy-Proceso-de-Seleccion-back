@@ -222,8 +222,10 @@ candidateRouter.get("/candidate-profile", async (req, res) => {
 	try {
     const candidateProfile = await Profile.find();
     res.send(candidateProfile);
+    console.log(candidateProfile);
 	} catch {
 		res.status(404).send({error: "ERROR" })
+    console.log("hola");
 	}
 });
 
@@ -327,7 +329,7 @@ candidateRouter.post("/new-result", async (req, res) => {
   try {
     // Viariables destructuring from req.body
     const {
-      user_id,
+      user_id,    
       htmlScore,
       cssScore,
       javascriptScore,
