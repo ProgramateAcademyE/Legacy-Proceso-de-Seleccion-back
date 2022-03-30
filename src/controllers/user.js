@@ -220,6 +220,20 @@ userRouter.get("/info", auth, async (req, res) => {
 		return res.status(500).send({ msg: err.message });
 	}
 });
+
+
+userRouter.get("/users_info", auth, async (req, res) => {
+	try {
+		const users = await User.find({"role": {$eq: 0}})
+			.select("-password")
+			.select("-passwordHash");
+
+		res.send(users);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
 //auth, authAdmin,
 // get all info (need to auth and be admin)
 userRouter.get("/all_info/:page",  async (req, res) => {
@@ -248,17 +262,7 @@ userRouter.get("/all_info/:page",  async (req, res) => {
 	}
 });
 
-userRouter.get("/users_info", auth, async (req, res) => {
-	try {
-		const users = await User.find({"role": {$eq: 0}})
-			.select("-password")
-			.select("-passwordHash");
 
-		res.send(users);
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
-});
 
 userRouter.get("/admins_info", auth, authAdmin, async (req, res) => {
 	try {
