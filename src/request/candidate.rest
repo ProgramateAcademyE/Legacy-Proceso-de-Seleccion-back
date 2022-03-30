@@ -5,3 +5,15 @@ GET http://localhost:3001/api/candidate/sololearm/623b5dd353834ea2bba50a7a
 
 ###
 GET http://localhost:3001/api/candidate/result/623b5dd353834ea2bba50a7a
+
+###
+POST http://localhost:3001/api/candidate/new-result
+Content-Type: application/json
+
+{
+  "user_id": "622f9cd1d6a4c933ae7cab1d",    
+  "htmlScore": 1,
+  "cssScore": 1,
+  "javascriptScore": 1,
+  "pythonScore": 1
+}

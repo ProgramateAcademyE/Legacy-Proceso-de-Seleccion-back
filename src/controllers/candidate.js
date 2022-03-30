@@ -37,9 +37,6 @@ const upload = multer({
   storage: storage,
 });
 
-
-
-
 // GET CALIFACATION
 candidateRouter.get("/calification", async (req, res) => {
   const calification = await Result.find();
@@ -128,22 +125,9 @@ candidateRouter.post(
 			languageLevel,
 			pcAccess,
 			motivationLetter,
-			soloLearnProfile,
-			// heardFromUs: {
-			//     web,
-			//     recommendation,
-			//     facebook,
-			//     instagram,
-			//     google,
-			//     compensar,
-			//     allianceEducational,
-			//     embassyVen,
-			//     poliTec,
-			//     PNUD,
-			//     other
-			// },
-			
+			soloLearnProfile,			
 		} = req.body;
+
 		console.log(req.body);
 		const newProfile = new Profile({
 			user_id,
@@ -192,21 +176,8 @@ candidateRouter.post(
 			pcAccess,
 			motivationLetter,
 			soloLearnProfile,
-			// heardFromUs: {
-			//     web,
-			//     recommendation,
-			//     facebook,
-			//     instagram,
-			//     google,
-			//     compensar,
-			//     allianceEducational,
-			//     embassyVen,
-			//     poliTec,
-			//     PNUD,
-			//     other
-			// },
-			// status,
 		});
+
 		await newProfile.save();
 		res.send(`${Profile.user_id} profile saved`);
 	},
@@ -341,8 +312,9 @@ candidateRouter.post("/new-result", async (req, res) => {
       pass,
     } = req.body;
     // Viariables destructuring from user names
+    console.log(user_id)
 
-		const candidate = await Profile.findById(user_id);
+		const candidate = await Profile.find({ user_id: user_id });
 		const { firstName, secondName, firstSurname, secondSurname } = candidate;
 		// Creating full name
 		const userFullName = `${firstName} ${secondName} ${firstSurname} ${secondSurname}`;
