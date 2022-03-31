@@ -163,6 +163,9 @@ const profileSchema = new Schema({
 	motivationLetter : {
 		type: String,
 	},
+	techTest: {
+		type: String,
+	}
 });
 
 profileSchema.set("toJSON", {
