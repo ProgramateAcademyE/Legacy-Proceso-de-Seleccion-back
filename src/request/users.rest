@@ -25,7 +25,14 @@ GET http://localhost:3001/api/user/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVC
 ### Get all users info with admin auth
 ### An unexpired authentication token is needed here set token in header 
 GET http://localhost:3001/api/user/all_info
-Content-Type: application/json
+
+###
+GET http://localhost:3001/api/user/users_info
+{
+  "user": {
+    "id": "6237c2f0377003c146ab9df3"
+  }
+}
 
 
 ### 
