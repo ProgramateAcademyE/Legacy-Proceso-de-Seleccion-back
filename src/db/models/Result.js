@@ -8,7 +8,7 @@ const ResultSchema = new Schema(
     htmlScore: {type: Number, required: true},
     cssScore: {type: Number, required: true},
     javascriptScore: {type: Number, required: true},
-    pythonScore: {type: Number},
+    pythonScore: {type: Number, required: true},
     Score: {type: Number},
     soloLearnScore: {type: Number},
     personalProfileScore: {type: Number},

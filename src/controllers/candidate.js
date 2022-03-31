@@ -78,9 +78,9 @@ candidateRouter.get("/result/:id", async (req, res) => {
 
 
 // CREATE THE PROFILE OF A USER
-candidateRouter.post(
-	"/profile",
-	upload.single("pdf"),
+//upload.single("pdf"),
+candidateRouter.post("/profile",
+	
 	async (req, res, next) => {
 		const {
 			user_id,
@@ -208,7 +208,7 @@ candidateRouter.post(
 			// status,
 		});
 		await newProfile.save();
-		res.send(`${Profile.user_id} profile saved`);
+		res.send(`${newProfile.user_id} profile saved`);
 	},
 );
 
