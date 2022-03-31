@@ -8,6 +8,7 @@ const { ConnectionStates } = require("mongoose");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const Citation = require("../db/models/Citation");
+const auth = require("../middleware/auth");
 const { OAuth2 } = google.auth;
 
 const candidateRouter = require("express").Router();
@@ -184,6 +185,31 @@ candidateRouter.post(
 		res.send(`${Profile.user_id} profile saved`);
 	}
 );
+
+// Get profile by id
+candidateRouter.get('/candidate/:id', async(req, res) => {
+	try {
+		const candidateProfile = await Profile.findOne({user_id: req.params.id})
+		res.send(candidateProfile)
+	} catch (error) {
+		res.send({ error: error })
+	}
+})
+
+// Save tech test
+candidateRouter.patch('/tech-test/:id', async(req, res) => {
+	const { techTest } = req.body
+	console.log(req.params.id)
+	try {
+		await Profile.findOneAndUpdate(
+			{ user_id : req.params.id },
+			{ techTest },
+		);
+		res.send({ msg: "Prueba tecnica enviada con exito" });
+	} catch (error) {
+		return res.send({ error: error })
+	}
+})
 
 // GET ALL CANDIDATES
 candidateRouter.get("/candidate", async (req, res) => {
