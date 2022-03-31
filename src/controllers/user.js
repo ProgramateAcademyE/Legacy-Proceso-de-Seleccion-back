@@ -358,7 +358,7 @@ const createActivationToken = (payload) => {
 
 const createAccessToken = (payload) => {
 	return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-		expiresIn: "15m",
+		expiresIn: "15000m",
 	});
 };
 
