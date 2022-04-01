@@ -1,7 +1,27 @@
-GET http://localhost:3001/api/candidate/candidate-profile
+GET http://localhost:3001/api/candidate/candidate/6243407c372ba8fb96ad13c1
 
 ###
-GET http://localhost:3001/api/candidate/sololearm/623b5dd353834ea2bba50a7a
+GET http://localhost:3001/api/candidate/sololearm/6230feb4f9fad50b19d99566
 
 ###
-GET http://localhost:3001/api/candidate/result/623b5dd353834ea2bba50a7a
+GET http://localhost:3001/api/candidate/result/6244fce9383dfe3bf6cb446d
+
+###
+POST http://localhost:3001/api/candidate/new-result
+Content-Type: application/json
+
+{
+  "user_id": "622f9cd1d6a4c933ae7cab1d",    
+  "htmlScore": 1,
+  "cssScore": 1,
+  "javascriptScore": 1,
+  "pythonScore": 1
+}
+
+### add tech test
+PATCH http://localhost:3001/api/candidate/tech-test/6238b81b9d49dda500ed3fb3
+Content-Type: application/json
+
+{
+  "techTest": "https:google.com"
+}

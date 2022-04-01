@@ -6,6 +6,8 @@ const profileSchema = new Schema({
 		ref: "User",
 		type: String
 	},
+	/* Proceso de seleccion */
+
 	firstName: {
 		type: String,
 	},
@@ -23,6 +25,7 @@ const profileSchema = new Schema({
 	},
 	documentNumber: {
 		type: Number,
+
 	},
 	documentPdf: {
 		type: String,
@@ -61,6 +64,7 @@ const profileSchema = new Schema({
 	dateOfBirth: {
 		type: Date,
 	},
+
 	maritalStatus: {
 		type: String,
 	},
@@ -69,12 +73,15 @@ const profileSchema = new Schema({
 	},
 	address: {
 		type: String,
+		
 	},
 	areaType: {
 		type: String,
 	},
+	
 	billPdf: {
 		type: String,
+
 	},
 	disability: {
 		type: [], //array
@@ -87,27 +94,34 @@ const profileSchema = new Schema({
 	},
 	householdMembers: { 
 		type: String,
+
 	},
 	numberOfChildren: {
 		type: String,
+
 	},
 	internetCompany: {
 		type: String,
+
 	},
 	mbCount: {
 		type: Number,
+
 	},
 	internetAccess: {
 		type: String,
 	},
 	vulnerablePopulation: { // array
 		type: [],
+
 	},
 	degreeTitle: {
 		type: String,
+
 	},
 	academicLevel: {
 		type: String,
+
 	},
 	studiesPdf: {
 		type: String,
@@ -120,21 +134,27 @@ const profileSchema = new Schema({
 	},
 	currentOccupation: {
 		type: String,
+
 	},
 	contractWorker: {
 		type: String,
+
 	},
 	householder: {
 		type: String,
+
 	},
 	firstLanguage: {
 		type: String,
+
 	},
 	secondLanguage: {
 		type: String,
+
 	},
 	languageLevel: {
 		type: String,
+
 	},
 	soloLearnProfile: {
 		type: Number,
@@ -145,208 +165,10 @@ const profileSchema = new Schema({
 	},
 	dreamLetter : {
 		type: String
+	},
+	techTest: {
+		type: String,
 	}
-
-	// /* Agora */
-
-	// outcome: {
-	// 	outcome1: {
-	// 		generalcomment: {
-	// 			type: String,
-	// 		},
-	// 		techcomment: {
-	// 			type: String,
-	// 		},
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	outcome2: {
-	// 		generalcomment: {
-	// 			type: String,
-	// 		},
-	// 		techcomment: {
-	// 			type: String,
-	// 		},
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	outcome3: {
-	// 		generalcomment: {
-	// 			type: String,
-	// 		},
-	// 		techcomment: {
-	// 			type: String,
-	// 		},
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	outcome4: {
-	// 		generalcomment: {
-	// 			type: String,
-	// 		},
-	// 		techcomment: {
-	// 			type: String,
-	// 		},
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	outcome5: {
-	// 		generalcomment: {
-	// 			type: String,
-	// 		},
-	// 		techcomment: {
-	// 			type: String,
-	// 		},
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	outcome6: {
-	// 		generalcomment: {
-	// 			type: String,
-	// 		},
-	// 		techcomment: {
-	// 			type: String,
-	// 		},
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// },
-
-	// badges: {
-	// 	badges1: {
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	badges2: {
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	badges3: {
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	badges4: {
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// 	badges5: {
-	// 		aprove: {
-	// 			type: Boolean,
-	// 			default: true,
-	// 		},
-	// 	},
-	// },
-
-	// /* fin Agora */
-
-	// /* mentoria */
-
-	// gender: {
-	// 	type: Number,
-	// },
-
-	// mentorAssigment: {
-	// 	type: String,
-	// },
-
-	// prev_studes: {
-	// 	type: String,
-	// },
-
-	// actualAge: {
-	// 	type: Number,
-	// },
-	// sesiones: {
-	// 	type: Number,
-	// },
-
-	// interest: {
-	// 	type: Array,
-	// 	require: true,
-	// },
-
-	// /* fin mentoria */
-
-	// /* Social Programate */
-
-	// experience: {
-	// 	type: "string",
-	// 	trim: true,
-	// 	lowercase: true,
-	// },
-	// description: {
-	// 	type: "string",
-	// 	trim: true,
-	// 	lowercase: true,
-	// },
-	// github: {
-	// 	type: "string",
-	// 	trim: true,
-	// 	lowercase: true,
-	// },
-	// softSkills: {
-	// 	type: "string",
-	// 	trim: true,
-	// 	lowercase: true,
-	// },
-	// technicalSkills: {
-	// 	type: "string",
-	// 	trim: true,
-	// 	lowercase: true,
-	// },
-
-	// /* fin social programate */
-
-	/* Proceso de seleccion */
-
-	// status: 
-	//	registered: type: Boolean ,
-	//	waitList:  type: Boolean ,
-	//	withCitation:  type: Boolean ,
-	//	booked:  type: Boolean ,
-	//	interviewed:  type: Boolean ,
-	//	pass:  type: Boolean ,
-	//	noPass: type: Boolean , 
-	//},
-	// heardFromUs: {
-	//     web: Boolean,
-	//     recommendation: Boolean,
-	//     facebook: Boolean,
-	//     instagram: Boolean,
-	//     google: Boolean,
-	//     compensar: Boolean,
-	//     allianceEducational: Boolean,
-	//     embassyVen: Boolean,
-	//     poliTec: Boolean,
-	//     PNUD: Boolean,
-	//     other: Boolean,
-	// },
-	// // convocatoria: String,
-	// // resultados: Number,
-	// // fechaEntrevista: Date,
-	// // urlPrueba: String,
-	// // promedioEntrevista: Number,
-	/* fin proceso seleccion  */
 });
 
 profileSchema.set("toJSON", {

@@ -8,6 +8,7 @@ const { ConnectionStates } = require("mongoose");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const Citation = require("../db/models/Citation");
+const auth = require("../middleware/auth");
 const { OAuth2 } = google.auth;
 
 const candidateRouter = require("express").Router();
@@ -29,10 +30,11 @@ const storage = multer.diskStorage({
 	filename: function (req, file, cb) {
 		cb(
 			"",
-			Date.now() + file.originalname + "." + mimeTypes.extension(file.mimetype),
+			Date.now() + file.originalname + "." + mimeTypes.extension(file.mimetype)
 		);
 	},
 });
+
 const upload = multer({
 	storage: storage,
 });
@@ -126,20 +128,9 @@ upload.single("pdf"),
 			motivationLetter,
 			dreamLetter,
 			soloLearnProfile,
-			// heardFromUs: {
-			//     web,
-			//     recommendation,
-			//     facebook,
-			//     instagram,
-			//     google,
-			//     compensar,
-			//     allianceEducational,
-			//     embassyVen,
-			//     poliTec,
-			//     PNUD,
-			//     other
-			// },
+			techTest,
 		} = req.body;
+
 		console.log(req.body);
 		const newProfile = new Profile({
 			user_id,
@@ -189,25 +180,38 @@ upload.single("pdf"),
 			motivationLetter,
 			dreamLetter,
 			soloLearnProfile,
-			// heardFromUs: {
-			//     web,
-			//     recommendation,
-			//     facebook,
-			//     instagram,
-			//     google,
-			//     compensar,
-			//     allianceEducational,
-			//     embassyVen,
-			//     poliTec,
-			//     PNUD,
-			//     other
-			// },
-			// status,
+			techTest,
 		});
+
 		await newProfile.save();
-		res.send(`${newProfile.user_id} profile saved`);
-	},
+		res.send(`${Profile.user_id} profile saved`);
+	}
 );
+
+// Get profile by id
+candidateRouter.get('/candidate/:id', async(req, res) => {
+	try {
+		const candidateProfile = await Profile.findOne({user_id: req.params.id})
+		res.send(candidateProfile)
+	} catch (error) {
+		res.send({ error: error })
+	}
+})
+
+// Save tech test
+candidateRouter.patch('/tech-test/:id', async(req, res) => {
+	const { techTest } = req.body
+	console.log(req.params.id)
+	try {
+		await Profile.findOneAndUpdate(
+			{ user_id : req.params.id },
+			{ techTest },
+		);
+		res.send({ msg: "Prueba tecnica enviada con exito" });
+	} catch (error) {
+		return res.send({ error: error })
+	}
+})
 
 // GET ALL CANDIDATES
 candidateRouter.get("/candidate", async (req, res) => {
@@ -335,8 +339,9 @@ candidateRouter.post("/new-result", async (req, res) => {
 			pass,
 		} = req.body;
 		// Viariables destructuring from user names
+		console.log(user_id);
 
-		const candidate = await Profile.findById(user_id);
+		const candidate = await Profile.find({ user_id: user_id });
 		const { firstName, secondName, firstSurname, secondSurname } = candidate;
 		// Creating full name
 		const userFullName = `${firstName} ${secondName} ${firstSurname} ${secondSurname}`;
@@ -376,7 +381,7 @@ candidateRouter.put("/update-candidate", async (req, res) => {
 				{ user_id: user_id },
 				{
 					$set: req.body.candidate,
-				},
+				}
 			);
 		}
 		if (profile) {
@@ -384,7 +389,7 @@ candidateRouter.put("/update-candidate", async (req, res) => {
 				{ user_id: user_id },
 				{
 					$set: req.body.profile,
-				},
+				}
 			);
 		}
 		res.send({ data: candidate });
@@ -395,7 +400,7 @@ candidateRouter.put("/update-candidate", async (req, res) => {
 
 const oAuth2Client = new OAuth2(
 	"169447507213-pp77cjt1i0miu0fsfea1dson2vuvnvn7.apps.googleusercontent.com",
-	"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",
+	"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"
 );
 
 oAuth2Client.setCredentials({
@@ -450,7 +455,7 @@ candidateRouter.get("/sololearm/:id", async (req, res) => {
 						console.log(
 							user.coursesProgress[i].courseName +
 								" " +
-								user.coursesProgress[i].progress,
+								user.coursesProgress[i].progress
 						);
 					}
 					var p = (html + css + javascript + python) / 4;
@@ -485,14 +490,14 @@ candidateRouter.get("/sololearm/:id", async (req, res) => {
 									pythonScore: python,
 									soloLearnScore: p.toFixed(2),
 								},
-							},
+							}
 						);
 						console.log("Updated successfully");
 					}
 				} else {
 					console.log("Error" + err.message);
 				}
-			},
+			}
 		);
 	}
 	res.send("seving datas");
@@ -534,7 +539,7 @@ candidateRouter.post("/attendevent/:id/:idevent", async (req, res) => {
 				$push: {
 					users: { $each: [userid] },
 				},
-			},
+			}
 		);
 
 		const us = await User.find({ _id: id });
