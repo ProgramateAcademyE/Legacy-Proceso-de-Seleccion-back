@@ -143,6 +143,9 @@ const profileSchema = new Schema({
 	motivationLetter : {
 		type: String,
 	},
+	dreamLetter : {
+		type: String
+	}
 
 	// /* Agora */
 
