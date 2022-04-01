@@ -76,10 +76,7 @@ candidateRouter.get("/result/:id", async (req, res) => {
 // });
 
 // CREATE THE PROFILE OF A USER
-//
-candidateRouter.post("/profile",
-upload.single("pdf"),
-	async (req, res, next) => {
+candidateRouter.post("/profile", upload.single("pdf"), async (req, res, next) => {
 		const {
 			user_id,
 			firstName,
@@ -304,7 +301,6 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 	});
 });
 
-// update a motivation letter by id
 candidateRouter.put("/motivation-update/:id", async (req, res) => {
 	try {
 		const user_id = req.params.id;
