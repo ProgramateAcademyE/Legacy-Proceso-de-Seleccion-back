@@ -76,10 +76,7 @@ candidateRouter.get("/result/:id", async (req, res) => {
 // });
 
 // CREATE THE PROFILE OF A USER
-candidateRouter.post(
-	"/profile",
-	upload.single("pdf"),
-	async (req, res, next) => {
+candidateRouter.post("/profile", upload.single("pdf"), async (req, res, next) => {
 		const {
 			user_id,
 			firstName,
@@ -126,6 +123,7 @@ candidateRouter.post(
 			languageLevel,
 			pcAccess,
 			motivationLetter,
+			dreamLetter,
 			soloLearnProfile,
 			techTest,
 		} = req.body;
@@ -177,6 +175,7 @@ candidateRouter.post(
 			languageLevel,
 			pcAccess,
 			motivationLetter,
+			dreamLetter,
 			soloLearnProfile,
 			techTest,
 		});
@@ -300,13 +299,17 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 	});
 });
 
-// update a motivation letter by id
-candidateRouter.put("/motivation-letter-update/:id", async (req, res) => {
+candidateRouter.put("/motivation-update/:id", async (req, res) => {
 	try {
 		const user_id = req.params.id;
-		const { motivationLetter } = req.body;
+		const { motivationLetter, dreamLetter } = req.body;
 		console.log(req.body);
-		await Profile.findOneAndUpdate({ user_id: user_id }, { motivationLetter });
+		await Profile.findOneAndUpdate(
+      { user_id: user_id }, 
+      { 
+        motivationLetter, 
+        dreamLetter 
+      });
 
 		res.json({ msg: "Carta de motivacion actualizada con exito" });
 	} catch (e) {
