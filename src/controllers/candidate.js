@@ -295,6 +295,7 @@ candidateRouter.get("/candidate-profile/:id", async (req, res) => {
 		motivationLetter: candidateProfile[0].motivationLetter,
 		dreamLetter: candidateProfile[0].dreamLetter,
 		soloLearnProfile: candidateProfile[0].soloLearnProfile,
+    techTest: candidateProfile[0].techTest,
 	};
 	res.send({
 		data: {
