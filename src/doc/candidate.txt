@@ -1,0 +1,64 @@
+### Create a profile when a user send the form
+POST http://localhost:3001/api/candidate/profile
+Content-Type: application/json
+
+{
+  user_id, //user_id is generated automatically
+  firstName,
+  secondName,
+  firstSurname,
+  secondSurname,
+  documentType,
+  documentNumber,
+  documentPdf,
+  phone1,
+  phone2,
+  nacionality,
+  residencyDepartment,
+  municipalityOfResidency,
+  locationInBogota,
+  Stratum,
+  email,
+  sex,
+  age,
+  address,
+  dateOfBirth,
+  currentCountry,
+  areaType,
+  billPdf,
+  disability,
+  familyIncome,
+  householdMembers,
+  numberOfChildren,
+  internetCompany,
+  mbCount,
+  internetAccess,
+  maritalStatus,
+  vulnerablePopulation,
+  academicLevel,
+  studiesPdf,
+  cvPdf,
+  degreeTitle,
+  currentOccupation,
+  unemployementTime,
+  contractWorker,
+  householder,
+  firstLanguage,
+  secondLanguage,
+  languageLevel,
+  pcAccess,
+  motivationLetter,
+  dreamLetter,
+  soloLearnProfile,
+}
+
+### Update motivation fields 
+PATCH http://localhost:3001/api/cadidate/motivation-update/:id
+// id is asigned by MongoDB to each document and it is unique 
+Content-Type: application/json
+
+{
+  "motivationLetter":"user motivation letter type string"
+  "dreamLetter":"user dream letter type string"
+}
+
