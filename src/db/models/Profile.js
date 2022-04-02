@@ -113,7 +113,6 @@ const profileSchema = new Schema({
 	},
 	vulnerablePopulation: { // array
 		type: [],
-
 	},
 	degreeTitle: {
 		type: String,
@@ -155,6 +154,9 @@ const profileSchema = new Schema({
 	languageLevel: {
 		type: String,
 
+	},
+	discoverUs: {
+		type: String,
 	},
 	soloLearnProfile: {
 		type: Number,

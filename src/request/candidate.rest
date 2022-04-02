@@ -25,3 +25,9 @@ Content-Type: application/json
 {
   "techTest": "https:google.com"
 }
+
+### Get all profiles
+GET http://localhost:3001/api/candidate/candidate-profile
+
+### Get all Solo learn calification
+GET http://localhost:3001/api/candidate/calification

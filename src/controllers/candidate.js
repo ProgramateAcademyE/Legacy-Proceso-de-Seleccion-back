@@ -51,30 +51,6 @@ candidateRouter.get("/result/:id", async (req, res) => {
 	res.send(result);
 });
 
-// CREATES A NEW USER
-// candidateRouter.post("/new", async (req, res, next) => {
-// 	const {
-// 		firstName,
-// 		secondName,
-// 		firstSurname,
-// 		secondSurname,
-// 		email,
-// 		phone1,
-// 		rol,
-// 	} = req.body;
-// 	const newUser = new User({
-// 		firstName,
-// 		secondName,
-// 		firstSurname,
-// 		secondSurname,
-// 		email,
-// 		phone1,
-// 		rol,
-// 	});
-// 	await newUser.save();
-// 	res.send(`${User.firstName} saved`);
-// });
-
 // CREATE THE PROFILE OF A USER
 candidateRouter.post("/profile", upload.single("pdf"), async (req, res, next) => {
 		const {
@@ -124,6 +100,7 @@ candidateRouter.post("/profile", upload.single("pdf"), async (req, res, next) =>
 			pcAccess,
 			motivationLetter,
 			dreamLetter,
+			discoverUs,
 			soloLearnProfile,
 			techTest,
 		} = req.body;
@@ -176,6 +153,7 @@ candidateRouter.post("/profile", upload.single("pdf"), async (req, res, next) =>
 			pcAccess,
 			motivationLetter,
 			dreamLetter,
+			discoverUs,
 			soloLearnProfile,
 			techTest,
 		});
@@ -215,6 +193,7 @@ candidateRouter.get("/candidate", async (req, res) => {
 	const candidates = await User.find();
 	res.send(candidates);
 });
+
 // GET ALL PROFILES
 candidateRouter.get("/candidate-profile", async (req, res) => {
 	try {
