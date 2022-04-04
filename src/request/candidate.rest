@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### add tech test
-PATCH http://localhost:3001/api/candidate/tech-test/6238b81b9d49dda500ed3fb3
+PATCH http://165.227.220.15/api/candidate/tech-test/622f9cd1d6a4c933ae7cab1d
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Get all profiles
-GET http://localhost:3001/api/candidate/candidate-profile
+GET http://165.227.220.15/api/candidate/candidate-profile
 
 ### Get all Solo learn calification
-GET http://localhost:3001/api/candidate/calification
+GET http://165.227.220.15/api/candidate/calification

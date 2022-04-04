@@ -1,5 +1,5 @@
 ### Get all Convocatories
-GET http://localhost:3001/api/admin/convocatories
+GET http://165.227.220.15/api/admin/convocatories
 
 ### Get one Convocatory
 GET http://localhost:3001/api/admin/convocatory/6231dea2f8bb6b79f57c25e8
