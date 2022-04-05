@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### Update Convocatory
-PUT http://localhost:3001/api/admin/update-conv/6231dd4ff8bb6b79f57c259d
+PUT  https://selectprocess.herokuapp.com/api/admin/update-conv/6231dd4ff8bb6b79f57c259d
 Content-Type: application/json
 
 {
