@@ -60,40 +60,40 @@ userRouter.post("/register", async (req, res) => {
 	}
 });
 
+
 //create a profile different to a user
-userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
-	try {
-		const { names, surname, email, password, role } = req.body;
+ userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
+    try { 
+	  const { names, surname, email, password, role } = req.body;
 
-		if (!names || !surname || !email || !password || !role)
-			return res.status(400).send({ msg: errorFields });
+	   if (!names || !surname || !email || !password || !role)
+	    return res.status(400).send({ msg: errorFields }); 
 
-		if (!validateEmail(email))
-			return res.status(400).send({ msg: errorInvalidEmail });
+		if (!validateEmail(email)) 
+		return res.status(400).send({ msg: errorInvalidEmail }); 
 
 		const user = await User.findOne({ email });
+		 if (user) 
+		return res.status(400).send({ msg: errorExistEmail }); 
 
-		if (user) return res.status(400).send({ msg: errorExistEmail });
+		if (password.length < 6) 
+		return res.status(400).send({ msg: errorCharactersPassword }); 
 
-		if (password.length < 6)
-			return res.status(400).send({ msg: errorCharactersPassword });
-
-		const passwordHash = await bcrypt.hash(password, 12);
-
-		const newUser = new User({
-			names,
+		const passwordHash = await bcrypt.hash(password, 12); 
+		const newUser = new User({ 
+			names, 
 			surname,
-			email,
-			passwordHash,
+			email, 
+			passwordHash, 
 			role,
-		});
+		 }); 
 
 		await newUser.save();
-		res.send({ msg: "Perfil creado exitosamente. " });
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
-});
+		res.send({ msg: "Perfil creado exitosamente. " }); 
+	} 
+	catch (err)
+	 { return res.status(500).send({ msg: err.message });
+ } }); 
 
 // User activation
 userRouter.get("/activation/:activation_token", async (req, res) => {
@@ -222,17 +222,7 @@ userRouter.get("/info", auth, async (req, res) => {
 });
 
 
-userRouter.get("/users_info", auth, async (req, res) => {
-	try {
-		const users = await User.find({"role": {$eq: 0}})
-			.select("-password")
-			.select("-passwordHash");
 
-		res.send(users);
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
-});
 
 //auth, authAdmin,
 // get all info (need to auth and be admin)
@@ -262,19 +252,97 @@ userRouter.get("/all_info/:page",  async (req, res) => {
 	}
 });
 
+// ========================================CAROL
 
 
-userRouter.get("/admins_info", auth, authAdmin, async (req, res) => {
+//trae todos los usuarios segun los roles
+userRouter.get("/users_info", async (req, res) => {
+	try {
+		const users = await User.find({"role": {$eq: 0}})
+			;
+
+		res.send(users);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/admins_info",async (req, res) => {
 	try {
 		const admins = await User.find({"role": {$eq: 1}})
-			.select("-password")
-			.select("-passwordHash");
+			
 
 		res.send(admins);
 	} catch (err) {
 		return res.status(500).send({ msg: err.message });
 	}
 });
+
+userRouter.get("/moderator_info",async (req, res) => {
+	try {
+		const interviewer = await User.find({"role": {$eq: 2}})
+		res.send(interviewer);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/observator_info",async (req, res) => {
+	try {
+		const interviewer = await User.find({"role": {$eq: 3}})
+		res.send(interviewer);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/interviewer_info",async (req, res) => {
+	try {
+		const interviewer = await User.find({"role": {$eq: 4}})
+		res.send(interviewer);
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.get("/filter/:userId",async (req, res) => {
+	try {
+		
+		const eachUser = await User.findById(
+			req.params.userId);
+
+		res.send({ eachUser });
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.put("/update/:userId",async (req, res) => {
+	try {
+		console.log(req.body)
+	
+		const updateUser = await User.findByIdAndUpdate(
+			req.params.userId, req.body,{
+				new:true
+			});
+
+		res.status(200).send({ updateUser });
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+userRouter.delete("/delete/:id", async (req, res) => {
+	try {
+		await User.findOneAndRemove({ _id: req.params.id });
+
+		res.send({ msg: "Perfil eliminado de la base de datos. " });
+	} catch (err) {
+		return res.status(500).send({ msg: err.message });
+	}
+});
+
+// ==============================CAROL
 
 // Logout
 userRouter.get("/logout", async (req, res) => {
@@ -287,23 +355,6 @@ userRouter.get("/logout", async (req, res) => {
 });
 
 
-userRouter.patch("/update", auth, async (req, res) => {
-	try {
-		const { names, surname, avatar } = req.body;
-		await User.findOneAndUpdate(
-			{ _id: req.user.id },
-			{
-				names,
-				surname,
-				avatar,
-			},
-		);
-
-		res.send({ msg: updateSuccess });
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
-});
 
 // Update role (need to auth and be admin)
 userRouter.patch("/update_role/:id", auth, authAdmin, async (req, res) => {
@@ -337,15 +388,7 @@ userRouter.patch("/active/:id", auth, authAdmin, async (req, res) => {
 });
 
 
-userRouter.delete("/delete/:id", auth, authAdmin, async (req, res) => {
-	try {
-		await User.findOneAndRemove({ _id: req.params.id });
 
-		res.send({ msg: "Perfil eliminado de la base de datos. " });
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
-});
 
 const validateEmail = (email) => {
 	const re =
