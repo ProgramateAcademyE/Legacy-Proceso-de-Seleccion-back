@@ -18,10 +18,11 @@ const userSchema = new mongoose.Schema(
 			trim: true,
 			unique: true,
 		},
-		passwordHash: {
+		passwordHash: { 
 			type: String,
-			required: [true, "Por favor ingresa una contraseña, esta debe tener mínimo 6 caracteres"],
-		},
+			 required: [true, "Por favor ingresa una contraseña, esta debe tener mínimo 6 caracteres"],
+		    }, 
+	
 		role: {
 			type: Number,
 			default: 0, // 0 = user, 1 = admin, 3 = observer, 4 = interviewer
