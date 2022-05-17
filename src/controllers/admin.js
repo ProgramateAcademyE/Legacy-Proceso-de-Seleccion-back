@@ -7,65 +7,59 @@ const adminRouter = require("express").Router();
 const request = require("request");
 const Administrator = require("../db/models/Administrators");
 const Citation = require("../db/models/Citation");
+const Meet = require("../db/models/Meet");
 const ObjectId = require("mongodb").ObjectID;
-const Test = require('../db/models/TechTest');
+const Test = require("../db/models/TechTest");
 const auth = require("../middleware/auth");
-
 
 // ===================== Tech Test Endpoints =======================
 // Get all tech test
 adminRouter.get("/test", async (req, res) => {
-	const results = await Test.find();
-	res.send(results);
+  const results = await Test.find();
+  res.send(results);
 });
 
 // Get one tech test
 adminRouter.get("/test/:id", async (req, res) => {
-	const results = await Test.find({ _id: req.params.id });
-	res.send(results);
+  const results = await Test.find({ _id: req.params.id });
+  res.send(results);
 });
 
 // Delete one tech test
-adminRouter.delete("/test/:id", async (req, res)=> {
-	await Test.findByIdAndDelete({ _id: req.params.id })
-	res.send({msg: "Eliminado con exito"})
-})
+adminRouter.delete("/test/:id", async (req, res) => {
+  await Test.findByIdAndDelete({ _id: req.params.id });
+  res.send({ msg: "Eliminado con exito" });
+});
 
 // Create new tech test
-adminRouter.post('/new-test', async (req, res) => {
-	try {
-		const {
-			title,
-			url,
-			pdf,
-			convocatories
-		} = req.body;
-		
-		const newTest = new Test({
-			title,
-			url,
-			pdf,
-			convocatories
-		});
+adminRouter.post("/new-test", async (req, res) => {
+  try {
+    const { title, url, pdf, convocatories } = req.body;
 
-		await newTest.save();
-		res.status(200).json({ msg: 'Convocatoria creada con exito' });
+    const newTest = new Test({
+      title,
+      url,
+      pdf,
+      convocatories,
+    });
 
-	} catch (error) {
-		res.status(400).json({ msg: `No se pudo crear la convocatoria ${error}` })
-	}
+    await newTest.save();
+    res.status(200).json({ msg: "Convocatoria creada con exito" });
+  } catch (error) {
+    res.status(400).json({ msg: `No se pudo crear la convocatoria ${error}` });
+  }
 });
 
 //Update tech test
 adminRouter.put("/test/:id", async (req, res) => {
-	try {
-		const test = await Test.findById(req.params.id);
-		Object.assign(test, req.body);
-		test.save();
-		res.status(200).send({ msg: 'Prueba actualizada exitosamente' });
-	} catch(error) {
-		res.status(404).send({ error: `Error ${error}` });
-	}
+  try {
+    const test = await Test.findById(req.params.id);
+    Object.assign(test, req.body);
+    test.save();
+    res.status(200).send({ msg: "Prueba actualizada exitosamente" });
+  } catch (error) {
+    res.status(404).send({ error: `Error ${error}` });
+  }
 });
 
 // =====================================================================
@@ -74,230 +68,228 @@ adminRouter.put("/test/:id", async (req, res) => {
 
 // CREATES NEW CONVOCATORY
 adminRouter.post("/new-conv", async (req, res, next) => {
-    try {
-        // DATA REQUIRED FROM REQUEST
-        const {
-            name,
-            initialDate,
-            finalDate,
-            maxQuotas,
-            initialBootcampDate,
-            finalBootcampDate,
-            parameterization,
-            residenceCountry,
-            residencyDepartment,
-            maxAge,
-            maxSocioeconomicStratus,
-            gender,
-            typePopulation
-        } = req.body;
-    
-        // New Convocatory document
-        const newConvocatory = new Convocatory({
-            name,
-            initialDate,
-            finalDate,
-            maxQuotas,
-            initialBootcampDate,
-            finalBootcampDate,
-            parameterization,
-            residenceCountry,
-            residencyDepartment,
-            maxAge,
-            maxSocioeconomicStratus,
-            gender,
-            typePopulation
-        });
-        
-        await newConvocatory.save();
-        res.json({ msg: 'Convocatoria creada con exito' });
-        
-    } catch (error) {
-        res.json({msg: `Algo fallo ${error}`})
-    }
+  try {
+    // DATA REQUIRED FROM REQUEST
+    const {
+      name,
+      initialDate,
+      finalDate,
+      maxQuotas,
+      initialBootcampDate,
+      finalBootcampDate,
+      parameterization,
+      residenceCountry,
+      residencyDepartment,
+      maxAge,
+      maxSocioeconomicStratus,
+      gender,
+      typePopulation,
+    } = req.body;
+
+    // New Convocatory document
+    const newConvocatory = new Convocatory({
+      name,
+      initialDate,
+      finalDate,
+      maxQuotas,
+      initialBootcampDate,
+      finalBootcampDate,
+      parameterization,
+      residenceCountry,
+      residencyDepartment,
+      maxAge,
+      maxSocioeconomicStratus,
+      gender,
+      typePopulation,
+    });
+
+    await newConvocatory.save();
+    res.json({ msg: "Convocatoria creada con exito" });
+  } catch (error) {
+    res.json({ msg: `Algo fallo ${error}` });
+  }
 });
 
 // UPDATE CONVOCATORY
 adminRouter.put("/update-conv/:id", async (req, res) => {
-	try {
-		const convocatory = await Convocatory.findById(req.params.id);
-		Object.assign(convocatory, req.body);
-		convocatory.save();
-		res.json({ msg: 'Convocatoria actualizada con exito' });
-	} catch {
-		res.status(404).send({ error: "Convocatory not found" });
-	}
+  try {
+    const convocatory = await Convocatory.findById(req.params.id);
+    Object.assign(convocatory, req.body);
+    convocatory.save();
+    res.json({ msg: "Convocatoria actualizada con exito" });
+  } catch {
+    res.status(404).send({ error: "Convocatory not found" });
+  }
 });
 
 // Add candidate to convocatory
 adminRouter.patch("/update-candidate/:id", auth, async (req, res) => {
-	try {
-		const { usersRegistered } = req.body;
+  try {
+    const { usersRegistered } = req.body;
 
-		await Convocatory.findOneAndUpdate(
-			{ _id: req.params.id },
-			{
-				usersRegistered,
-			},
-		);
-		res.send({ msg: "Te has registrado con exito" });
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
+    await Convocatory.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        usersRegistered,
+      }
+    );
+    res.send({ msg: "Te has registrado con exito" });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
 });
 
 // Get All convocatories
 adminRouter.get("/convocatories", async (req, res) => {
-	const results = await Convocatory.find();
-	res.send(results);
+  const results = await Convocatory.find();
+  res.send(results);
 });
 
 //  Get One Convocatory
 adminRouter.get("/convocatory/:id", async (req, res) => {
-	const results = await Convocatory.find({ _id: req.params.id });
-	res.send(results);
+  const results = await Convocatory.find({ _id: req.params.id });
+  res.send(results);
 });
 
 // delete convocatory
-adminRouter.delete("/convocatory/:id", async (req, res)=> {
-    await Convocatory.findByIdAndDelete({ _id: req.params.id })
+adminRouter.delete("/convocatory/:id", async (req, res) => {
+  await Convocatory.findByIdAndDelete({ _id: req.params.id });
 
-    res.send({msg: "Eliminado con exito"})
-})
+  res.send({ msg: "Eliminado con exito" });
+});
 
 // ======================================================================
 
-
 // GET STATISTICS
 adminRouter.get("/statistics", async (req, res) => {
-	// Busca la convocatoria que se encuentra activa
-	const convocatoryData = await Convocatory.find({ status: true });
-	// Busca las citaciones para obtener datos de las fechas e inscritos
-	const citationData = await Citation.find();
-	// Objeto para guardar los campos
-	const totalUsers = {
-		total: convocatoryData[0].usersRegisted.length,
-		residencyDepartment: {},
-		women: 0,
-		man: 0,
-		other: 0,
-		totalregistered: 0,
-		totalwithCitation: 0,
-		totalmigrants: 0,
-		interviewed: 0,
-		totalPass: 0,
-		interviewDays: {},
-		remainingToGoal: 0,
-		heardFromUs: {},
-	};
-	for (let citation of citationData) {
-		let date = citation.date.toString();
-		date = date.split(" ").slice(1, 4).join("-");
-		if (totalUsers.interviewDays[date]) {
-			totalUsers.interviewDays[date] += citation.users.length;
-		} else {
-			totalUsers.interviewDays[date] = citation.users.length;
-		}
-	}
-	// Ciclo para extraer la info de cada usuario registrado en la convocatoria
-	for (let candidateId of convocatoryData[0].usersRegisted) {
-		// Perfil del candidato
-		const candidate = await Profile.find({ user_id: candidateId });
-		// Total genero: 0-Mujer, 1-Hombre, 2-Otro
-		// Busca si la propiedad existe y aumenta 1, sino lo agrega con el valor 1
-		if (candidate[0].gender === 0) {
-			if (totalUsers.women) {
-				totalUsers.women += 1;
-			} else {
-				totalUsers.women = 1;
-			}
-		}
-		if (candidate[0].gender === 1) {
-			if (totalUsers.man) {
-				totalUsers.man += 1;
-			} else {
-				totalUsers.man = 1;
-			}
-		}
-		if (candidate[0].gender === 2) {
-			if (totalUsers.other) {
-				totalUsers.other += 1;
-			} else {
-				totalUsers.other = 1;
-			}
-		}
-		// Total registrados en la convocatoria
-		if (candidate[0].status.registered === true) {
-			if (totalUsers.totalregistered) {
-				totalUsers.totalregistered += 1;
-			} else {
-				totalUsers.totalregistered = 1;
-			}
-		}
-		// Total citados
-		if (candidate[0].status.withCitation === true) {
-			if (totalUsers.totalwithCitation) {
-				totalUsers.totalwithCitation += 1;
-			} else {
-				totalUsers.totalwithCitation = 1;
-			}
-		}
-		// Total entrevistados
-		if (candidate[0].status.interviewed === true) {
-			if (totalUsers.interviewed) {
-				totalUsers.interviewed += 1;
-			} else {
-				totalUsers.interviewed = 1;
-			}
-		}
-		// Total que pasaron el proceso
-		if (candidate[0].status.pass === true) {
-			if (totalUsers.totalPass) {
-				totalUsers.totalPass += 1;
-			} else {
-				totalUsers.totalPass = 1;
-			}
-		}
-		// Total de departamentos de residencia
-		// Si el departamento no existe lo agrega, si existe le suma 1
-		// En el objeto residencyDepartment en totalUsers
-		const deparment = candidate[0].residencyDepartment;
-		if (deparment) {
-			if (totalUsers.residencyDepartment[deparment]) {
-				totalUsers.residencyDepartment[deparment] += 1;
-			} else {
-				totalUsers.residencyDepartment[deparment] = 1;
-			}
-		}
-		if (candidate[0].status.migrants === true) {
-			if (totalUsers.totalmigrants) {
-				totalUsers.totalmigrants += 1;
-			} else {
-				totalUsers.totalmigrants = 1;
-			}
-		}
-		if (candidate[0].heardFromUs) {
-			for (const [key, value] of Object.entries(candidate[0].heardFromUs)) {
-				if (value) {
-					if (totalUsers.heardFromUs[key]) {
-						totalUsers.heardFromUs[key] += 1;
-					} else {
-						totalUsers.heardFromUs[key] = 1;
-					}
-				}
-			}
-		}
-	}
-	// Check how many to remains to goal
-	if (totalUsers.totalPass < convocatoryData[0].maxQuotas) {
-		const goal = convocatoryData[0].maxQuotas - totalUsers.totalPass;
-		totalUsers.remainingToGoal = goal;
-	} else {
-		totalUsers.remainingToGoal = 0;
-	}
-	res.json({
-		data: totalUsers,
-	});
+  // Busca la convocatoria que se encuentra activa
+  const convocatoryData = await Convocatory.find({ status: true });
+  // Busca las citaciones para obtener datos de las fechas e inscritos
+  const citationData = await Citation.find();
+  // Objeto para guardar los campos
+  const totalUsers = {
+    total: convocatoryData[0].usersRegisted.length,
+    residencyDepartment: {},
+    women: 0,
+    man: 0,
+    other: 0,
+    totalregistered: 0,
+    totalwithCitation: 0,
+    totalmigrants: 0,
+    interviewed: 0,
+    totalPass: 0,
+    interviewDays: {},
+    remainingToGoal: 0,
+    heardFromUs: {},
+  };
+  for (let citation of citationData) {
+    let date = citation.date.toString();
+    date = date.split(" ").slice(1, 4).join("-");
+    if (totalUsers.interviewDays[date]) {
+      totalUsers.interviewDays[date] += citation.users.length;
+    } else {
+      totalUsers.interviewDays[date] = citation.users.length;
+    }
+  }
+  // Ciclo para extraer la info de cada usuario registrado en la convocatoria
+  for (let candidateId of convocatoryData[0].usersRegisted) {
+    // Perfil del candidato
+    const candidate = await Profile.find({ user_id: candidateId });
+    // Total genero: 0-Mujer, 1-Hombre, 2-Otro
+    // Busca si la propiedad existe y aumenta 1, sino lo agrega con el valor 1
+    if (candidate[0].gender === 0) {
+      if (totalUsers.women) {
+        totalUsers.women += 1;
+      } else {
+        totalUsers.women = 1;
+      }
+    }
+    if (candidate[0].gender === 1) {
+      if (totalUsers.man) {
+        totalUsers.man += 1;
+      } else {
+        totalUsers.man = 1;
+      }
+    }
+    if (candidate[0].gender === 2) {
+      if (totalUsers.other) {
+        totalUsers.other += 1;
+      } else {
+        totalUsers.other = 1;
+      }
+    }
+    // Total registrados en la convocatoria
+    if (candidate[0].status.registered === true) {
+      if (totalUsers.totalregistered) {
+        totalUsers.totalregistered += 1;
+      } else {
+        totalUsers.totalregistered = 1;
+      }
+    }
+    // Total citados
+    if (candidate[0].status.withCitation === true) {
+      if (totalUsers.totalwithCitation) {
+        totalUsers.totalwithCitation += 1;
+      } else {
+        totalUsers.totalwithCitation = 1;
+      }
+    }
+    // Total entrevistados
+    if (candidate[0].status.interviewed === true) {
+      if (totalUsers.interviewed) {
+        totalUsers.interviewed += 1;
+      } else {
+        totalUsers.interviewed = 1;
+      }
+    }
+    // Total que pasaron el proceso
+    if (candidate[0].status.pass === true) {
+      if (totalUsers.totalPass) {
+        totalUsers.totalPass += 1;
+      } else {
+        totalUsers.totalPass = 1;
+      }
+    }
+    // Total de departamentos de residencia
+    // Si el departamento no existe lo agrega, si existe le suma 1
+    // En el objeto residencyDepartment en totalUsers
+    const deparment = candidate[0].residencyDepartment;
+    if (deparment) {
+      if (totalUsers.residencyDepartment[deparment]) {
+        totalUsers.residencyDepartment[deparment] += 1;
+      } else {
+        totalUsers.residencyDepartment[deparment] = 1;
+      }
+    }
+    if (candidate[0].status.migrants === true) {
+      if (totalUsers.totalmigrants) {
+        totalUsers.totalmigrants += 1;
+      } else {
+        totalUsers.totalmigrants = 1;
+      }
+    }
+    if (candidate[0].heardFromUs) {
+      for (const [key, value] of Object.entries(candidate[0].heardFromUs)) {
+        if (value) {
+          if (totalUsers.heardFromUs[key]) {
+            totalUsers.heardFromUs[key] += 1;
+          } else {
+            totalUsers.heardFromUs[key] = 1;
+          }
+        }
+      }
+    }
+  }
+  // Check how many to remains to goal
+  if (totalUsers.totalPass < convocatoryData[0].maxQuotas) {
+    const goal = convocatoryData[0].maxQuotas - totalUsers.totalPass;
+    totalUsers.remainingToGoal = goal;
+  } else {
+    totalUsers.remainingToGoal = 0;
+  }
+  res.json({
+    data: totalUsers,
+  });
 });
 
 // GET THE RESULTS OF CANDIDATE
@@ -481,13 +473,12 @@ adminRouter.get("/citation", async (req, res) => {
       : null
   );
 
-	const infoUsers = await Promise.all(
-		data.map(async (obj) => getUserData(obj.users))
-	);
-	data.users = data.map((user, idx) => (user.users = infoUsers[idx]));
-	res.send(data);
+  const infoUsers = await Promise.all(
+    data.map(async (obj) => getUserData(obj.users))
+  );
+  data.users = data.map((user, idx) => (user.users = infoUsers[idx]));
+  res.send(data);
 });
-
 
 adminRouter.get("/acept", async (req, res) => {
   const user = await User.find();
@@ -498,85 +489,115 @@ adminRouter.get("/acept", async (req, res) => {
 
 // Creates new citations
 adminRouter.post("/citation", async (req, res) => {
-	const { id, appointmentDate, shift, applicantQuota, enrolledNumber, titleConvocatory, shiftStart, shiftEnd, notes } = req.body;
-	const citation = new Citation({
-		id,
-		appointmentDate,
-		shift,
-		applicantQuota,
-		enrolledNumber,
-		titleConvocatory,
-		shiftStart,
-		shiftEnd,
-		notes
-	});
-	await citation.save();
-	res.send("citacion guardada");
-	res.status(404).send({error: "ERROR" });
+  const {
+    id,
+    appointmentDate,
+    shift,
+    applicantQuota,
+    enrolledNumber,
+    titleConvocatory,
+    shiftStart,
+    shiftEnd,
+    notes,
+  } = req.body;
+  const citation = new Citation({
+    id,
+    appointmentDate,
+    shift,
+    applicantQuota,
+    enrolledNumber,
+    titleConvocatory,
+    shiftStart,
+    shiftEnd,
+    notes,
+  });
+  await citation.save();
+  res.send("citacion guardada");
+  res.status(404).send({ error: "ERROR" });
 });
 // list all citation data
 adminRouter.get("/citation-all", async (req, res) => {
-    try {
-    const data = await Citation.find({})
-    res.send({data});
-} catch (e) {
-    res.status(404).send({error: "ERROR" })
-	}
+  try {
+    console.log("citation");
+    const data = await Citation.find({});
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
 });
 // update a record by id
 adminRouter.put("/citation-update/:id", async (req, res) => {
-    try {
-        
-		const id = req.params.id;
-		const { appointmentDate,
-			shift,
-			applicantQuota,
-			enrolledNumber,
-			titleConvocatory,
-			shiftStart,
-			shiftEnd,
-			notes } = req.body;
-       	await Citation.findOneAndUpdate({id:id},{ appointmentDate,
-			shift,
-			applicantQuota,
-			enrolledNumber,
-			titleConvocatory,
-			shiftStart,
-			shiftEnd,
-			notes });
-        res.json({ msg: 'Registro actualizado con exito' });
-	} catch (e) {
-		res.status(404).send({ error: "ERROR" })
-	}
+  try {
+    const id = req.params.id;
+    const {
+      appointmentDate,
+      shift,
+      applicantQuota,
+      enrolledNumber,
+      titleConvocatory,
+      shiftStart,
+      shiftEnd,
+      notes,
+    } = req.body;
+    await Citation.findOneAndUpdate(
+      { id: id },
+      {
+        appointmentDate,
+        shift,
+        applicantQuota,
+        enrolledNumber,
+        titleConvocatory,
+        shiftStart,
+        shiftEnd,
+        notes,
+      }
+    );
+    res.json({ msg: "Registro actualizado con exito" });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
 });
-
 
 // get a single record by id
 adminRouter.get("/citation-id/:id", async (req, res) => {
-    try {
-        
-        const id = req.params.id;
-        const data = await Citation.find({id:id})
-        res.send({data})
-	} catch (e) {
-		res.status(404).send({ error: "ERROR" })
-	}
+  try {
+    const id = req.params.id;
+    const data = await Citation.find({ id: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
 });
 // delete a record by id
 adminRouter.delete("/citation-delete/:id", async (req, res) => {
-    try {
-        
-        const id = req.params.id;
-        const data = await Citation.deleteOne({id})
-        res.send("Registro eliminado con exito");
-} catch (e) {
-    res.status(404).send({ res, error: "ERROR" })
-	}
+  try {
+    const id = req.params.id;
+    const data = await Citation.deleteOne({ id });
+    res.send("Registro eliminado con exito");
+  } catch (e) {
+    res.status(404).send({ res, error: "ERROR" });
+  }
 });
-
 
 // ==============================================================
 
+// ============================ Endpoints Meets =========================
+
+// Creates new Meet
+adminRouter.post("/meet", async (req, res) => {
+  const body = req.body
+  const meet = new Meet({
+    ...body,
+    usersNumber: body.users.length,
+    interviewersNumber: body.interviewers.length,
+    observersNumber: body.observers.length,
+  });
+  await meet.save();
+  res.send("Reunion guardada");
+  res.status(404).send({ error: "ERROR" });
+});
+
+// ==============================================================
 
 // To upload the thecnical test for candidates
 adminRouter.put("/upload-test", async (req, res) => {
