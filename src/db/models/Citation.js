@@ -17,13 +17,13 @@ const CitationSchema = new Schema({
     type: Date,
   },
   shift: {
-    type: ["mañana", "tarde"],
+    type: String,
     default: "mañana",
   },
-  applicantQuota: {
+  applicantQuota: { //maximo de aspirantes
     type: Number,
   },
-  enrolledNumber: {
+  enrolledNumber: { //numero actual de aspirantes
     type: Number,
     count: 0,
   },
@@ -43,14 +43,14 @@ const CitationSchema = new Schema({
     required: true,
   },
   // new field
-  users: [
-    {
-      userID: String,
-      firstName: String,
-      lastName: String,
-      location: String,
-    },
-	],	
+  //users: [
+  //  {
+   //   userID: String,
+   //   firstName: String,
+  //    lastName: String,
+  //    location: String,
+  //  },
+ //	],	
 });
 
 const Citation = model("Citation", CitationSchema);

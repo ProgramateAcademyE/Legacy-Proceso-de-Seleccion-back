@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
 		passwordHash: { 
 			type: String,
 			 required: [true, "Por favor ingresa una contraseña, esta debe tener mínimo 6 caracteres"],
-		    }, 
+		}, 
 	
 		role: {
 			type: Number,

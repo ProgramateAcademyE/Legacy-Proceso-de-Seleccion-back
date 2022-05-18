@@ -21,4 +21,4 @@ const AvailabilitySchema = new Schema(
     }
   );
 
-  module.exports = mongoose.model("Availability", userSchema);
+  module.exports = mongoose.model("Availability", AvailabilitySchema );
