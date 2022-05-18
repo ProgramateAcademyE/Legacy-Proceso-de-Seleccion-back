@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const AvailabilitySchema = new Schema({
   date: Date,
-  shift: [], // mañana o tarde
+  shift: String, // mañana o tarde
   selectors: [
     {
       selectorID: String,
