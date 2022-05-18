@@ -3,19 +3,14 @@ const { Schema, model } = mongoose;
 
 const AvailabilitySchema = new Schema({
   date: Date,
-  shift: [], // mañana o tarde o ambas
+  shift: [], // mañana o tarde
   selectors: [
     {
       selectorID: String,
       firstName: String,
       lastName: String,
       role: Number, // 3||4 || 1,
-      availability: [
-        {
-          shift: String, // mañana o tarde
-          meetRole: Number, // 3 interviewer || 4 observer
-        },
-      ],
+      meetRole: Number, // 3 interviewer || 4 observer
     },
   ],
 });
