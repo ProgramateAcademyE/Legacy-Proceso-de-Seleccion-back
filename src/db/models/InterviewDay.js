@@ -6,88 +6,53 @@ de donde eres
 que te gusta hacer
 con quien vives
 */
-const InterviewDaySchema = new Schema(
-  {
-    user_id: String,
-    whoYouAreQuestion: String,
-    whereYouFromQuestion: String,
-    whatDoYouLike: String,
-    liveWithQuestion: String,
-    interviewComment: String,
-    assesmentComment: String,
-    interviewScore: Number,
-    assesmentScore: Number,
-    interviewDayScore: Number,
-    interview: {
-      motivation: {
-        question1: {
-          title: String,
-          score: Number
+const InterviewDaySchema = new Schema({
+  meetID: String,
+  userID: String,
+  firstName: String,
+  lastName: String,
+  attendance: Boolean, //Se llena cuando se llama a lista en la reunion default: false
+  qualificationStatus: Boolean, // Indica si la calificaion se realizo con por lo menos 1 entrevistador y un observador
+  //icebreakerQuestions: string[], //array de strings // ["¿Cual es tu nombre?", "¿De donde eres?", "¿Que te gusta hacer?"]
+  interviewScore: Number, // score final interview => promedio de interview Score
+  assesmentScore: Number, // score final assesment => promedio de assesment Score
+  interviewDayScore: Number, // score final total => promedio de assesment Score y interview score
+  questionaryID: [], //array de strings // debe tener 2 questionary ids, uno para el interviewer, uno para el assesment
+  interviewers: [
+    {
+      userID: String, // Interviewr _id
+      fistName: String,
+      lastName: String,
+      interviewComment: String,
+      interviewerScore: Number,
+      qualificationStatus: Boolean, // Se actualiza en Enviar Evaluacion => default: false
+      qualifications: [
+        {
+          groupID: String,
+          name: String,
+          score: Number, // Entre 1 y 5
         },
-        question2: {
-          title: String,
-          score: Number
-        }
-      },
-      perseverance: {
-        question1: {
-          title: String,
-          score: Number
-        },
-        question2: {
-          title: String,
-          score: Number,
-        }
-      },
-      planning: {
-        question1: {
-          title: String,
-          score: Number,
-        },
-        question2: {
-          title: String,
-          score: Number,
-        }
-      },
-      tecnique: {
-        question1: {
-          title: String,
-          score: Number,
-        },
-        question2: {
-          title: String,
-          score: Number,
-        }
-      }
+      ],
     },
-    assesment: {
-      flexibility: {
-        question1: {
-          title: String,
-          score: Number,
-        }
-      },
-      comunication: {
-        question1: {
-          title: String,
-          score: Number,
-        }
-      },
-      lidership: {
-        question1: {
-          title: String,
-          score: Number,
-        }
-      },
-      achievementOrientation: {
-        question1: {
-          title: String,
-          score: Number,
-        }
-      }
+  ],
+  observers: [
+    {
+      userID: String, // Observer _id
+      firstName: String,
+      lastName: String,
+      assesmentComment: String,
+      assesmentScore: Number,
+      qualificationStatus: Boolean, // Se actualiza en Enviar => default: false
+      qualifications: [
+        {
+          groupID: String,
+          name: String,
+          score: Number, // Entre 1 y 5
+        },
+      ],
     },
-  }
-);
+  ],
+});
 
 const InterviewDay = model('InterviewDay', InterviewDaySchema)
 
