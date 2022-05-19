@@ -678,7 +678,7 @@ adminRouter.put("/upload-test", async (req, res) => {
 });
 
 // Create assesments rooms for interview days
-adminRouter.post("/create-room", async (req, res) => {
+/*adminRouter.post("/create-room", async (req, res) => {
   const { citation_id } = req.body;
   const citationData = await Citation.find({ _id: citation_id });
   const staff = await Administrator.find({ available: true });
@@ -714,10 +714,11 @@ adminRouter.post("/create-room", async (req, res) => {
       rooms,
     },
   });
-});
+});*/
+
 
 // Create administrators and staff users
-adminRouter.post("/admin", async (req, res) => {
+/*adminRouter.post("/admin", async (req, res) => {
   const {
     firstName,
     surname,
@@ -736,13 +737,13 @@ adminRouter.post("/admin", async (req, res) => {
   });
   await admin.save();
   res.send("profile saved");
-});
+});*/
 
 // Get administrators and staff profiles
-adminRouter.get("/admin", async (req, res) => {
+/*adminRouter.get("/admin", async (req, res) => {
   const results = await Administrator.find();
   res.send(results);
-});
+});*/
 
 // create event in calendar
 adminRouter.post("/calendar", async (req, res) => {
