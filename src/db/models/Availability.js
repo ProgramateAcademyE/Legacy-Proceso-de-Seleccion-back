@@ -1,24 +1,20 @@
 const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-const AvailabilitySchema = new Schema(
+const AvailabilitySchema = new Schema({
+  date: Date,
+  shift: String, // mañana o tarde
+  selectors: [
     {
-      date: Date,
-      shift:[], // mañana o tarde o ambas
-      selectors: [
-        {
-          selectorID: string,
-          firstName: string,
-          lastName: string,
-          role: number, // 3||4 || 1,
-          availability: [
-            {
-              shift: string, // mañana o tarde
-              meetRole: number, // 3 interviewer || 4 observer
-            },
-          ],
-        },
-      ],
-    }
-  );
+      selectorID: String,
+      firstName: String,
+      lastName: String,
+      role: Number, // 3||4 || 1,
+      meetRole: Number, // 3 interviewer || 4 observer
+    },
+  ],
+});
 
-  module.exports = mongoose.model("Availability", AvailabilitySchema );
+const Availability = model("Availability", AvailabilitySchema);
+
+module.exports = Availability;

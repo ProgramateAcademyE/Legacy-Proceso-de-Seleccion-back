@@ -43,14 +43,15 @@ const CitationSchema = new Schema({
     required: true,
   },
   // new field
-  //users: [
-  //  {
-   //   userID: String,
-   //   firstName: String,
-  //    lastName: String,
-  //    location: String,
-  //  },
- //	],	
+  users: [
+    {
+      userID: String,
+      firstName: String,
+      lastName: String,
+      documentNumber: Number,
+      location: String,
+    },
+  ],
 });
 
 const Citation = model("Citation", CitationSchema);
