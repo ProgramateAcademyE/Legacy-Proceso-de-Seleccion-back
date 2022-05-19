@@ -11,6 +11,7 @@ const Meet = require("../db/models/Meet");
 const ObjectId = require("mongodb").ObjectID;
 const Test = require("../db/models/TechTest");
 const auth = require("../middleware/auth");
+const { ObjectID } = require("bson");
 
 // ===================== Tech Test Endpoints =======================
 // Get all tech test
@@ -585,14 +586,70 @@ adminRouter.delete("/citation-delete/:id", async (req, res) => {
 
 // Creates new Meet
 adminRouter.post("/meet", async (req, res) => {
-  const body = req.body
-  const meet = new Meet({
+  const body = req.body;
+
+  const newMeet = new Meet({
     ...body,
     usersNumber: body.users.length,
     interviewersNumber: body.interviewers.length,
     observersNumber: body.observers.length,
   });
-  await meet.save();
+
+  const usersCopy1 = body.users.slice(0);
+  const usersCopy2 = body.users.slice(0);
+
+  function createRooms(users, selectors, roomsToCreate) {
+    let roomsArr = [];
+
+    for (let r = 0; r < roomsToCreate; r++) {
+      roomsArr[r] = {
+        roomID: "",
+        roomName: `Sala Assesment ${r + 1}`,
+        roomNumber: r + 1,
+        users: [],
+        selectors: [],
+      };
+    }
+    //users
+    let room = 0;
+    while (users.length !== 0) {
+      roomsArr[room].users.push({
+        ...users.splice(-1)[0],
+        _id: users.splice(-1)[0].userID,
+      });
+
+      if (room === roomsToCreate - 1) {
+        room = 0;
+      } else room++;
+    }
+    // Selectors
+    let room2 = 0;
+    while (selectors.length !== 0) {
+      const tmp = selectors.splice(-1)[0];
+      roomsArr[room2].selectors.push({
+        ...tmp,
+        _id: tmp.selectorID,
+      });
+
+      if (room2 === roomsToCreate - 1) {
+        room2 = 0;
+      } else room2++;
+    }
+    return roomsArr;
+  }
+
+  newMeet["roomsAssesments"] = createRooms(
+    usersCopy1,
+    body.observers,
+    body.assesmentsRooms
+  );
+  newMeet["roomsInterviewers"] = createRooms(
+    usersCopy2,
+    body.interviewers,
+    body.interviewersRooms
+  );
+
+  await newMeet.save();
   res.send("Reunion guardada");
   res.status(404).send({ error: "ERROR" });
 });
