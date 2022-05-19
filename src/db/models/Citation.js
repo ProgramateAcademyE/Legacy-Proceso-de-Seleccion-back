@@ -48,9 +48,10 @@ const CitationSchema = new Schema({
       userID: String,
       firstName: String,
       lastName: String,
+      documentNumber: Number,
       location: String,
     },
-	],	
+  ],
 });
 
 const Citation = model("Citation", CitationSchema);
