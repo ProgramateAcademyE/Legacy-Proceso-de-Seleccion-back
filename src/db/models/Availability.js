@@ -6,7 +6,7 @@ const AvailabilitySchema = new Schema({
   shift: String, // mañana o tarde
   selectors: [
     {
-      selectorID: String,
+      _id: String, //selectorID
       firstName: String,
       lastName: String,
       role: Number, // 3||4 || 1,
