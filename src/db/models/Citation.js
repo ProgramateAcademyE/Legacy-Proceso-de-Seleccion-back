@@ -17,15 +17,13 @@ const CitationSchema = new Schema({
     type: Date,
   },
   shift: {
-    type: String,
+    type: ["mañana", "tarde"],
     default: "mañana",
   },
   applicantQuota: {
-    //maximo de aspirantes
     type: Number,
   },
   enrolledNumber: {
-    //numero actual de aspirantes
     type: Number,
     count: 0,
   },
@@ -59,3 +57,4 @@ const CitationSchema = new Schema({
 const Citation = model("Citation", CitationSchema);
 
 module.exports = Citation;
+	

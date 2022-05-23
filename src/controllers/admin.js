@@ -570,18 +570,6 @@ adminRouter.get("/citation-id/:id", async (req, res) => {
     res.status(404).send({ error: "ERROR" });
   }
 });
-
-// get a single date citation
-adminRouter.get("/citation-id", async (req, res) => {
-  try {
-    console.log(req.body)
-    const appointmentDate = req.body.appointmentDate;
-    const data = await Citation.find({"appointmentDate": {$eq:appointmentDate}})
-    res.send({ data });
-  } catch (e) {
-    res.status(404).send({ error: "ERROR" });
-  }
-});
 // delete a record by id
 adminRouter.delete("/citation-delete/:id", async (req, res) => {
   try {
