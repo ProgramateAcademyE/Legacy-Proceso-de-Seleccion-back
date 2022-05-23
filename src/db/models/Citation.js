@@ -20,10 +20,12 @@ const CitationSchema = new Schema({
     type: String,
     default: "mañana",
   },
-  applicantQuota: { //maximo de aspirantes
+  applicantQuota: {
+    //maximo de aspirantes
     type: Number,
   },
-  enrolledNumber: { //numero actual de aspirantes
+  enrolledNumber: {
+    //numero actual de aspirantes
     type: Number,
     count: 0,
   },
@@ -43,17 +45,17 @@ const CitationSchema = new Schema({
     required: true,
   },
   // new field
-  //users: [
-  //  {
-   //   userID: String,
-   //   firstName: String,
-  //    lastName: String,
-  //    location: String,
-  //  },
- //	],	
+  users: [
+    {
+      userID: String,
+      firstName: String,
+      lastName: String,
+      documentNumber: Number,
+      location: String,
+    },
+  ],
 });
 
 const Citation = model("Citation", CitationSchema);
 
 module.exports = Citation;
-	

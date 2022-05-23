@@ -10,17 +10,15 @@ const MeetSchema = new Schema({
   usersNumber: Number,
   interviewersNumber: Number,
   observersNumber: Number,
-  interviewersRooms: Number,
+  interviewRooms: Number,
   assesmentsRooms: Number,
-  rooms: [
+  roomsAssesments: [
     {
-      roomID: String, // Lo necesitamos porque la room se puede editar 
-      name: String, // Sala + type + number. ej: Sala Assesment 1
-      roomType: String, //"ASSESMENT" || "INTERVIEW",
+      roomName: String, // Sala + type + number. ej: Sala Assesment 1
       roomNumber: Number, // Positivo Mayor a 0
       users: [
         {
-          userID: String,
+          _id: String,
           firstName: String,
           lastName: String,
           location: String,
@@ -28,14 +26,36 @@ const MeetSchema = new Schema({
       ],
       selectors: [
         {
-          selectorID: String,
+          _id: String,
           firstName: String,
           lastName: String,
-          role: Number // 3||4
+          meetRole: Number, // 4
         },
       ],
-     },
-    ],
+    },
+  ],
+  roomsInterviewers: [
+    {
+      roomName: String, // Sala + type + number. ej: Sala Assesment 1
+      roomNumber: Number, // Positivo Mayor a 0
+      users: [
+        {
+          _id: String,
+          firstName: String,
+          lastName: String,
+          location: String,
+        },
+      ],
+      selectors: [
+        {
+          _id: String,
+          firstName: String,
+          lastName: String,
+          meetRole: Number, // 3
+        },
+      ],
+    },
+  ],
 });
 
 const Meet = model("Meet", MeetSchema);
