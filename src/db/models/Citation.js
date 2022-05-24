@@ -17,13 +17,13 @@ const CitationSchema = new Schema({
     type: Date,
   },
   shift: {
-    type: String,
+    type: ["mañana", "tarde"],
     default: "mañana",
   },
-  applicantQuota: { //maximo de aspirantes
+  applicantQuota: {
     type: Number,
   },
-  enrolledNumber: { //numero actual de aspirantes
+  enrolledNumber: {
     type: Number,
     count: 0,
   },

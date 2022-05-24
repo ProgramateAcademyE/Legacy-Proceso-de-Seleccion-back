@@ -570,18 +570,6 @@ adminRouter.get("/citation-id/:id", async (req, res) => {
     res.status(404).send({ error: "ERROR" });
   }
 });
-
-// get a single date citation
-adminRouter.get("/citation-id", async (req, res) => {
-  try {
-    console.log(req.body)
-    const appointmentDate = req.body.appointmentDate;
-    const data = await Citation.find({"appointmentDate": {$eq:appointmentDate}})
-    res.send({ data });
-  } catch (e) {
-    res.status(404).send({ error: "ERROR" });
-  }
-});
 // delete a record by id
 adminRouter.delete("/citation-delete/:id", async (req, res) => {
   try {
@@ -595,12 +583,27 @@ adminRouter.delete("/citation-delete/:id", async (req, res) => {
 
 // ==============================================================
 
+// ============================ Endpoints MAvailability =========================
+
+// get only one Availability
+
+adminRouter.get("/available-id/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Availability.find({ citationID: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+
 // ============================ Endpoints Meets =========================
 
 // Creates new Meet
 adminRouter.post("/meet", async (req, res) => {
   const body = req.body;
 
+  //console.log(body);
   const newMeet = new Meet({
     ...body,
     usersNumber: body.users.length,
@@ -611,25 +614,22 @@ adminRouter.post("/meet", async (req, res) => {
   const usersCopy1 = body.users.slice(0);
   const usersCopy2 = body.users.slice(0);
 
-  function createRooms(users, selectors, roomsToCreate) {
-    let roomsArr = [];
+  function createRooms(users, selectors, roomsToCreate, roomName) {
+    const roomsArr = [];
 
     for (let r = 0; r < roomsToCreate; r++) {
       roomsArr[r] = {
-        roomID: "",
-        roomName: `Sala Assesment ${r + 1}`,
+        roomName: `Sala ${roomName} ${r + 1}`,
         roomNumber: r + 1,
         users: [],
         selectors: [],
       };
     }
+    console.log(roomsArr);
     //users
     let room = 0;
     while (users.length !== 0) {
-      roomsArr[room].users.push({
-        ...users.splice(-1)[0],
-        _id: users.splice(-1)[0].userID,
-      });
+      roomsArr[room].users.push(users.splice(-1)[0]);
 
       if (room === roomsToCreate - 1) {
         room = 0;
@@ -639,10 +639,7 @@ adminRouter.post("/meet", async (req, res) => {
     let room2 = 0;
     while (selectors.length !== 0) {
       const tmp = selectors.splice(-1)[0];
-      roomsArr[room2].selectors.push({
-        ...tmp,
-        _id: tmp.selectorID,
-      });
+      roomsArr[room2].selectors.push(tmp);
 
       if (room2 === roomsToCreate - 1) {
         room2 = 0;
@@ -654,12 +651,14 @@ adminRouter.post("/meet", async (req, res) => {
   newMeet["roomsAssesments"] = createRooms(
     usersCopy1,
     body.observers,
-    body.assesmentsRooms
+    body.assesmentsRooms,
+    "Assesment"
   );
   newMeet["roomsInterviewers"] = createRooms(
     usersCopy2,
     body.interviewers,
-    body.interviewersRooms
+    body.interviewRooms,
+    "Entrivistas"
   );
 
   await newMeet.save();
@@ -763,7 +762,6 @@ adminRouter.put("/upload-test", async (req, res) => {
     },
   });
 });*/
-
 
 // Create administrators and staff users
 /*adminRouter.post("/admin", async (req, res) => {

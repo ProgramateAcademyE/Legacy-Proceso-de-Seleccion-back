@@ -10,7 +10,7 @@ const MeetSchema = new Schema({
   usersNumber: Number,
   interviewersNumber: Number,
   observersNumber: Number,
-  interviewersRooms: Number,
+  interviewRooms: Number,
   assesmentsRooms: Number,
   roomsAssesments: [
     {
@@ -36,7 +36,7 @@ const MeetSchema = new Schema({
   ],
   roomsInterviewers: [
     {
-      romName: String, // Sala + type + number. ej: Sala Assesment 1
+      roomName: String, // Sala + type + number. ej: Sala Assesment 1
       roomNumber: Number, // Positivo Mayor a 0
       users: [
         {

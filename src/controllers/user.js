@@ -62,14 +62,29 @@ userRouter.post("/register", async (req, res) => {
 
 
 //create a profile different to a user
- userRouter.post("/register_admin", async (req, res) => {
+ userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
     try { 
-	  const { names, surname, email, role } = req.body;
-		
+	  const { names, surname, email, password, role } = req.body;
+
+	   if (!names || !surname || !email || !password || !role)
+	    return res.status(400).send({ msg: errorFields }); 
+
+		if (!validateEmail(email)) 
+		return res.status(400).send({ msg: errorInvalidEmail }); 
+
+		const user = await User.findOne({ email });
+		 if (user) 
+		return res.status(400).send({ msg: errorExistEmail }); 
+
+		if (password.length < 6) 
+		return res.status(400).send({ msg: errorCharactersPassword }); 
+
+		const passwordHash = await bcrypt.hash(password, 12); 
 		const newUser = new User({ 
 			names, 
 			surname,
 			email, 
+			passwordHash, 
 			role,
 		 }); 
 
@@ -285,17 +300,6 @@ userRouter.get("/interviewer_info",async (req, res) => {
 	try {
 		const interviewer = await User.find({"role": {$eq: 4}})
 		res.send(interviewer);
-	} catch (err) {
-		return res.status(500).send({ msg: err.message });
-	}
-});
-
-userRouter.get("/roles_meeting_info",async (req, res) => {
-	try {
-		const admins = await User.find({"role": {$ne: 0}})
-			
-
-		res.send(admins);
 	} catch (err) {
 		return res.status(500).send({ msg: err.message });
 	}

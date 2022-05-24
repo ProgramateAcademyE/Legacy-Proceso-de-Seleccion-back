@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const AvailabilitySchema = new Schema({
-  citationID:String,
+  citationID: String,
   date: Date,
   shift: String, // mañana o tarde
   selectors: [
     {
-      selectorID: String,
+      _id: String, //selectorID
       firstName: String,
       lastName: String,
       role: Number, // 3||4 || 1,
