@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const AvailabilitySchema = new Schema({
+  citationID:String,
   date: Date,
   shift: String, // mañana o tarde
   selectors: [
