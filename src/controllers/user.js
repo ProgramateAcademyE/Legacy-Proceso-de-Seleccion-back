@@ -297,11 +297,23 @@ userRouter.get("/interviewer_info", async (req, res) => {
   }
 });
 
+userRouter.get("/roles_meeting_info", async (req, res) => {
+  try {
+    const interviewer = await User.find({ role: { $ne: 0 } });
+    res.send(interviewer);
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
+});
+
 userRouter.get("/filter/:userId", async (req, res) => {
+  console.log(req.params.userId);
+  const UserConsult = req.params.userId;
+  console.log("user", UserConsult);
   try {
     const eachUser = await User.findById(req.params.userId);
-
-    res.send({ eachUser });
+    console.log(eachUser);
+    //	res.send({ eachUser });
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
