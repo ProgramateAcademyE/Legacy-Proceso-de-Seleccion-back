@@ -666,6 +666,16 @@ adminRouter.post("/meet", async (req, res) => {
   res.status(404).send({ error: "ERROR" });
 });
 
+//Get meets
+adminRouter.get("/get-meets", async (req, res) => {
+  try {
+    const meet = await Meet.find();
+    res.send(meet);
+  } catch (error) {
+    return res.status(500).send({ msg: error.message });
+  }
+});
+
 // ==============================================================
 
 // To upload the thecnical test for candidates
