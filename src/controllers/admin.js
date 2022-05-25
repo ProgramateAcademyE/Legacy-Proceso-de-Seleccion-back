@@ -689,6 +689,41 @@ adminRouter.put("/upload-test", async (req, res) => {
   }
 });
 
+//Availability Staff information
+    adminRouter.post("/availability", async (req, res) => {
+      const body = req.body;
+      console.log(req.body)
+      const newAvailability = new Availability({
+        ...body,
+      
+      });
+      await newAvailability.save();
+      res.send("Reunion guardada");
+      res.status(404).send({ error: "ERROR" });
+    });
+
+    adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
+      console.log(req.params.id_available)
+      try {
+        await Availability.findByIdAndRemove({ _id: req.params._id });
+    
+        res.send({ msg: "Perfil eliminado de la base de datos. " });
+      } catch (err) {
+        return res.status(500).send({ msg: err.message });
+      }
+    
+    });
+    
+    adminRouter.get("/citationFilter/:IdCitation", async (req, res) => {
+     
+      try {
+		     const eachCitation = await Citation.findById(req.params.IdCitation);
+        res.send({ eachCitation });
+      } catch (err) {
+        return res.status(500).send({ msg: err.message });
+      }
+    });
+
 // Create assesments rooms for interview days
 /*adminRouter.post("/create-room", async (req, res) => {
   const { citation_id } = req.body;
