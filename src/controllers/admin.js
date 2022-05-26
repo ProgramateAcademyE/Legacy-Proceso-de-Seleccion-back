@@ -676,6 +676,17 @@ adminRouter.get("/get-meets", async (req, res) => {
   }
 });
 
+// get only one meet
+
+adminRouter.get("/get-meet-id/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Meet.find({ citationID: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
 // ==============================================================
 
 // To upload the thecnical test for candidates
