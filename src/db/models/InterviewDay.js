@@ -9,8 +9,8 @@ con quien vives
 const InterviewDaySchema = new Schema({
   meetID: String,
   userID: String,
-  firstName: String,
-  lastName: String,
+  names: String,
+  surname: String,
   attendance: Boolean, //Se llena cuando se llama a lista en la reunion default: false
   qualificationStatus: Boolean, // Indica si la calificaion se realizo con por lo menos 1 entrevistador y un observador
   //icebreakerQuestions: string[], //array de strings // ["¿Cual es tu nombre?", "¿De donde eres?", "¿Que te gusta hacer?"]
@@ -21,8 +21,8 @@ const InterviewDaySchema = new Schema({
   interviewers: [
     {
       userID: String, // Interviewr _id
-      fistName: String,
-      lastName: String,
+      names: String,
+      surname: String,
       interviewComment: String,
       interviewerScore: Number,
       qualificationStatus: Boolean, // Se actualiza en Enviar Evaluacion => default: false
@@ -38,8 +38,8 @@ const InterviewDaySchema = new Schema({
   observers: [
     {
       userID: String, // Observer _id
-      firstName: String,
-      lastName: String,
+      names: String,
+      surname: String,
       assesmentComment: String,
       assesmentScore: Number,
       qualificationStatus: Boolean, // Se actualiza en Enviar => default: false
