@@ -19,16 +19,16 @@ const MeetSchema = new Schema({
       users: [
         {
           _id: String,
-          firstName: String,
-          lastName: String,
+          names: String,
+          surname: String,
           location: String,
         },
       ],
       selectors: [
         {
           _id: String,
-          firstName: String,
-          lastName: String,
+          names: String,
+          surname: String,
           meetRole: Number, // 4
         },
       ],
@@ -41,16 +41,16 @@ const MeetSchema = new Schema({
       users: [
         {
           _id: String,
-          firstName: String,
-          lastName: String,
+          names: String,
+          surname: String,
           location: String,
         },
       ],
       selectors: [
         {
           _id: String,
-          firstName: String,
-          lastName: String,
+          names: String,
+          surname: String,
           meetRole: Number, // 3
         },
       ],
