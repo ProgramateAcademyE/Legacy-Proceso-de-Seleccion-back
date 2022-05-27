@@ -710,6 +710,27 @@ adminRouter.post("/meet", async (req, res) => {
   res.status(404).send({ error: "ERROR" });
 });
 
+//Get meets
+adminRouter.get("/get-meets", async (req, res) => {
+  try {
+    const meet = await Meet.find();
+    res.send(meet);
+  } catch (error) {
+    return res.status(500).send({ msg: error.message });
+  }
+});
+
+// get only one meet
+
+adminRouter.get("/get-meet-id/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Meet.find({ citationID: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
 // ==============================================================
 
 // To upload the thecnical test for candidates

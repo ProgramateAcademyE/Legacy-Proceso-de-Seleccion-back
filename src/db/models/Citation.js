@@ -46,8 +46,8 @@ const CitationSchema = new Schema({
   users: [
     {
       userID: String,
-      names: String,
       surname: String,
+      lastName: String,
       documentNumber: Number,
       location: String,
     },
