@@ -9,7 +9,7 @@ const AvailabilitySchema = new Schema({
     {
       _id: String, //selectorID
       names: String,
-      surame: String,
+      surname: String,
       role: Number, // 3||4 || 1,
       meetRole: Number, // 3 interviewer || 4 observer
     },
