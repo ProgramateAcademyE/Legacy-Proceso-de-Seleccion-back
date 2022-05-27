@@ -94,6 +94,41 @@ userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
   }
 });
 
+ userRouter.post("/register_staff", async (req, res) => {
+	 console.log("prueba", req.body)
+	 try { 
+		const { names, surname, email, password, role } = req.body;
+  
+		 if (!names || !surname || !email || !password || !role)
+		  return res.status(400).send({ msg: errorFields }); 
+  
+		  if (!validateEmail(email)) 
+		  return res.status(400).send({ msg: errorInvalidEmail }); 
+  
+		  const user = await User.findOne({ email });
+		   if (user) 
+		  return res.status(400).send({ msg: errorExistEmail }); 
+  
+		  if (password.length < 6) 
+		  return res.status(400).send({ msg: errorCharactersPassword }); 
+  
+		  const passwordHash = await bcrypt.hash(password, 12); 
+		  
+		  const addUser = new User({ 
+			  names, 
+			  surname,
+			  email, 
+			  passwordHash, 
+			  role,
+		   }); 
+  
+		  await addUser.save();
+		  res.send({ msg: "Perfil creado exitosamente. " }); 
+	  } 
+	  catch (err)
+	   { return res.status(500).send({ msg: err.message });
+   } }); 
+
 // User activation
 userRouter.get("/activation/:activation_token", async (req, res) => {
   try {
@@ -306,17 +341,11 @@ userRouter.get("/roles_meeting_info", async (req, res) => {
   }
 });
 
-userRouter.get("/filter/:userId", async (req, res) => {
-  console.log(req.params.userId);
-  const UserConsult = req.params.userId;
-  console.log("user", UserConsult);
-  try {
-    const eachUser = await User.findById(req.params.userId);
-    console.log(eachUser);
-    //	res.send({ eachUser });
-  } catch (err) {
-    return res.status(500).send({ msg: err.message });
-  }
+userRouter.get("/filter/:userId",async (req, res) => {
+	const UserConsult = (req.params.userId)
+	console.log("user", UserConsult)
+	const allUserConsult = await User.findById(UserConsult)
+	console.log("user", allUserConsult)
 });
 
 userRouter.put("/update/:userId", async (req, res) => {
