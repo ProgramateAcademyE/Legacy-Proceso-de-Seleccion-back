@@ -3,13 +3,13 @@ const { Schema, model } = mongoose;
 
 const AvailabilitySchema = new Schema({
   citationID: String,
-  date: Date,
+  date: String,
   shift: String, // mañana o tarde
   selectors: [
     {
       _id: String, //selectorID
-      firstName: String,
-      lastName: String,
+      names: String,
+      surname: String,
       role: Number, // 3||4 || 1,
       meetRole: Number, // 3 interviewer || 4 observer
     },
