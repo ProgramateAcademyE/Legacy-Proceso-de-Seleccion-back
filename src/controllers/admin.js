@@ -517,6 +517,7 @@ adminRouter.post("/citation", async (req, res) => {
   res.send("citacion guardada");
   res.status(404).send({ error: "ERROR" });
 });
+
 // list all citation data
 adminRouter.get("/citation-all", async (req, res) => {
   try {
@@ -527,6 +528,7 @@ adminRouter.get("/citation-all", async (req, res) => {
     res.status(404).send({ error: "ERROR" });
   }
 });
+
 // update a record by id
 adminRouter.put("/citation-update/:id", async (req, res) => {
   try {
@@ -590,10 +592,46 @@ adminRouter.delete("/citation-delete/:id", async (req, res) => {
 adminRouter.get("/available-id/:id", async (req, res) => {
   try {
     const id = req.params.id;
+
     const data = await Availability.find({ citationID: id });
     res.send({ data });
   } catch (e) {
     res.status(404).send({ error: "ERROR" });
+  }
+});
+
+//Availability Staff information
+adminRouter.put("/update_availables/:id", async (req, res) => {
+  console.log("params", req.params.id);
+  console.log(" body", req.body);
+  const keys = Object.keys(req.body);
+  const values = Object.values(req.body);
+
+  const updateEvent = await Availability.findByIdAndUpdate(
+    { _id: req.params.id },
+    { selectors: values }
+  );
+});
+
+adminRouter.post("/availability", async (req, res) => {
+  const body = req.body;
+  console.log(req.body);
+  const newAvailability = new Availability({
+    ...body,
+  });
+  await newAvailability.save();
+  res.send("Reunion guardada");
+  res.status(404).send({ error: "ERROR" });
+});
+
+adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
+  console.log(req.params.id_available);
+  try {
+    await Availability.findByIdAndRemove({ _id: req.params._id });
+
+    res.send({ msg: "Perfil eliminado de la base de datos. " });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
   }
 });
 
@@ -614,7 +652,7 @@ adminRouter.post("/meet", async (req, res) => {
   const usersCopy1 = body.users.slice(0);
   const usersCopy2 = body.users.slice(0);
 
-  function createRooms(users, selectors, roomsToCreate, roomName) {
+  function createRooms(selectors, selectors, roomsToCreate, roomName) {
     const roomsArr = [];
 
     for (let r = 0; r < roomsToCreate; r++) {
@@ -676,6 +714,17 @@ adminRouter.get("/get-meets", async (req, res) => {
   }
 });
 
+// get only one meet
+
+adminRouter.get("/get-meet-id/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Meet.find({ citationID: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
 // ==============================================================
 
 // To upload the thecnical test for candidates
@@ -699,29 +748,7 @@ adminRouter.put("/upload-test", async (req, res) => {
   }
 });
 
-//Availability Staff information
-adminRouter.post("/availability", async (req, res) => {
-  const body = req.body;
-  console.log(req.body);
-  const newAvailability = new Availability({
-    ...body,
-  });
-  await newAvailability.save();
-  res.send("Reunion guardada");
-  res.status(404).send({ error: "ERROR" });
-});
-
-adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
-  console.log(req.params.id_available);
-  try {
-    await Availability.findByIdAndRemove({ _id: req.params._id });
-
-    res.send({ msg: "Perfil eliminado de la base de datos. " });
-  } catch (err) {
-    return res.status(500).send({ msg: err.message });
-  }
-});
-
+/* The above code is a GET request that is used to retrieve a single citation from the database. */
 adminRouter.get("/citationFilter/:IdCitation", async (req, res) => {
   try {
     const eachCitation = await Citation.findById(req.params.IdCitation);
