@@ -658,7 +658,7 @@ adminRouter.post("/meet", async (req, res) => {
   const usersCopy1 = body.users.slice(0);
   const usersCopy2 = body.users.slice(0);
 
-  function createRooms(selectors, selectors, roomsToCreate, roomName) {
+  function createRooms(users, selectors, roomsToCreate, roomName) {
     const roomsArr = [];
 
     for (let r = 0; r < roomsToCreate; r++) {
