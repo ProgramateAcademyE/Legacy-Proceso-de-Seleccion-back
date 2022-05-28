@@ -62,37 +62,42 @@ userRouter.post("/register", async (req, res) => {
 });
 
 //create a profile different to a user
-userRouter.post("/register_admin", auth, authAdmin, async (req, res) => {
-  try {
-    const { names, surname, email, password, role } = req.body;
+userRouter.post(
+  "/register_admin",
+  auth,
+  authAdmin || autModerator,
+  async (req, res) => {
+    try {
+      const { names, surname, email, password, role } = req.body;
 
-    if (!names || !surname || !email || !password || !role)
-      return res.status(400).send({ msg: errorFields });
+      if (!names || !surname || !email || !password || !role)
+        return res.status(400).send({ msg: errorFields });
 
-    if (!validateEmail(email))
-      return res.status(400).send({ msg: errorInvalidEmail });
+      if (!validateEmail(email))
+        return res.status(400).send({ msg: errorInvalidEmail });
 
-    const user = await User.findOne({ email });
-    if (user) return res.status(400).send({ msg: errorExistEmail });
+      const user = await User.findOne({ email });
+      if (user) return res.status(400).send({ msg: errorExistEmail });
 
-    if (password.length < 6)
-      return res.status(400).send({ msg: errorCharactersPassword });
+      if (password.length < 6)
+        return res.status(400).send({ msg: errorCharactersPassword });
 
-    const passwordHash = await bcrypt.hash(password, 12);
-    const newUser = new User({
-      names,
-      surname,
-      email,
-      passwordHash,
-      role,
-    });
+      const passwordHash = await bcrypt.hash(password, 12);
+      const newUser = new User({
+        names,
+        surname,
+        email,
+        passwordHash,
+        role,
+      });
 
-    await newUser.save();
-    res.send({ msg: "Perfil creado exitosamente. " });
-  } catch (err) {
-    return res.status(500).send({ msg: err.message });
+      await newUser.save();
+      res.send({ msg: "Perfil creado exitosamente. " });
+    } catch (err) {
+      return res.status(500).send({ msg: err.message });
+    }
   }
-});
+);
 
 // User activation
 userRouter.get("/activation/:activation_token", async (req, res) => {
