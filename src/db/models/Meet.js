@@ -43,6 +43,7 @@ const MeetSchema = new Schema({
           _id: String,
           names: String,
           surname: String,
+          documentNumber: Number,
           location: String,
         },
       ],
