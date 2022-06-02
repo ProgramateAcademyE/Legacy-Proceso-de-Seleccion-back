@@ -736,6 +736,72 @@ adminRouter.get("/get-meet-by-meetId/:id", async (req, res) => {
   }
 });
 
+adminRouter.get("/userMeets/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const tmp = await Meet.aggregate([
+      {
+        $unwind: {
+          path: "$roomsAssesments",
+          includeArrayIndex: "roomsAssesmentsIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$roomsAssesments.selectors",
+          includeArrayIndex: "selectorsAssesmentsIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$roomsInterviewers",
+          includeArrayIndex: "roomsInterviewersIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$roomsInterviewers.selectors",
+          includeArrayIndex: "selectorsInterviewersIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $match: {
+          $or: [
+            {
+              "roomsAssesments.selectors._id": id,
+            },
+            {
+              "roomsInterviewers.selectors._id": id,
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+        },
+      },
+    ]);
+    async function findMeet(id) {
+      const meets = await Meet.find({ _id: id });
+      return meets;
+    }
+    const data = await Promise.all(tmp.map((d) => findMeet(d._id))).then(
+      (data) => {
+        return data;
+      }
+    );
+
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+
 /// Questionario
 adminRouter.get("/get-questionary/:id", async (req, res) => {
   try {
