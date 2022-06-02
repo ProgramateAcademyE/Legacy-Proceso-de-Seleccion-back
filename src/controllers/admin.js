@@ -7,6 +7,7 @@ const adminRouter = require("express").Router();
 const request = require("request");
 const Administrator = require("../db/models/Administrators");
 const Citation = require("../db/models/Citation");
+const Questionary = require("../db/models/Questionary");
 const Meet = require("../db/models/Meet");
 const Availability = require("../db/models/Availability");
 const ObjectId = require("mongodb").ObjectID;
@@ -664,7 +665,6 @@ adminRouter.post("/meet", async (req, res) => {
         selectors: [],
       };
     }
-    console.log(roomsArr);
     //users
     let room = 0;
     while (users.length !== 0) {
@@ -725,6 +725,28 @@ adminRouter.get("/get-meet-id/:id", async (req, res) => {
     res.status(404).send({ error: "ERROR" });
   }
 });
+
+adminRouter.get("/get-meet-by-meetId/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Meet.find({ _id: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+
+/// Questionario
+adminRouter.get("/get-questionary/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Questionary.find({ _id: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+// =
 // ==============================================================
 
 // To upload the thecnical test for candidates
