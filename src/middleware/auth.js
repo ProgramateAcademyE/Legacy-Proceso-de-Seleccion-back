@@ -1,5 +1,14 @@
 const jwt = require("jsonwebtoken");
 
+/**
+ * It checks if the token is valid and if it is, it adds the user to the request body.
+ * @param req - The request object.
+ * @param res - The response object.
+ * @param next - The next middleware function in the stack.
+ * @returns {
+ *   "msg": "Invalid Authentication."
+ * }
+ */
 const auth = (req, res, next) => {
   try {
     const token = req.header("Authorization");
