@@ -99,40 +99,39 @@ userRouter.post(
   }
 );
 
- userRouter.post("/register_staff", async (req, res) => {
-	 console.log("prueba", req.body)
-	 try { 
-		const { names, surname, email, password, role } = req.body;
-  
-		 if (!names || !surname || !email || !password || !role)
-		  return res.status(400).send({ msg: errorFields }); 
-  
-		  if (!validateEmail(email)) 
-		  return res.status(400).send({ msg: errorInvalidEmail }); 
-  
-		  const user = await User.findOne({ email });
-		   if (user) 
-		  return res.status(400).send({ msg: errorExistEmail }); 
-  
-		  if (password.length < 6) 
-		  return res.status(400).send({ msg: errorCharactersPassword }); 
-  
-		  const passwordHash = await bcrypt.hash(password, 12); 
-		  
-		  const addUser = new User({ 
-			  names, 
-			  surname,
-			  email, 
-			  passwordHash, 
-			  role,
-		   }); 
-  
-		  await addUser.save();
-		  res.send({ msg: "Perfil creado exitosamente. " }); 
-	  } 
-	  catch (err)
-	   { return res.status(500).send({ msg: err.message });
-   } }); 
+userRouter.post("/register_staff", async (req, res) => {
+  console.log("prueba", req.body);
+  try {
+    const { names, surname, email, password, role } = req.body;
+
+    if (!names || !surname || !email || !password || !role)
+      return res.status(400).send({ msg: errorFields });
+
+    if (!validateEmail(email))
+      return res.status(400).send({ msg: errorInvalidEmail });
+
+    const user = await User.findOne({ email });
+    if (user) return res.status(400).send({ msg: errorExistEmail });
+
+    if (password.length < 6)
+      return res.status(400).send({ msg: errorCharactersPassword });
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const addUser = new User({
+      names,
+      surname,
+      email,
+      passwordHash,
+      role,
+    });
+
+    await addUser.save();
+    res.send({ msg: "Perfil creado exitosamente. " });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
+});
 
 // User activation
 userRouter.get("/activation/:activation_token", async (req, res) => {
@@ -300,6 +299,7 @@ userRouter.get("/users_info", auth, async (req, res) => {
   }
 });
 
+/* Finding all the users with the role of 1. */
 userRouter.get("/admins_info", async (req, res) => {
   try {
     const admins = await User.find({ role: { $eq: 1 } });
@@ -310,6 +310,7 @@ userRouter.get("/admins_info", async (req, res) => {
   }
 });
 
+/* Finding all the users with role 2 and sending them back to the client. */
 userRouter.get("/moderator_info", async (req, res) => {
   try {
     const interviewer = await User.find({ role: { $eq: 2 } });
@@ -319,6 +320,7 @@ userRouter.get("/moderator_info", async (req, res) => {
   }
 });
 
+/* Finding all the users with role 3 and sending them back to the client. */
 userRouter.get("/observator_info", async (req, res) => {
   try {
     const interviewer = await User.find({ role: { $eq: 3 } });
@@ -328,6 +330,7 @@ userRouter.get("/observator_info", async (req, res) => {
   }
 });
 
+/* Finding all the users with the role of 4 and returning them. */
 userRouter.get("/interviewer_info", async (req, res) => {
   try {
     const interviewer = await User.find({ role: { $eq: 4 } });
@@ -337,6 +340,7 @@ userRouter.get("/interviewer_info", async (req, res) => {
   }
 });
 
+/* Finding all the users that are not equal to 0. */
 userRouter.get("/roles_meeting_info", async (req, res) => {
   try {
     const interviewer = await User.find({ role: { $ne: 0 } });
@@ -346,13 +350,17 @@ userRouter.get("/roles_meeting_info", async (req, res) => {
   }
 });
 
-userRouter.get("/filter/:userId",async (req, res) => {
-	const UserConsult = (req.params.userId)
-	console.log("user", UserConsult)
-	const allUserConsult = await User.findById(UserConsult)
-	console.log("user", allUserConsult)
+/* The above code is a GET request to the server. The request is asking for the userId. The userId is
+then being logged to the console. The userId is then being used to find the user in the database.
+The user is then being logged to the console. */
+userRouter.get("/filter/:userId", async (req, res) => {
+  const UserConsult = req.params.userId;
+  console.log("user", UserConsult);
+  const allUserConsult = await User.findById(UserConsult);
+  console.log("user", allUserConsult);
 });
 
+/* The above code is updating the user's information. */
 userRouter.put("/update/:userId", async (req, res) => {
   try {
     console.log(req.body);
@@ -371,6 +379,7 @@ userRouter.put("/update/:userId", async (req, res) => {
   }
 });
 
+/* Deleting a user from the database. */
 userRouter.delete("/delete/:id", async (req, res) => {
   try {
     await User.findOneAndRemove({ _id: req.params.id });

@@ -587,8 +587,7 @@ adminRouter.delete("/citation-delete/:id", async (req, res) => {
 
 // ============================ Endpoints MAvailability =========================
 
-// get only one Availability
-
+/* Finding the availability of a citationID. */
 adminRouter.get("/available-id/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -600,7 +599,7 @@ adminRouter.get("/available-id/:id", async (req, res) => {
   }
 });
 
-//Availability Staff information
+/* Updating the availability model with the new values. */
 adminRouter.put("/update_availables/:id", async (req, res) => {
   console.log("params", req.params.id);
   console.log(" body", req.body);
@@ -613,6 +612,7 @@ adminRouter.put("/update_availables/:id", async (req, res) => {
   );
 });
 
+/* Creating a new availability and saving it to the database. */
 adminRouter.post("/availability", async (req, res) => {
   const body = req.body;
   console.log(req.body);
@@ -624,6 +624,7 @@ adminRouter.post("/availability", async (req, res) => {
   res.status(404).send({ error: "ERROR" });
 });
 
+/* Deleting the availability from the database. */
 adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
   console.log(req.params.id_available);
   try {
@@ -637,7 +638,7 @@ adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
 
 // ============================ Endpoints Meets =========================
 
-// Creates new Meet
+/* Creating a new meet object and saving it to the database. */
 adminRouter.post("/meet", async (req, res) => {
   const body = req.body;
 
@@ -704,7 +705,7 @@ adminRouter.post("/meet", async (req, res) => {
   res.status(404).send({ error: "ERROR" });
 });
 
-//Get meets
+/* Getting all the meets from the database. */
 adminRouter.get("/get-meets", async (req, res) => {
   try {
     const meet = await Meet.find();
@@ -714,8 +715,7 @@ adminRouter.get("/get-meets", async (req, res) => {
   }
 });
 
-// get only one meet
-
+/* Getting the id from the url and then using that id to find the citationID in the database. */
 adminRouter.get("/get-meet-id/:id", async (req, res) => {
   try {
     const id = req.params.id;
