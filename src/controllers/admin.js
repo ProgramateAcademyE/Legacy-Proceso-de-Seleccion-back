@@ -677,82 +677,85 @@ adminRouter.get("/questionary-all", async (req, res) => {
 /* Creating an array of new Interview Day  and saving it to the database. */
 adminRouter.post("/interviewDay-Observer", async (req, res) => {
   const body = Object.values(req.body);
-
-  async function findInterview(meetID, userID) {
-    const tmp = await InterviewDay.aggregate([
-      {
-        $match: {
-          $and: [
-            { meetID: meetID },
-            {
-              userID: userID,
-            },
-          ],
+  try {
+    async function findInterview(meetID, userID) {
+      const tmp = await InterviewDay.aggregate([
+        {
+          $match: {
+            $and: [
+              { meetID: meetID },
+              {
+                userID: userID,
+              },
+            ],
+          },
         },
-      },
-    ]);
-    return tmp;
-  }
-
-  const validateDocuments = await Promise.all(
-    body.map((d) => findInterview(d.meetID, d.userID))
-  );
-
-  const validateArray = validateDocuments.map((d) => d[0]);
-
-  const finalToDo = validateArray.map((d, index) => {
-    return d === undefined
-      ? { ...body[index], toDo: "create" }
-      : { ...d, toDo: "update" };
-  });
-
-  const newBody = finalToDo.map((d, index) => {
-    if (d.toDo === "create") {
-      return {
-        ...d,
-        assesmentScore: d.observers.score,
-        observers: [d.observers],
-        interviewDayScore: d.observers.score,
-      };
+      ]);
+      return tmp;
     }
-
-    if (d.toDo === "update") {
-      const tmp = { ...d, observers: [...d.observers, body[index].observers] };
-      const assesmentScore =
-        tmp.observers.map((o) => o.score).reduce((a, b) => a + b, 0) /
-        tmp.observers.length;
-
-      const interviewDayScore = (assesmentScore + tmp.interviewScore) / 2;
-
-      return {
-        ...tmp,
-        assesmentScore: assesmentScore,
-        interviewDayScore: interviewDayScore,
-      };
-    }
-  });
-
-  async function createDocument(newDocument) {
-    const newInterviewDay = new InterviewDay({
-      ...newDocument,
-    });
-    await newInterviewDay.save();
-  }
-
-  async function updateDocument(newDocument) {
-    await InterviewDay.findOneAndUpdate(
-      { meetID: newDocument.meetID, userID: newDocument.userID },
-      { ...newDocument }
+  
+    const validateDocuments = await Promise.all(
+      body.map((d) => findInterview(d.meetID, d.userID))
     );
+  
+    const validateArray = validateDocuments.map((d) => d[0]);
+  
+    const finalToDo = validateArray.map((d, index) => {
+      return d === undefined
+        ? { ...body[index], toDo: "create" }
+        : { ...d, toDo: "update" };
+    });
+  
+    const newBody = finalToDo.map((d, index) => {
+      if (d.toDo === "create") {
+        return {
+          ...d,
+          assesmentScore: d.observers.score,
+          observers: [d.observers],
+          interviewDayScore: d.observers.score,
+        };
+      }
+  
+      if (d.toDo === "update") {
+        const tmp = { ...d, observers: [...d.observers, body[index].observers] };
+        const assesmentScore =
+          tmp.observers.map((o) => o.score).reduce((a, b) => a + b, 0) /
+          tmp.observers.length;
+  
+        const interviewDayScore = (assesmentScore + tmp.interviewScore) / 2;
+  
+        return {
+          ...tmp,
+          assesmentScore: assesmentScore,
+          interviewDayScore: interviewDayScore,
+        };
+      }
+    });
+  
+    async function createDocument(newDocument) {
+      const newInterviewDay = new InterviewDay({
+        ...newDocument,
+      });
+      await newInterviewDay.save();
+    }
+  
+    async function updateDocument(newDocument) {
+      await InterviewDay.findOneAndUpdate(
+        { meetID: newDocument.meetID, userID: newDocument.userID },
+        { ...newDocument }
+      );
+    }
+  
+    await Promise.all(
+      newBody.map((d) =>
+        d.toDo === "create" ? createDocument(d) : updateDocument(d)
+      )
+    );
+    res.send("Reunion guardada");
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
   }
 
-  await Promise.all(
-    newBody.map((d) =>
-      d.toDo === "create" ? createDocument(d) : updateDocument(d)
-    )
-  );
-  res.send("Reunion guardada");
-  res.status(404).send({ error: "ERROR" });
 });
 
 /* Creating or updating a Interview Day Dcoument and saving it to the database. */
