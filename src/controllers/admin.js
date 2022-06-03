@@ -662,7 +662,7 @@ adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
 adminRouter.get("/questionary-all", async (req, res) => {
   try {
     
-    const data = await  InterviewDay.find({});
+    const data = await  Questionary.find({});
     res.send({ data });
   } catch (e) {
     res.status(404).send({ error: "ERROR" });
