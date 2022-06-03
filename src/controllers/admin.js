@@ -586,7 +586,7 @@ adminRouter.delete("/citation-delete/:id", async (req, res) => {
 
 // ==============================================================
 
-// ============================ Endpoints MAvailability =========================
+// ============================ Endpoints Availability =========================
 
 /* Finding the availability of a citationID. */
 adminRouter.get("/available-id/:id", async (req, res) => {
