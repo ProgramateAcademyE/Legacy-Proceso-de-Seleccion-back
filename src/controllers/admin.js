@@ -805,67 +805,71 @@ adminRouter.post("/interviewDay-Interviewer", async (req, res) => {
 /* Creating a new meet object and saving it to the database. */
 adminRouter.post("/meet", async (req, res) => {
   const body = req.body;
-
-  //console.log(body);
-  const newMeet = new Meet({
-    ...body,
-    usersNumber: body.users.length,
-    interviewersNumber: body.interviewers.length,
-    observersNumber: body.observers.length,
-  });
-
-  const usersCopy1 = body.users.slice(0);
-  const usersCopy2 = body.users.slice(0);
-
-  function createRooms(users, selectors, roomsToCreate, roomName) {
-    const roomsArr = [];
-
-    for (let r = 0; r < roomsToCreate; r++) {
-      roomsArr[r] = {
-        roomName: `Sala ${roomName} ${r + 1}`,
-        roomNumber: r + 1,
-        users: [],
-        selectors: [],
-      };
+  try {
+    const newMeet = new Meet({
+      ...body,
+      usersNumber: body.users.length,
+      interviewersNumber: body.interviewers.length,
+      observersNumber: body.observers.length,
+    });
+  
+    const usersCopy1 = body.users.slice(0);
+    const usersCopy2 = body.users.slice(0);
+  
+    function createRooms(users, selectors, roomsToCreate, roomName) {
+      const roomsArr = [];
+  
+      for (let r = 0; r < roomsToCreate; r++) {
+        roomsArr[r] = {
+          roomName: `Sala ${roomName} ${r + 1}`,
+          roomNumber: r + 1,
+          users: [],
+          selectors: [],
+        };
+      }
+      //users
+      let room = 0;
+      while (users.length !== 0) {
+        roomsArr[room].users.push(users.splice(-1)[0]);
+  
+        if (room === roomsToCreate - 1) {
+          room = 0;
+        } else room++;
+      }
+      // Selectors
+      let room2 = 0;
+      while (selectors.length !== 0) {
+        const tmp = selectors.splice(-1)[0];
+        roomsArr[room2].selectors.push(tmp);
+  
+        if (room2 === roomsToCreate - 1) {
+          room2 = 0;
+        } else room2++;
+      }
+      return roomsArr;
     }
-    //users
-    let room = 0;
-    while (users.length !== 0) {
-      roomsArr[room].users.push(users.splice(-1)[0]);
-
-      if (room === roomsToCreate - 1) {
-        room = 0;
-      } else room++;
-    }
-    // Selectors
-    let room2 = 0;
-    while (selectors.length !== 0) {
-      const tmp = selectors.splice(-1)[0];
-      roomsArr[room2].selectors.push(tmp);
-
-      if (room2 === roomsToCreate - 1) {
-        room2 = 0;
-      } else room2++;
-    }
-    return roomsArr;
+  
+    newMeet["roomsAssesments"] = createRooms(
+      usersCopy1,
+      body.observers,
+      body.assesmentsRooms,
+      "Assesment"
+    );
+    newMeet["roomsInterviewers"] = createRooms(
+      usersCopy2,
+      body.interviewers,
+      body.interviewRooms,
+      "Entrivistas"
+    );
+  
+    await newMeet.save();
+    res.send("Reunion guardada");
+  } catch (error) {
+    res.status(404).send({ error: "ERROR" });
   }
-
-  newMeet["roomsAssesments"] = createRooms(
-    usersCopy1,
-    body.observers,
-    body.assesmentsRooms,
-    "Assesment"
-  );
-  newMeet["roomsInterviewers"] = createRooms(
-    usersCopy2,
-    body.interviewers,
-    body.interviewRooms,
-    "Entrivistas"
-  );
-
-  await newMeet.save();
-  res.send("Reunion guardada");
-  res.status(404).send({ error: "ERROR" });
+  //console.log(body);
+ 
+  
 });
 
 /* Getting all the meets from the database. */
