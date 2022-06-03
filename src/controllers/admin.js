@@ -633,14 +633,18 @@ adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
 
   adminRouter.post("/availability", async (req, res) => {
     const body = req.body;
-    console.log(req.body)
-    const newAvailability = new Availability({
-      ...body,
-    
-    });
-    await newAvailability.save();
-    res.send("Reunion guardada");
-    res.status(404).send({ error: "ERROR" });
+      
+    try {
+      const newAvailability = new Availability({
+        ...body,
+      
+      });
+  
+      await newAvailability.save();
+      res.send("Reunion guardada");
+    } catch (err) {
+      return res.status(500).send({ msg: err.message });
+    }
   });
  
 
