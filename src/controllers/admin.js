@@ -531,6 +531,7 @@ adminRouter.get("/citation-all", async (req, res) => {
   }
 });
 
+
 // update a record by id
 adminRouter.put("/citation-update/:id", async (req, res) => {
   try {
@@ -655,6 +656,18 @@ adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
 });
 
 // ============================ Endpoints Interview Day =========================
+
+
+//get all questionaries
+adminRouter.get("/questionary-all", async (req, res) => {
+  try {
+    
+    const data = await  InterviewDay.find({});
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
 
 /* Creating an array of new Interview Day  and saving it to the database. */
 adminRouter.post("/interviewDay-Observer", async (req, res) => {
