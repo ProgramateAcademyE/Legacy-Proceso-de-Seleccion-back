@@ -7,6 +7,7 @@ const adminRouter = require("express").Router();
 const request = require("request");
 const Administrator = require("../db/models/Administrators");
 const Citation = require("../db/models/Citation");
+const Questionary = require("../db/models/Questionary");
 const Meet = require("../db/models/Meet");
 const Availability = require("../db/models/Availability");
 const ObjectId = require("mongodb").ObjectID;
@@ -587,12 +588,11 @@ adminRouter.delete("/citation-delete/:id", async (req, res) => {
 
 // ============================ Endpoints MAvailability =========================
 
-// get only one Availability
-
+/* Finding the availability of a citationID. */
 adminRouter.get("/available-id/:id", async (req, res) => {
   try {
     const id = req.params.id;
-  
+
     const data = await Availability.find({ citationID: id });
     res.send({ data });
   } catch (e) {
@@ -609,12 +609,9 @@ adminRouter.put("/update_availables_interviewer/:id", async (req, res) => {
   
 
   const updateEvent = await Availability.findByIdAndUpdate(
-  	{ _id: req.params.id }, 
-    {selectors:values},
-  
- );
-
-   
+    { _id: req.params.id },
+    { selectors: values }
+  );
 });
 
 adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
@@ -622,9 +619,7 @@ adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
   console.log(" body", req.body)
   const keys = Object.keys(req.body)
   const values = Object.values(req.body)
-  
-
-  const updateEvent = await Availability.findByIdAndUpdate(
+   const updateEvent = await Availability.findByIdAndUpdate(
   	{ _id: req.params.id }, 
     {selectors:values},
   
@@ -632,6 +627,7 @@ adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
 
    
 });
+
   adminRouter.post("/availability", async (req, res) => {
     const body = req.body;
     console.log(req.body)
@@ -643,22 +639,23 @@ adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
     res.send("Reunion guardada");
     res.status(404).send({ error: "ERROR" });
   });
+ 
 
-  adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
-    console.log(req.params.id_available)
-    try {
-      await Availability.findByIdAndRemove({ _id: req.params._id });
-  
-      res.send({ msg: "Perfil eliminado de la base de datos. " });
-    } catch (err) {
-      return res.status(500).send({ msg: err.message });
-    }
-  
-  });
+/* Deleting the availability from the database. */
+adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
+  console.log(req.params.id_available);
+  try {
+    await Availability.findByIdAndRemove({ _id: req.params._id });
+
+    res.send({ msg: "Perfil eliminado de la base de datos. " });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
+});
 
 // ============================ Endpoints Meets =========================
 
-// Creates new Meet
+/* Creating a new meet object and saving it to the database. */
 adminRouter.post("/meet", async (req, res) => {
   const body = req.body;
 
@@ -684,7 +681,6 @@ adminRouter.post("/meet", async (req, res) => {
         selectors: [],
       };
     }
-    console.log(roomsArr);
     //users
     let room = 0;
     while (users.length !== 0) {
@@ -725,7 +721,7 @@ adminRouter.post("/meet", async (req, res) => {
   res.status(404).send({ error: "ERROR" });
 });
 
-//Get meets
+/* Getting all the meets from the database. */
 adminRouter.get("/get-meets", async (req, res) => {
   try {
     const meet = await Meet.find();
@@ -735,8 +731,7 @@ adminRouter.get("/get-meets", async (req, res) => {
   }
 });
 
-// get only one meet
-
+/* Getting the id from the url and then using that id to find the citationID in the database. */
 adminRouter.get("/get-meet-id/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -746,6 +741,94 @@ adminRouter.get("/get-meet-id/:id", async (req, res) => {
     res.status(404).send({ error: "ERROR" });
   }
 });
+
+adminRouter.get("/get-meet-by-meetId/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Meet.find({ _id: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+
+adminRouter.get("/userMeets/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const tmp = await Meet.aggregate([
+      {
+        $unwind: {
+          path: "$roomsAssesments",
+          includeArrayIndex: "roomsAssesmentsIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$roomsAssesments.selectors",
+          includeArrayIndex: "selectorsAssesmentsIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$roomsInterviewers",
+          includeArrayIndex: "roomsInterviewersIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $unwind: {
+          path: "$roomsInterviewers.selectors",
+          includeArrayIndex: "selectorsInterviewersIndex",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $match: {
+          $or: [
+            {
+              "roomsAssesments.selectors._id": id,
+            },
+            {
+              "roomsInterviewers.selectors._id": id,
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+        },
+      },
+    ]);
+    async function findMeet(id) {
+      const meets = await Meet.find({ _id: id });
+      return meets;
+    }
+    const data = await Promise.all(tmp.map((d) => findMeet(d._id))).then(
+      (data) => {
+        return data;
+      }
+    );
+
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+
+/// Questionario
+adminRouter.get("/get-questionary/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Questionary.find({ _id: id });
+    res.send({ data });
+  } catch (e) {
+    res.status(404).send({ error: "ERROR" });
+  }
+});
+// =
 // ==============================================================
 
 // To upload the thecnical test for candidates
@@ -769,17 +852,15 @@ adminRouter.put("/upload-test", async (req, res) => {
   }
 });
 
-  
-    
-    adminRouter.get("/citationFilter/:IdCitation", async (req, res) => {
-     
-      try {
-		     const eachCitation = await Citation.findById(req.params.IdCitation);
-        res.send({ eachCitation });
-      } catch (err) {
-        return res.status(500).send({ msg: err.message });
-      }
-    });
+/* The above code is a GET request that is used to retrieve a single citation from the database. */
+adminRouter.get("/citationFilter/:IdCitation", async (req, res) => {
+  try {
+    const eachCitation = await Citation.findById(req.params.IdCitation);
+    res.send({ eachCitation });
+  } catch (err) {
+    return res.status(500).send({ msg: err.message });
+  }
+});
 
 // Create assesments rooms for interview days
 /*adminRouter.post("/create-room", async (req, res) => {
