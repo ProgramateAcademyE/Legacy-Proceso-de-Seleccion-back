@@ -12,6 +12,7 @@ const Meet = require("../db/models/Meet");
 const Availability = require("../db/models/Availability");
 const ObjectId = require("mongodb").ObjectID;
 const Test = require("../db/models/TechTest");
+const InterviewDay = require("../db/models/InterviewDay");
 const auth = require("../middleware/auth");
 const { ObjectID } = require("bson");
 
@@ -651,6 +652,134 @@ adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
+});
+
+// ============================ Endpoints Interview Day =========================
+
+/* Creating an array of new Interview Day  and saving it to the database. */
+adminRouter.post("/interviewDay-Observer", async (req, res) => {
+  const body = Object.values(req.body);
+
+  async function findInterview(meetID, userID) {
+    const tmp = await InterviewDay.aggregate([
+      {
+        $match: {
+          $and: [
+            { meetID: meetID },
+            {
+              userID: userID,
+            },
+          ],
+        },
+      },
+    ]);
+    return tmp;
+  }
+
+  const validateDocuments = await Promise.all(
+    body.map((d) => findInterview(d.meetID, d.userID))
+  );
+
+  const validateArray = validateDocuments.map((d) => d[0]);
+
+  const finalToDo = validateArray.map((d, index) => {
+    return d === undefined
+      ? { ...body[index], toDo: "create" }
+      : { ...d, toDo: "update" };
+  });
+
+  const newBody = finalToDo.map((d, index) => {
+    if (d.toDo === "create") {
+      return {
+        ...d,
+        assesmentScore: d.observers.score,
+        observers: [d.observers],
+        interviewDayScore: d.observers.score,
+      };
+    }
+
+    if (d.toDo === "update") {
+      const tmp = { ...d, observers: [...d.observers, body[index].observers] };
+      const assesmentScore =
+        tmp.observers.map((o) => o.score).reduce((a, b) => a + b, 0) /
+        tmp.observers.length;
+
+      const interviewDayScore = (assesmentScore + tmp.interviewScore) / 2;
+
+      return {
+        ...tmp,
+        assesmentScore: assesmentScore,
+        interviewDayScore: interviewDayScore,
+      };
+    }
+  });
+
+  async function createDocument(newDocument) {
+    const newInterviewDay = new InterviewDay({
+      ...newDocument,
+    });
+    await newInterviewDay.save();
+  }
+
+  async function updateDocument(newDocument) {
+    await InterviewDay.findOneAndUpdate(
+      { meetID: newDocument.meetID, userID: newDocument.userID },
+      { ...newDocument }
+    );
+  }
+
+  await Promise.all(
+    newBody.map((d) =>
+      d.toDo === "create" ? createDocument(d) : updateDocument(d)
+    )
+  );
+  res.send("Reunion guardada");
+  res.status(404).send({ error: "ERROR" });
+});
+
+/* Creating or updating a Interview Day Dcoument and saving it to the database. */
+adminRouter.post("/interviewDay-Interviewer", async (req, res) => {
+  const body = req.body;
+
+  const validateDocument = await InterviewDay.find({
+    meetID: body.meetID,
+    userID: body.userID,
+  });
+
+  const newInterviewDay = new InterviewDay({
+    interviewScore: body.interviewers.score,
+    interviewDayScore: body.interviewers.score,
+    interviewers: [body.interviewers],
+    ...body,
+  });
+
+  if (validateDocument.length !== 0) {
+    const current = validateDocument[0];
+    const tmp = {
+      current,
+      interviewers: [...current.interviewers, body.interviewers],
+    };
+
+    const interviewScore =
+      tmp.interviewers.map((i) => i.score).reduce((a, b) => a + b, 0) /
+      tmp.interviewers.length;
+
+    const interviewDayScore =
+      (validateDocument[0].assesmentScore + interviewScore) / 2;
+    await InterviewDay.findOneAndUpdate(
+      { _id: validateDocument[0]._id },
+      {
+        ...body,
+        interviewers: [...current.interviewers, body.interviewers],
+        interviewScore: interviewScore,
+        interviewDayScore: interviewDayScore,
+      }
+    );
+  } else await newInterviewDay.save();
+
+  res.send("Reunion guardada");
+
+  res.status(404).send({ error: "ERROR" });
 });
 
 // ============================ Endpoints Meets =========================
