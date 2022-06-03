@@ -626,6 +626,7 @@ adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
     {selectors:values},
   
  );
+ res.send({ msg: "Perfil creado exitosamente. " });
 
    
 });
