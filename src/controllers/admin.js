@@ -601,7 +601,7 @@ adminRouter.get("/available-id/:id", async (req, res) => {
 });
 
 //Availability Staff information
-adminRouter.put("/update_availables/:id", async (req, res) => {
+adminRouter.put("/update_availables_interviewer/:id", async (req, res) => {
   console.log("params", req.params.id)
   console.log(" body", req.body)
   const keys = Object.keys(req.body)
@@ -617,6 +617,21 @@ adminRouter.put("/update_availables/:id", async (req, res) => {
    
 });
 
+adminRouter.put("/update_availables_viewer/:id", async (req, res) => {
+  console.log("params", req.params.id)
+  console.log(" body", req.body)
+  const keys = Object.keys(req.body)
+  const values = Object.values(req.body)
+  
+
+  const updateEvent = await Availability.findByIdAndUpdate(
+  	{ _id: req.params.id }, 
+    {selectors:values},
+  
+ );
+
+   
+});
   adminRouter.post("/availability", async (req, res) => {
     const body = req.body;
     console.log(req.body)
