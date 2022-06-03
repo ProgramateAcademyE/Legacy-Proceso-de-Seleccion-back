@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 /*
 cuentanos quien eres
@@ -42,10 +42,9 @@ const InterviewDaySchema = new Schema({
       surname: String,
       comment: String,
       score: Number,
-      //qualificationStatus: Boolean, // Se actualiza en Enviar => default: false
+      qualificationStatus: Boolean, // Se actualiza en Enviar => default: false
       qualifications: [
         {
-          groupID: String,
           name: String,
           score: Number, // Entre 1 y 5
         },
@@ -54,6 +53,6 @@ const InterviewDaySchema = new Schema({
   ],
 });
 
-const InterviewDay = model('InterviewDay', InterviewDaySchema)
+const InterviewDay = model("InterviewDay", InterviewDaySchema);
 
-module.exports = InterviewDay
+module.exports = InterviewDay;

@@ -12,6 +12,7 @@ const Meet = require("../db/models/Meet");
 const Availability = require("../db/models/Availability");
 const ObjectId = require("mongodb").ObjectID;
 const Test = require("../db/models/TechTest");
+const InterviewDay = require("../db/models/InterviewDay");
 const auth = require("../middleware/auth");
 const { ObjectID } = require("bson");
 
@@ -651,6 +652,82 @@ adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
   } catch (err) {
     return res.status(500).send({ msg: err.message });
   }
+});
+
+// ============================ Endpoints Interview Day =========================
+
+/* Creating an array of new Interview Day  and saving it to the database. */
+adminRouter.post("/interviewDay-Observer", async (req, res) => {
+  const body = Object.values(req.body);
+
+  async function findInterview(meetID, userID) {
+    const tmp = await InterviewDay.aggregate([
+      {
+        $match: {
+          $and: [
+            { meetID: meetID },
+            {
+              userID: userID,
+            },
+          ],
+        },
+      },
+    ]);
+    return tmp;
+  }
+
+  const validateDocuments = await Promise.all(
+    body.map((d) => findInterview(d.meetID, d.userID))
+  );
+
+  const validateArray = validateDocuments.map((d) => d[0]);
+
+  const finalToDo = validateArray.map((d, index) => {
+    return d === undefined
+      ? { ...body[index], toDo: "create" }
+      : { ...d, toDo: "update" };
+  });
+
+  const newBody = finalToDo.map((d, index) => {
+    if (d.toDo === "create") {
+      return {
+        ...d,
+        assesmentScore: d.observers.score,
+        observers: [d.observers],
+      };
+    }
+
+    if (d.toDo === "update") {
+      const tmp = { ...d, observers: [...d.observers, body[index].observers] };
+      const helperScore =
+        tmp.observers.map((o) => o.score).reduce((a, b) => a + b, 0) /
+        tmp.observers.length;
+
+      return { ...tmp, assesmentScore: helperScore };
+    }
+  });
+
+  async function createDocument(newDocument) {
+    const newInterviewDay = new InterviewDay({
+      ...newDocument,
+    });
+    await newInterviewDay.save();
+  }
+
+  async function updateDocument(newDocument) {
+    await InterviewDay.findOneAndUpdate(
+      { meetID: newDocument.meetID, userID: newDocument.userID },
+      { ...newDocument }
+    );
+  }
+
+  await Promise.all(
+    newBody.map((d) =>
+      d.toDo === "create" ? createDocument(d) : updateDocument(d)
+    )
+  );
+  res.send("Reunion guardada");
+  res.status(404).send({ error: "ERROR" });
 });
 
 // ============================ Endpoints Meets =========================
