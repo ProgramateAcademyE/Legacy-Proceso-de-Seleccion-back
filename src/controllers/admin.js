@@ -661,7 +661,7 @@ adminRouter.delete("/deleteAvailability/:_id", async (req, res) => {
 //get all questionaries
 adminRouter.get("/questionary-all", async (req, res) => {
   try {
-    
+    console.log("questionary:")
     const data = await  Questionary.find({});
     res.send({ data });
   } catch (e) {
