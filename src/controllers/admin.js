@@ -758,46 +758,48 @@ adminRouter.post("/interviewDay-Observer", async (req, res) => {
 /* Creating or updating a Interview Day Dcoument and saving it to the database. */
 adminRouter.post("/interviewDay-Interviewer", async (req, res) => {
   const body = req.body;
-
-  const validateDocument = await InterviewDay.find({
-    meetID: body.meetID,
-    userID: body.userID,
-  });
-
-  const newInterviewDay = new InterviewDay({
-    interviewScore: body.interviewers.score,
-    interviewDayScore: body.interviewers.score,
-    interviewers: [body.interviewers],
-    ...body,
-  });
-
-  if (validateDocument.length !== 0) {
-    const current = validateDocument[0];
-    const tmp = {
-      current,
-      interviewers: [...current.interviewers, body.interviewers],
-    };
-
-    const interviewScore =
-      tmp.interviewers.map((i) => i.score).reduce((a, b) => a + b, 0) /
-      tmp.interviewers.length;
-
-    const interviewDayScore =
-      (validateDocument[0].assesmentScore + interviewScore) / 2;
-    await InterviewDay.findOneAndUpdate(
-      { _id: validateDocument[0]._id },
-      {
-        ...body,
+  try {
+    const validateDocument = await InterviewDay.find({
+      meetID: body.meetID,
+      userID: body.userID,
+    });
+  
+    const newInterviewDay = new InterviewDay({
+      interviewScore: body.interviewers.score,
+      interviewDayScore: body.interviewers.score,
+      interviewers: [body.interviewers],
+      ...body,
+    });
+  
+    if (validateDocument.length !== 0) {
+      const current = validateDocument[0];
+      const tmp = {
+        current,
         interviewers: [...current.interviewers, body.interviewers],
-        interviewScore: interviewScore,
-        interviewDayScore: interviewDayScore,
-      }
-    );
-  } else await newInterviewDay.save();
+      };
+  
+      const interviewScore =
+        tmp.interviewers.map((i) => i.score).reduce((a, b) => a + b, 0) /
+        tmp.interviewers.length;
+  
+      const interviewDayScore =
+        (validateDocument[0].assesmentScore + interviewScore) / 2;
+      await InterviewDay.findOneAndUpdate(
+        { _id: validateDocument[0]._id },
+        {
+          ...body,
+          interviewers: [...current.interviewers, body.interviewers],
+          interviewScore: interviewScore,
+          interviewDayScore: interviewDayScore,
+        }
+      );
+    } else await newInterviewDay.save();
+  
+    res.send("Reunion guardada");
+  } catch (error) {
+    res.status(404).send({ error: "ERROR" });
+  }
 
-  res.send("Reunion guardada");
-
-  res.status(404).send({ error: "ERROR" });
 });
 
 // ============================ Endpoints Meets =========================
