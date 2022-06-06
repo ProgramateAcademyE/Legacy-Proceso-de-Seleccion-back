@@ -164,7 +164,26 @@ Este endpoint guarda las calificaciones del observador.
 Este endpoint guarda las calificaciones del entrevistador.
 ![save_qualifications_by_interviewer](https://user-images.githubusercontent.com/91229815/172082300-8a3c858b-2f1b-4ea1-974d-5e7ef7b2927f.jpg)
 
-
+## Despliegue
 Link pruebas postman: https://go.postman.co/workspace/My-Workspace~c2d6d132-bf9e-4328-8a66-751e56a0ea2d/collection/20307962-126fb9d3-da5a-4905-9fc7-dec6610ee46d?action=share&creator=20307962
 
 El link despliegue backend dev2: https://legacy-selection-educamas.herokuapp.com
+
+## Colaboradores: 
+- Luis Cabal        https://github.com/ElCabal
+- Diana Chávez      https://github.com/dianachavezr
+- Leandro Gutierrez  https://github.com/leagut
+- Carolina Loaiza  https://github.com/carolo180 
+- Jymmy Murillo    https://github.com/JymmyMurillo
+- Jocelyn Rincón    https://github.com/JocelynRincon
+- Doraly Santander  https://github.com/doralysantander
+
+## Formadores: 
+- Lorena Guerrero
+- Andrés Patiño
+- Juliana Fajardo
+
+## Agradecimientos:
+- Xiomara Pérez
+- Enmanuel Pereira
+
